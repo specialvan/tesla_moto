@@ -1,0 +1,6 @@
+scheme_id,source_experiment,target_max_speed_rpm,loss_w,risk_penalty,weighted_score
+winding_reconfiguration,EXP-008,8000.0,4100.0,0.75,4448.975
+svpwm_overmodulation_voltage_utilization,EXP-005,7000.0,3650.0,0.45,4099.0875
+negative_d_axis_field_weakening,EXP-001,6750.0,3520.0,0.3,4086.62
+hybrid_excitation,EXP-007,7000.0,5200.0,0.55,3998.7
+multiphase_phase_group_control,EXP-009,5000.0,3300.0,0.5,2749.175

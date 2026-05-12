@@ -1,0 +1,54 @@
+{
+  "experiment": "exp_009_multiphase_phase_group",
+  "parameter_source": "illustrative_clean_room_phase_group_derating",
+  "engineering_validated": false,
+  "model_scope": "linear_dq_with_phase_group_current_derating",
+  "model_limitations": [
+    "phase groups are represented as aggregate current derating only",
+    "no harmonic subspace, neutral-shift, or open-phase voltage-vector model",
+    "no per-phase thermal RC or current-controller saturation dynamics"
+  ],
+  "cases": [
+    {
+      "name": "all_groups_balanced",
+      "total_groups": 3,
+      "healthy_groups": 3,
+      "per_group_current_limit_a": 90.0,
+      "sharing_imbalance_ratio": 0.0
+    },
+    {
+      "name": "all_groups_imbalanced",
+      "total_groups": 3,
+      "healthy_groups": 3,
+      "per_group_current_limit_a": 90.0,
+      "sharing_imbalance_ratio": 0.08
+    },
+    {
+      "name": "one_group_lost",
+      "total_groups": 3,
+      "healthy_groups": 2,
+      "per_group_current_limit_a": 90.0,
+      "sharing_imbalance_ratio": 0.08
+    },
+    {
+      "name": "limp_home_single_group",
+      "total_groups": 3,
+      "healthy_groups": 1,
+      "per_group_current_limit_a": 90.0,
+      "sharing_imbalance_ratio": 0.05
+    }
+  ],
+  "case_count": 4,
+  "worst_case": {
+    "case": "one_group_lost",
+    "total_groups": 3,
+    "healthy_groups": 2,
+    "per_group_current_limit_a": 90.0,
+    "sharing_imbalance_ratio": 0.08,
+    "available_current_a": 166.66666666666666,
+    "group_utilization": 1.08,
+    "healthy_group_ratio": 0.6666666666666666,
+    "target_max_speed_rpm": null
+  },
+  "csv_path": "G:\\tesla_moto\\experiments\\exp_009_multiphase_phase_group\\multiphase_phase_group_results.csv"
+}

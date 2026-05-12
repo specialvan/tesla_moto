@@ -1,0 +1,52 @@
+{
+  "experiment": "exp_008_winding_reconfiguration",
+  "parameter_source": "illustrative_clean_room_winding_scale_family",
+  "engineering_validated": false,
+  "model_scope": "linear_dq_multi_winding_configuration_sweep",
+  "model_limitations": [
+    "configuration scaling is parametric, not a validated winding layout",
+    "no switching transient, contactor arc, insulation, or circulating-current model",
+    "no thermal sharing between parallel paths"
+  ],
+  "configs": [
+    {
+      "name": "series_torque",
+      "turns_scale": 1.15,
+      "resistance_scale": 1.35,
+      "current_limit_scale": 0.82
+    },
+    {
+      "name": "base",
+      "turns_scale": 1.0,
+      "resistance_scale": 1.0,
+      "current_limit_scale": 1.0
+    },
+    {
+      "name": "parallel_speed",
+      "turns_scale": 0.72,
+      "resistance_scale": 0.55,
+      "current_limit_scale": 1.25
+    }
+  ],
+  "transition_speed_rpm": 5000.0,
+  "transition_check": {
+    "torque_delta_nm": null,
+    "current_delta_a": null
+  },
+  "recommended_config": {
+    "config": "base",
+    "turns_scale": 1.0,
+    "resistance_scale": 1.0,
+    "current_limit_scale": 1.0,
+    "rs_ohm": 0.035,
+    "ld_h": 0.00018,
+    "lq_h": 0.00042,
+    "psi_f_wb": 0.055,
+    "imax_a": 260.0,
+    "target_max_speed_rpm": 6000.0,
+    "boundary_torque_nm": 100.26384000000002,
+    "boundary_current_a": 240.68236329236922
+  },
+  "row_count": 3,
+  "csv_path": "G:\\tesla_moto\\experiments\\exp_008_winding_reconfiguration\\winding_reconfiguration_results.csv"
+}
