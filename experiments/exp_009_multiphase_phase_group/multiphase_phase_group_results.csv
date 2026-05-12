@@ -1,5 +1,5 @@
 case,total_groups,healthy_groups,per_group_current_limit_a,sharing_imbalance_ratio,available_current_a,group_utilization,healthy_group_ratio,target_max_speed_rpm
 all_groups_balanced,3,3,90.0,0.0,270.0,1.0,1.0,7000.0
-all_groups_imbalanced,3,3,90.0,0.08,249.99999999999997,1.08,1.0,6000.0
+all_groups_imbalanced,3,3,90.0,0.08,249.99999999999997,1.08,1.0,6250.0
 one_group_lost,3,2,90.0,0.08,166.66666666666666,1.08,0.6666666666666666,
 limp_home_single_group,3,1,90.0,0.05,85.71428571428571,1.05,0.3333333333333333,
