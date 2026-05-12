@@ -34,10 +34,10 @@
     {
       "scheme_id": "hybrid_excitation",
       "source_experiment": "exp_007_hybrid_excitation",
-      "target_max_speed_rpm": 6750.0,
-      "loss_w": 3520.0200000000004,
+      "target_max_speed_rpm": 6000.0,
+      "loss_w": 3041.2200000000003,
       "risk_penalty": 0.18,
-      "weighted_score": 4206.619995
+      "weighted_score": 3719.239695
     },
     {
       "scheme_id": "winding_reconfiguration",

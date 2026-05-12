@@ -1,5 +1,5 @@
 scheme_id,source_experiment,target_max_speed_rpm,loss_w,risk_penalty,weighted_score
 svpwm_overmodulation_voltage_utilization,exp_005_modulation_factor,7000.0,3500.067984,0.07200000000000006,4477.124983004
-hybrid_excitation,exp_007_hybrid_excitation,6750.0,3520.0200000000004,0.18,4206.619995
+hybrid_excitation,exp_007_hybrid_excitation,6000.0,3041.2200000000003,0.18,3719.239695
 winding_reconfiguration,exp_008_winding_reconfiguration,6000.0,0.0,0.24,3660.0
 multiphase_phase_group_control,exp_009_multiphase_phase_group,0.0,0.0,0.35,-350.0
