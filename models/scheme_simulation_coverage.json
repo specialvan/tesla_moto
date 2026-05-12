@@ -20,19 +20,19 @@
     },
     {
       "id": "svpwm_overmodulation_voltage_utilization",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_modulation_sweep.py", "tests/test_param_sweep.py"],
-      "result_artifacts": ["experiments/exp_005_modulation_factor/summary.json", "experiments/exp_005_modulation_factor/modulation_sweep_results.csv"],
-      "coverage_note": "EXP-005 sweeps explicit k_mod voltage-utilization factors and applies parametric harmonic-current, torque-ripple, and inverter-loss penalties for overmodulation tradeoff ranking.",
-      "next_simulation_step": "Replace parametric harmonic penalties with PWM waveform reconstruction, device loss maps, and EMI/current-ripple limits."
+      "simulation_status": "needs_next_numeric_model",
+      "pytest_tests": ["tests/test_param_sweep.py"],
+      "result_artifacts": ["experiments/exp_003_param_sweep/summary.json", "experiments/exp_003_param_sweep/param_sweep_results.csv"],
+      "coverage_note": "EXP-003 currently covers Vdc scaling as a proxy for voltage-utilization benefit; it does not yet model THD, ripple, or overmodulation-specific loss.",
+      "next_simulation_step": "Add explicit k_mod axis and harmonic penalty columns to the parameter sweep."
     },
     {
       "id": "nonlinear_flux_lut",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_nonlinear_flux_lut.py", "tests/test_scheme_catalog.py"],
-      "result_artifacts": ["models/flux_lut_sample.json", "experiments/exp_006_nonlinear_flux_lut/summary.json", "experiments/exp_006_nonlinear_flux_lut/nonlinear_flux_lut_results.csv"],
-      "coverage_note": "EXP-006 validates a synthetic lambda_d/lambda_q LUT, bounds checks, bilinear interpolation, and nonlinear dq torque calculation before FEA-derived maps are available.",
-      "next_simulation_step": "Replace synthetic LUT with FEA or dyno-derived lambda_d/lambda_q maps and couple interpolation to voltage/loss/thermal constraints."
+      "simulation_status": "needs_next_numeric_model",
+      "pytest_tests": ["tests/test_scheme_catalog.py"],
+      "result_artifacts": ["reports/scheme_engineering_landing_matrix.md", "reports/scheme_bom_eda_integration_design.md"],
+      "coverage_note": "Schema and engineering landing are planned; no numeric lambda_d/lambda_q LUT interpolation test exists yet.",
+      "next_simulation_step": "Create models/flux_lut_schema.json, a synthetic LUT sample, and tests for interpolation bounds and nonlinear torque."
     },
     {
       "id": "magnetic_saturation_codesign",
@@ -60,27 +60,27 @@
     },
     {
       "id": "hybrid_excitation",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_hybrid_excitation.py", "tests/test_scheme_catalog.py"],
-      "result_artifacts": ["experiments/exp_007_hybrid_excitation/summary.json", "experiments/exp_007_hybrid_excitation/hybrid_excitation_results.csv"],
-      "coverage_note": "EXP-007 sweeps equivalent field current, calculates psi_eff = psi_pm + kf * if, field copper loss, target-speed reachability, and combined-loss tradeoff.",
-      "next_simulation_step": "Add field winding L/R dynamics, exciter/rectifier loss, thermal coupling, and flux saturation maps."
+      "simulation_status": "needs_next_numeric_model",
+      "pytest_tests": ["tests/test_scheme_catalog.py"],
+      "result_artifacts": ["models/scheme_bom_eda_catalog.json", "reports/scheme_bom_eda_integration_design.md"],
+      "coverage_note": "BOM/EDA architecture exists, but no id/iq/if loss optimization exists yet.",
+      "next_simulation_step": "Implement equivalent psi_eff = psi_pm + kf * if model and compare Pcu + Pfield against weak-field baseline."
     },
     {
       "id": "winding_reconfiguration",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_winding_reconfiguration.py", "tests/test_scheme_catalog.py"],
-      "result_artifacts": ["experiments/exp_008_winding_reconfiguration/summary.json", "experiments/exp_008_winding_reconfiguration/winding_reconfiguration_results.csv"],
-      "coverage_note": "EXP-008 maps series/base/parallel winding configurations to Ke/Kt proxy flux, Rs, Ld/Lq, Imax, target-speed reachability, and a transition continuity check.",
-      "next_simulation_step": "Replace scale factors with winding CAD/FEA parameters and add switching transient, contactor/solid-state loss, insulation, and circulating-current models."
+      "simulation_status": "needs_next_numeric_model",
+      "pytest_tests": ["tests/test_scheme_catalog.py"],
+      "result_artifacts": ["models/scheme_bom_eda_catalog.json", "reports/scheme_driver_power_protocol_diagrams.md"],
+      "coverage_note": "Architecture and safety gates exist, but no multi-configuration Ke/Kt sweep exists yet.",
+      "next_simulation_step": "Add winding configuration parameter sets and a switching-point continuity scan."
     },
     {
       "id": "multiphase_phase_group_control",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_multiphase_phase_group.py", "tests/test_scheme_catalog.py"],
-      "result_artifacts": ["experiments/exp_009_multiphase_phase_group/summary.json", "experiments/exp_009_multiphase_phase_group/multiphase_phase_group_results.csv"],
-      "coverage_note": "EXP-009 models healthy/lost phase-group cases, current-sharing imbalance, aggregate current derating, and target-speed reachability under degraded operation.",
-      "next_simulation_step": "Add harmonic-subspace control, open-phase voltage-vector limits, neutral shift, and per-phase thermal RC models."
+      "simulation_status": "needs_next_numeric_model",
+      "pytest_tests": ["tests/test_scheme_catalog.py"],
+      "result_artifacts": ["models/scheme_bom_eda_catalog.json", "reports/scheme_driver_power_protocol_diagrams.md"],
+      "coverage_note": "Architecture verification exists, but no phase-loss torque or current-sharing simulation exists yet.",
+      "next_simulation_step": "Add a phase-group derating model for phase-loss and current-sharing thermal cases."
     },
     {
       "id": "thermal_demag_safety_protection",
@@ -92,11 +92,11 @@
     },
     {
       "id": "weighted_efficiency_pareto_selection",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_weighted_efficiency_pareto.py", "tests/test_scheme_industry_process.py"],
-      "result_artifacts": ["experiments/exp_010_weighted_efficiency_pareto/summary.json", "experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv"],
-      "coverage_note": "EXP-010 applies traceable speed/loss/risk weights to existing experiment outputs and emits a ranked candidate table for Pareto-style scheme selection.",
-      "next_simulation_step": "Replace v0 weights with drive-cycle energy bins, thermal mission profiles, cost/mass constraints, and calibrated safety-case risk factors."
+      "simulation_status": "passed_architecture_verification",
+      "pytest_tests": ["tests/test_scheme_catalog.py", "tests/test_scheme_industry_process.py"],
+      "result_artifacts": ["models/scheme_engineering_catalog.json", "models/scheme_simulation_coverage.json"],
+      "coverage_note": "Decision framework and coverage catalog exist, but weighted drive-cycle scoring is not numeric yet.",
+      "next_simulation_step": "Create drive-cycle weights and score each experiment result with traceable inputs."
     }
   ]
 }
