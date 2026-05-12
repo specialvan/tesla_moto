@@ -43,8 +43,8 @@
 | 原始知识 | `snapshots/wiki/controllable_flux_motor_research_plan.md` | 保存初始研发框架 |
 | 页面证据 | `snapshots/html/controllable_flux_motor_kb.html` | 保存可视化知识库 |
 | 工程落地 | `reports/*.md` | 驱动、BOM、EDA、协议和 stage-gate |
-| 数值闭环 | `experiments/exp_001_*` 到 `experiments/exp_004_*` | 当前分支已落地的可复现实验结果 |
-| 待建模项 | `models/scheme_simulation_coverage.json` | EXP-005 到 EXP-010 的下一步建模缺口 |
+| 数值闭环 | `experiments/exp_001_*` 到 `experiments/exp_010_*` | 当前分支已落地的可复现实验结果 |
+| 成熟度缺口 | `models/scheme_simulation_coverage.json` | 每种方案的后续模型升级方向 |
 
 ## 5. 后续维护
 

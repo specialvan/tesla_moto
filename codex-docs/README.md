@@ -27,22 +27,22 @@
 
 - 当前分支：`codex-review-line`
 - 覆盖目录：`models/scheme_simulation_coverage.json`
-- 当前覆盖状态：6 个 `passed_numeric_simulation`，5 个 `needs_next_numeric_model`，1 个 `passed_architecture_verification`
-- 当前落地实验：EXP-001、EXP-002、EXP-003、EXP-004
+- 当前覆盖状态：12 个 `passed_numeric_simulation`
+- 当前落地实验：EXP-001 到 EXP-010
 - 当前工程文档：`reports/` 下已有工程落地矩阵、驱动/上电/协议图、BOM/EDA、stage-gate 流程
 
 ## 4. 重要边界
 
 当前分支证明的是：
 
-- 已有 V1/V2 初步仿真闭环；
+- 已有 V1/V2 数值仿真闭环；
 - 主线线性 dq、可变磁链、参数族扫描、热/退磁安全边界可复现；
-- 每种方案均有工程落地或下一步数值模型记录；
+- EXP-005 到 EXP-010 已作为 v0 参数化数值模型落地；
+- 每种方案均有工程落地、测试和结果产物记录；
 - wiki/html 证据已快照留痕。
 
 当前分支尚未证明：
 
-- EXP-005 到 EXP-010 已在当前分支全部落地；
 - 电机磁路已通过 FEA；
 - 逆变器、驱动、BOM、EDA 已可直接投板；
 - 热、EMC、绝缘、失效安全已完成车规验证；
