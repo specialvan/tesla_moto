@@ -1,0 +1,133 @@
+{
+  "experiment": "exp_002_variable_flux",
+  "parameter_source": "illustrative_clean_room_baseline",
+  "engineering_validated": false,
+  "model_scope": "quasi_steady_linear_dq_virtual_psi_f_scaling",
+  "model_limitations": [
+    "psi_f scaling does not model magnetization pulse energy",
+    "psi_f scaling does not model irreversible demagnetization",
+    "Ld/Lq are held constant across flux states",
+    "no iron loss or inverter loss",
+    "no thermal derating"
+  ],
+  "base_psi_f_wb": 0.055,
+  "torque_targets_nm": [
+    100.0,
+    80.0,
+    60.0,
+    40.0
+  ],
+  "flux_states": {
+    "psi_100pct": 1.0,
+    "psi_85pct": 0.85,
+    "psi_70pct": 0.7,
+    "psi_55pct": 0.55
+  },
+  "state_summaries_by_torque": {
+    "100.0": {
+      "psi_100pct": {
+        "target_max_speed_rpm": 6750.0,
+        "min_copper_loss_w": 2839.6200000000003,
+        "max_voltage_margin_v": 199.70620747412678,
+        "most_negative_id_a": -202.0
+      },
+      "psi_85pct": {
+        "target_max_speed_rpm": 6000.0,
+        "min_copper_loss_w": 3286.2899999999995,
+        "max_voltage_margin_v": 199.0893794867654,
+        "most_negative_id_a": -180.0
+      },
+      "psi_70pct": {
+        "target_max_speed_rpm": null,
+        "min_copper_loss_w": null,
+        "max_voltage_margin_v": null,
+        "most_negative_id_a": null
+      },
+      "psi_55pct": {
+        "target_max_speed_rpm": null,
+        "min_copper_loss_w": null,
+        "max_voltage_margin_v": null,
+        "most_negative_id_a": null
+      }
+    },
+    "80.0": {
+      "psi_100pct": {
+        "target_max_speed_rpm": 8750.0,
+        "min_copper_loss_w": 2017.0499999999997,
+        "max_voltage_margin_v": 200.9857397747044,
+        "most_negative_id_a": -220.0
+      },
+      "psi_85pct": {
+        "target_max_speed_rpm": 8250.0,
+        "min_copper_loss_w": 2383.2900000000004,
+        "max_voltage_margin_v": 200.38887892834813,
+        "most_negative_id_a": -214.0
+      },
+      "psi_70pct": {
+        "target_max_speed_rpm": 7500.0,
+        "min_copper_loss_w": 2809.379999999999,
+        "max_voltage_margin_v": 199.74966559564368,
+        "most_negative_id_a": -210.0
+      },
+      "psi_55pct": {
+        "target_max_speed_rpm": 6250.0,
+        "min_copper_loss_w": 3312.9600000000005,
+        "max_voltage_margin_v": 199.05391856612505,
+        "most_negative_id_a": -180.0
+      }
+    },
+    "60.0": {
+      "psi_100pct": {
+        "target_max_speed_rpm": 12000.0,
+        "min_copper_loss_w": 1286.2499999999998,
+        "max_voltage_margin_v": 202.36773036339082,
+        "most_negative_id_a": -242.0
+      },
+      "psi_85pct": {
+        "target_max_speed_rpm": 11500.0,
+        "min_copper_loss_w": 1548.33,
+        "max_voltage_margin_v": 201.83546466198706,
+        "most_negative_id_a": -238.0
+      },
+      "psi_70pct": {
+        "target_max_speed_rpm": 10500.0,
+        "min_copper_loss_w": 1869.0000000000002,
+        "max_voltage_margin_v": 201.2423101158257,
+        "most_negative_id_a": -226.0
+      },
+      "psi_55pct": {
+        "target_max_speed_rpm": 9250.0,
+        "min_copper_loss_w": 2263.1700000000005,
+        "max_voltage_margin_v": 200.5792337610745,
+        "most_negative_id_a": -222.0
+      }
+    },
+    "40.0": {
+      "psi_100pct": {
+        "target_max_speed_rpm": 18000.0,
+        "min_copper_loss_w": 643.6500000000001,
+        "max_voltage_margin_v": 203.9707259582787,
+        "most_negative_id_a": -250.0
+      },
+      "psi_85pct": {
+        "target_max_speed_rpm": 17500.0,
+        "min_copper_loss_w": 811.6499999999997,
+        "max_voltage_margin_v": 203.49425821640185,
+        "most_negative_id_a": -240.0
+      },
+      "psi_70pct": {
+        "target_max_speed_rpm": 16250.0,
+        "min_copper_loss_w": 1022.2800000000002,
+        "max_voltage_margin_v": 202.96212311636182,
+        "most_negative_id_a": -250.0
+      },
+      "psi_55pct": {
+        "target_max_speed_rpm": 13750.0,
+        "min_copper_loss_w": 1293.81,
+        "max_voltage_margin_v": 202.351654261372,
+        "most_negative_id_a": -232.0
+      }
+    }
+  },
+  "csv_path": "G:\\tesla_moto\\experiments\\exp_002_variable_flux\\variable_flux_scan.csv"
+}

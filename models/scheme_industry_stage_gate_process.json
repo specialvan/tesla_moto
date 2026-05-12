@@ -1,0 +1,154 @@
+{
+  "version": "2026-05-13-v0",
+  "process_basis": [
+    "automotive V-model engineering",
+    "APQP quality planning and PPAP release evidence",
+    "ISO 26262 style item definition, safety concept, and verification evidence",
+    "ASPICE style requirements-to-test traceability",
+    "DFMEA/PFMEA/DVP&R discipline"
+  ],
+  "common_stage_gates": [
+    {
+      "id": "G0_strategy_and_item_definition",
+      "entry_criteria": ["scheme exists in engineering catalog", "business objective and use case are stated"],
+      "work_products": ["item definition", "stakeholder need", "initial risk and maturity rating", "clean-room boundary statement"],
+      "exit_criteria": ["route owner assigned", "target vehicle operating points identified", "go/no-go hypothesis written"],
+      "review_board": ["systems lead", "motor design lead", "inverter lead", "safety lead"]
+    },
+    {
+      "id": "G1_requirements_and_safety_concept",
+      "entry_criteria": ["G0 approved", "baseline motor and inverter limits available"],
+      "work_products": ["system requirements", "functional safety concept", "preliminary HARA/FMEA notes", "requirements trace matrix"],
+      "exit_criteria": ["requirements are measurable", "safety limits override performance goals", "verification method assigned per requirement"],
+      "review_board": ["systems lead", "functional safety lead", "controls lead", "test lead"]
+    },
+    {
+      "id": "G2_system_architecture_and_trade_study",
+      "entry_criteria": ["requirements baseline exists", "interfaces and constraints are known"],
+      "work_products": ["system architecture", "BOM architecture", "EDA block diagram", "trade study and route scorecard"],
+      "exit_criteria": ["interfaces are allocated", "major hardware variants are identified", "risk items have mitigation owners"],
+      "review_board": ["EE lead", "ME/motor lead", "controls lead", "manufacturing/test lead"]
+    },
+    {
+      "id": "G3_model_simulation_and_controls",
+      "entry_criteria": ["architecture selected", "model inputs versioned"],
+      "work_products": ["simulation model", "control strategy", "calibration data draft", "model verification report"],
+      "exit_criteria": ["simulation reproduces acceptance metrics", "infeasible regions are flagged", "model limitations are documented"],
+      "review_board": ["controls lead", "simulation lead", "systems lead", "safety lead"]
+    },
+    {
+      "id": "G4_bom_eda_schematic_and_dfmea",
+      "entry_criteria": ["simulation gate passed", "BOM classes and EDA pages defined"],
+      "work_products": ["schematic draft", "BOM draft", "DFMEA", "FMEDA/safety mechanism notes", "DVP&R draft"],
+      "exit_criteria": ["schematic review passed", "critical components have alternates or constraints", "DFMEA actions assigned"],
+      "review_board": ["EE lead", "PCB lead", "safety lead", "supply chain", "test lead"]
+    },
+    {
+      "id": "G5_pcb_layout_prototype_and_bringup",
+      "entry_criteria": ["schematic and DFMEA gate passed", "layout constraints released"],
+      "work_products": ["PCB layout", "layout review", "prototype build package", "bring-up checklist", "hardware safety checklist"],
+      "exit_criteria": ["power/ground/isolation review passed", "prototype boots safely", "gate-disable and fault paths verified"],
+      "review_board": ["PCB lead", "power electronics lead", "controls lead", "safety lead"]
+    },
+    {
+      "id": "G6_bench_dv_and_calibration",
+      "entry_criteria": ["prototype bring-up completed", "test fixtures ready"],
+      "work_products": ["bench test report", "DVP&R results", "calibration release candidate", "fault injection evidence"],
+      "exit_criteria": ["DV tests pass or deviations approved", "calibration is traceable", "fault responses match safety concept"],
+      "review_board": ["validation lead", "controls lead", "safety lead", "program lead"]
+    },
+    {
+      "id": "G7_pv_release_and_change_control",
+      "entry_criteria": ["DV passed", "manufacturing process and supplier data available"],
+      "work_products": ["PV plan/results", "control plan", "PPAP evidence pack", "release notes", "change control baseline"],
+      "exit_criteria": ["PV/PPAP evidence complete for intended maturity", "open risks dispositioned", "change control active"],
+      "review_board": ["quality lead", "manufacturing lead", "safety lead", "program lead"]
+    }
+  ],
+  "scheme_overlays": {
+    "negative_d_axis_field_weakening": {
+      "primary_risk": "Demagnetization or voltage saturation caused by aggressive negative id commands.",
+      "mandatory_work_products": ["id_min(T) requirement", "Vdc_min sweep", "demag DFMEA line item", "bench weak-field DVP&R"],
+      "eda_focus": ["current sensing accuracy", "Vdc sensing and gate-disable path", "temperature input for id_min(T)"],
+      "bom_focus": ["phase current sensors", "Vdc divider/isolation", "magnet/winding temperature sensors"],
+      "next_design_actions": ["add demag limit schema", "run hot/low-Vdc scan", "define bench weak-field enable interlock"]
+    },
+    "mtpa_fw_mtpv_control": {
+      "primary_risk": "LUT discontinuity or infeasible operating-point interpolation creates torque step.",
+      "mandatory_work_products": ["control LUT schema", "requirements-to-LUT trace", "trajectory continuity report", "calibration release checklist"],
+      "eda_focus": ["MCU memory and compute margin", "synchronized ADC sampling", "calibration storage and CRC"],
+      "bom_focus": ["MCU/NVM capacity", "position sensor", "current sensors"],
+      "next_design_actions": ["unify search interfaces", "generate infeasible-region map", "define LUT CRC and version format"]
+    },
+    "svpwm_overmodulation_voltage_utilization": {
+      "primary_risk": "Overmodulation improves voltage margin but creates unacceptable current distortion or NVH.",
+      "mandatory_work_products": ["modulation mode requirement", "THD/NVH risk assessment", "gate-driver timing review", "DVP&R overmodulation tests"],
+      "eda_focus": ["gate-driver timing", "DC-link ripple path", "current sensor bandwidth"],
+      "bom_focus": ["gate drivers", "DC-link capacitors", "EMI filter components"],
+      "next_design_actions": ["run k_mod sweep", "define overmod enable gate", "add THD/ripple measurement plan"]
+    },
+    "nonlinear_flux_lut": {
+      "primary_risk": "Flux map unit mismatch or extrapolation produces unsafe torque and voltage estimates.",
+      "mandatory_work_products": ["flux LUT schema", "unit convention declaration", "bounds handling test", "FEA import validation report"],
+      "eda_focus": ["calibration memory", "temperature sensing", "diagnostic reporting"],
+      "bom_focus": ["NVM/external flash", "temperature sensors", "debug/calibration connector"],
+      "next_design_actions": ["create LUT schema", "write interpolator tests", "define FEA-to-calibration converter"]
+    },
+    "magnetic_saturation_codesign": {
+      "primary_risk": "FEA candidate improves one metric but fails strength, demag, loss, or manufacturability.",
+      "mandatory_work_products": ["candidate scorecard", "FEA LUT export", "rotor stress review", "demag review"],
+      "eda_focus": ["candidate identification", "extra instrumentation harness", "logging bandwidth"],
+      "bom_focus": ["candidate motor sample", "temperature harness", "bench logging hardware"],
+      "next_design_actions": ["define FEA sweep matrix", "define candidate calibration ID", "prepare scorecard template"]
+    },
+    "pmasynrm_high_saliency_low_pm": {
+      "primary_risk": "Low PM flux reduces Ke but sacrifices launch torque or causes torque ripple.",
+      "mandatory_work_products": ["PM fraction trade study", "saliency FEA report", "torque ripple review", "NVH screening plan"],
+      "eda_focus": ["position sensing accuracy", "ripple measurement interface", "candidate calibration storage"],
+      "bom_focus": ["PMaSynRM prototype", "high-resolution position sensor", "NVH instrumentation"],
+      "next_design_actions": ["run PM fraction sweep", "define ripple limit", "map reluctance torque contribution"]
+    },
+    "variable_magnetization_memory_motor": {
+      "primary_risk": "Flux state is unknown or pulse energy overstresses inverter and magnet.",
+      "mandatory_work_products": ["psi_f state model", "state observability concept", "pulse energy analysis", "state mismatch fault table"],
+      "eda_focus": ["pulse permission interlock", "pulse current measurement", "flux-state observer path"],
+      "bom_focus": ["pulse-capable inverter margin", "DC-link pulse margin", "magnet temperature sensing"],
+      "next_design_actions": ["complete multi-state simulation", "define pulse safe window", "define unknown-state derate"]
+    },
+    "hybrid_excitation": {
+      "primary_risk": "Field winding loss and heat exceed the weak-field benefit.",
+      "mandatory_work_products": ["field converter requirements", "id/iq/if optimizer", "field thermal model", "loss-of-field fault analysis"],
+      "eda_focus": ["field converter", "field current loop", "field fault isolation"],
+      "bom_focus": ["field winding converter", "field current sensor", "field connector and temperature sensor"],
+      "next_design_actions": ["build equivalent if model", "compare total losses", "draft field converter schematic page"]
+    },
+    "winding_reconfiguration": {
+      "primary_risk": "High-current switching transient, illegal configuration, or isolation failure.",
+      "mandatory_work_products": ["multi-configuration model", "switching point analysis", "switch matrix DFMEA", "isolation/continuity test plan"],
+      "eda_focus": ["switch matrix interlock", "configuration feedback", "isolation monitoring"],
+      "bom_focus": ["high-current switch matrix", "isolated switch drivers", "fault-rated connectors"],
+      "next_design_actions": ["define legal configurations", "model switching transitions", "draft hardware interlock logic"]
+    },
+    "multiphase_phase_group_control": {
+      "primary_risk": "Added phase-group complexity is not justified by fault-tolerance or thermal benefit.",
+      "mandatory_work_products": ["phase allocation architecture", "fault-tolerant torque analysis", "PWM/ADC resource budget", "phase-loss DVP&R"],
+      "eda_focus": ["multi-channel gate drive", "phase-group current acquisition", "fault-domain separation"],
+      "bom_focus": ["additional inverter channels", "multi-channel current sensors", "expanded MCU/FPGA"],
+      "next_design_actions": ["define phase count use case", "run phase-loss torque scan", "budget MCU resources"]
+    },
+    "thermal_demag_safety_protection": {
+      "primary_risk": "Optimization commands exceed thermal, demag, voltage, or current safety limits.",
+      "mandatory_work_products": ["safety concept", "thermal/demag limit model", "fault injection test plan", "gate-disable verification"],
+      "eda_focus": ["safety supervisor", "watchdog and fault latch", "hardware gate disable"],
+      "bom_focus": ["temperature sensors", "watchdog/supervisor", "fault logging memory"],
+      "next_design_actions": ["define safety limit hierarchy", "add id_min(T)", "write DVP&R fault cases"]
+    },
+    "weighted_efficiency_pareto_selection": {
+      "primary_risk": "A route is promoted based on a single metric rather than traceable system evidence.",
+      "mandatory_work_products": ["drive-cycle weights", "scheme scorecard", "Pareto report", "change-control baseline"],
+      "eda_focus": ["logging interface", "route ID/version storage", "calibration CRC"],
+      "bom_focus": ["data logger", "communications transceiver", "calibration memory"],
+      "next_design_actions": ["define scorecard fields", "link results to catalog", "set promotion review cadence"]
+    }
+  }
+}

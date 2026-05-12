@@ -1,0 +1,478 @@
+{
+  "version": "2026-05-13-v1",
+  "purpose": "Engineering landing catalog for controllable flux motor routes. Every scheme must have model artifacts, experiments, acceptance criteria, stage gates, and deliverables before it can be treated as actionable.",
+  "schemes": [
+    {
+      "id": "negative_d_axis_field_weakening",
+      "name": "负 d 轴弱磁",
+      "route_class": "control_equivalent_flux",
+      "maturity": "short_term_mainline",
+      "engineering_goal": "Use negative d-axis current to reduce synthetic d-axis flux and keep high-speed voltage within the inverter limit while preserving target torque where possible.",
+      "modeling_artifacts": [
+        "sim/dq_model.py quasi-steady voltage and torque equations",
+        "sim/search.py constrained id/iq grid search",
+        "future demagnetization id_min(T) constraint"
+      ],
+      "required_inputs": [
+        "Rs/Ld/Lq/psi_f/pole_pairs",
+        "Vdc and Vdc_min",
+        "Imax phase peak current",
+        "temperature-dependent demagnetization limit"
+      ],
+      "experiments": [
+        "EXP-001 target torque speed sweep",
+        "EXP-002 negative id boundary scan",
+        "low Vdc high-speed feasibility scan"
+      ],
+      "acceptance_criteria": [
+        "target torque feasible with V_margin >= 0 at required speed",
+        "id command remains above id_min(T)",
+        "weighted efficiency is not worse than baseline"
+      ],
+      "failure_modes": [
+        "negative id exceeds demagnetization boundary",
+        "copper loss consumes the speed-extension benefit",
+        "low Vdc high-speed point has negative voltage margin"
+      ],
+      "stage_gate": "Proceed to bench only after Vdc_min, Tmax, and id_min(T) scans all keep positive safety margin.",
+      "deliverables": [
+        "experiments/exp_001_linear_dq/scan_results.csv",
+        "reports/field_weakening_boundary.md",
+        "models/demag_limit_schema.json"
+      ]
+    },
+    {
+      "id": "mtpa_fw_mtpv_control",
+      "name": "MTPA/FW/MTPV 连续控制",
+      "route_class": "control_trajectory",
+      "maturity": "short_term_mainline",
+      "engineering_goal": "Generate continuous id/iq reference trajectories across low-speed MTPA, high-speed field weakening, and voltage-limited MTPV regions.",
+      "modeling_artifacts": [
+        "sim/search.py minimum-current and maximum-feasible-torque search",
+        "future control_lut_schema.json",
+        "trajectory continuity checker"
+      ],
+      "required_inputs": [
+        "motor parameter set",
+        "speed and torque grid",
+        "Vdc grid",
+        "temperature grid"
+      ],
+      "experiments": [
+        "MTPA low-speed target torque scan",
+        "FW transition speed scan",
+        "MTPV maximum torque speed scan",
+        "Vdc disturbance derating scan"
+      ],
+      "acceptance_criteria": [
+        "trajectory has no infeasible unmarked points",
+        "mode transitions have bounded id/iq slope",
+        "torque discontinuity at transitions remains inside calibration limit"
+      ],
+      "failure_modes": [
+        "lookup table discontinuity causes torque step",
+        "voltage loop saturates during Vdc drop",
+        "LUT extrapolates into unverified current region"
+      ],
+      "stage_gate": "Proceed when LUT generation, infeasible-region marking, and derating policy are all reproducible from scripts.",
+      "deliverables": [
+        "models/control_lut_schema.json",
+        "reports/control_trajectory_continuity.md",
+        "experiments/exp_003_param_sweep/summary.json"
+      ]
+    },
+    {
+      "id": "svpwm_overmodulation_voltage_utilization",
+      "name": "SVPWM / 过调制 / 六步波电压利用率提升",
+      "route_class": "inverter_voltage_utilization",
+      "maturity": "short_term_enhancement",
+      "engineering_goal": "Increase usable fundamental voltage from the same DC bus to reduce weak-field current demand and extend high-speed operation.",
+      "modeling_artifacts": [
+        "Vmax factor parameter in motor model",
+        "modulation-mode sweep script",
+        "future harmonic loss estimator"
+      ],
+      "required_inputs": [
+        "Vdc operating range",
+        "linear SVPWM voltage limit",
+        "overmodulation voltage factor candidates",
+        "allowed current THD or torque ripple limit"
+      ],
+      "experiments": [
+        "k_mod sweep against target torque max speed",
+        "negative id reduction comparison",
+        "harmonic loss and torque ripple pre-estimate"
+      ],
+      "acceptance_criteria": [
+        "k_mod increase reduces required negative id at target speed",
+        "additional harmonic/ripple penalty stays below limit",
+        "strategy is only enabled inside documented speed/load region"
+      ],
+      "failure_modes": [
+        "higher voltage utilization increases NVH beyond limit",
+        "current distortion breaks torque tracking",
+        "benefit appears only at non-operational extreme speed"
+      ],
+      "stage_gate": "Proceed to controller implementation only after modulation sweep shows net weighted-efficiency gain.",
+      "deliverables": [
+        "reports/modulation_voltage_utilization_scan.md",
+        "experiments/exp_004_modulation_factor/results.csv",
+        "models/modulation_strategy_limits.json"
+      ]
+    },
+    {
+      "id": "nonlinear_flux_lut",
+      "name": "非线性磁链表",
+      "route_class": "magnetic_data_model",
+      "maturity": "short_mid_term_mainline",
+      "engineering_goal": "Replace fixed Ld/Lq assumptions with lambda_d/lambda_q surfaces so control trajectories reflect saturation and cross-saturation.",
+      "modeling_artifacts": [
+        "models/flux_lut_schema.json",
+        "future sim/flux_lut.py interpolator",
+        "nonlinear torque equation Te = 1.5 p (lambda_d iq - lambda_q id)"
+      ],
+      "required_inputs": [
+        "id and iq axes with units",
+        "temperature axis",
+        "lambda_d table",
+        "lambda_q table",
+        "valid interpolation bounds"
+      ],
+      "experiments": [
+        "synthetic physical LUT interface test",
+        "linear model versus LUT torque error scan",
+        "MTPA/MTPV regeneration from LUT"
+      ],
+      "acceptance_criteria": [
+        "table dimensions match declared axes",
+        "interpolator refuses out-of-bound extrapolation",
+        "control trajectory changes are traceable to LUT data"
+      ],
+      "failure_modes": [
+        "dq convention mismatch between FEA and controller",
+        "RMS and peak current are mixed",
+        "out-of-range lookup silently returns unsafe value"
+      ],
+      "stage_gate": "Proceed to FEA integration after schema, interpolation, and out-of-bound behavior are fully tested.",
+      "deliverables": [
+        "models/flux_lut_schema.json",
+        "models/flux_lut_sample.json",
+        "reports/nonlinear_flux_lut_review.md"
+      ]
+    },
+    {
+      "id": "magnetic_saturation_codesign",
+      "name": "磁路饱和协同设计",
+      "route_class": "electromagnetic_codesign",
+      "maturity": "mid_term_breakthrough",
+      "engineering_goal": "Tune rotor barriers, bridges, PM placement, and saliency so current commands produce useful flux weakening and MTPV behavior.",
+      "modeling_artifacts": [
+        "FEA candidate parameter set",
+        "lambda_d/lambda_q map exported per candidate",
+        "candidate scorecard"
+      ],
+      "required_inputs": [
+        "rotor geometry variables",
+        "magnet material and demag curve",
+        "mechanical speed limit",
+        "FEA mesh and material settings"
+      ],
+      "experiments": [
+        "candidate topology FEA sweep",
+        "Ld/Lq and Ke comparison",
+        "FEA LUT backfeed into control search",
+        "rotor stress and demag screening"
+      ],
+      "acceptance_criteria": [
+        "candidate improves target speed or weighted efficiency versus baseline",
+        "rotor stress margin passes max speed requirement",
+        "demagnetization margin passes high-temperature negative-id case"
+      ],
+      "failure_modes": [
+        "high saliency creates excessive torque ripple",
+        "weak-field gain is lost to iron loss",
+        "rotor bridge cannot meet mechanical strength"
+      ],
+      "stage_gate": "Proceed to detailed electromagnetic design only after FEA-derived LUT improves the control scorecard.",
+      "deliverables": [
+        "em_design/candidates/candidate_scorecard.md",
+        "models/flux_lut_candidate_*.json",
+        "reports/em_codesign_review.md"
+      ]
+    },
+    {
+      "id": "pmasynrm_high_saliency_low_pm",
+      "name": "PMaSynRM / 高凸极低永磁占比",
+      "route_class": "electromagnetic_topology",
+      "maturity": "mid_term_candidate",
+      "engineering_goal": "Reduce PM flux and high-speed Ke pressure while recovering torque through reluctance torque and high saliency.",
+      "modeling_artifacts": [
+        "PM fraction sweep",
+        "saliency ratio sweep",
+        "torque-speed envelope comparison"
+      ],
+      "required_inputs": [
+        "PM volume fraction candidates",
+        "rotor barrier topology",
+        "current limit",
+        "torque ripple and NVH limit"
+      ],
+      "experiments": [
+        "PM fraction versus low-speed torque scan",
+        "saliency ratio versus CPSR scan",
+        "torque ripple screening"
+      ],
+      "acceptance_criteria": [
+        "low-speed peak torque remains above target",
+        "high-speed voltage margin improves versus IPMSM baseline",
+        "torque ripple remains inside NVH screening limit"
+      ],
+      "failure_modes": [
+        "low Ke sacrifices too much launch torque",
+        "reluctance torque requires excessive current",
+        "rotor barrier geometry fails stress screen"
+      ],
+      "stage_gate": "Proceed when PM reduction gives net high-speed gain without violating low-speed torque and NVH constraints.",
+      "deliverables": [
+        "reports/pmasynrm_candidate_review.md",
+        "em_design/pmasynrm_sweep/results.csv",
+        "models/pmasynrm_candidate_params.json"
+      ]
+    },
+    {
+      "id": "variable_magnetization_memory_motor",
+      "name": "可变磁化状态 / Memory Motor",
+      "route_class": "true_variable_flux",
+      "maturity": "long_term_research",
+      "engineering_goal": "Evaluate whether discrete PM flux states can reduce high-speed voltage demand without unacceptable switching, observability, or demag risk.",
+      "modeling_artifacts": [
+        "sim/variable_flux.py psi_f scaling helper",
+        "multi-state psi_f experiment",
+        "future magnetization pulse energy model"
+      ],
+      "required_inputs": [
+        "psi_f state values",
+        "state transition assumptions",
+        "magnet thermal stability data",
+        "state observability hypothesis"
+      ],
+      "experiments": [
+        "high/mid/low psi_f torque-speed map comparison",
+        "state transition benefit threshold scan",
+        "state mismatch fault table"
+      ],
+      "acceptance_criteria": [
+        "low-flux state improves high-speed weighted efficiency",
+        "high-flux state still satisfies low-speed torque target",
+        "unknown state has conservative derating path"
+      ],
+      "failure_modes": [
+        "magnetization state cannot be observed reliably",
+        "pulse current exceeds inverter or DC-link capability",
+        "partial irreversible demag causes permanent torque ripple"
+      ],
+      "stage_gate": "Stay in simulation until state observability and pulse energy have credible engineering paths.",
+      "deliverables": [
+        "experiments/exp_002_variable_flux/results.json",
+        "reports/variable_magnetization_business_case.md",
+        "models/psi_f_state_schema.json"
+      ]
+    },
+    {
+      "id": "hybrid_excitation",
+      "name": "混合励磁",
+      "route_class": "true_variable_flux",
+      "maturity": "long_term_research",
+      "engineering_goal": "Assess whether field winding control can reduce total high-speed losses after accounting for excitation copper loss and thermal burden.",
+      "modeling_artifacts": [
+        "equivalent psi_eff = psi_pm + kf * if model",
+        "field winding loss model",
+        "three-variable id/iq/if optimizer"
+      ],
+      "required_inputs": [
+        "field winding resistance and inductance",
+        "field current limit",
+        "kf excitation constant",
+        "field winding thermal path"
+      ],
+      "experiments": [
+        "if sweep versus V_margin and torque",
+        "Pcu + Pfield + inverter loss comparison",
+        "loss of excitation fault scan"
+      ],
+      "acceptance_criteria": [
+        "field excitation saves more loss than it adds",
+        "field winding temperature remains below limit",
+        "loss of excitation has safe derating behavior"
+      ],
+      "failure_modes": [
+        "field copper loss cancels weak-field savings",
+        "field winding overheats",
+        "over-excitation or loss-of-excitation fault creates unsafe torque"
+      ],
+      "stage_gate": "Proceed only if total-loss scorecard beats control-only weak-field route under weighted drive cycle.",
+      "deliverables": [
+        "models/hybrid_excitation_params.json",
+        "experiments/exp_008_hybrid_excitation/results.csv",
+        "reports/hybrid_excitation_review.md"
+      ]
+    },
+    {
+      "id": "winding_reconfiguration",
+      "name": "绕组重构",
+      "route_class": "true_ke_reconfiguration",
+      "maturity": "long_term_research",
+      "engineering_goal": "Compare multiple winding configurations that trade low-speed torque constant for lower high-speed Ke and voltage demand.",
+      "modeling_artifacts": [
+        "multi-configuration motor parameter set",
+        "configuration-specific torque-speed sweeps",
+        "switching point continuity checker"
+      ],
+      "required_inputs": [
+        "Ke/Kt per winding configuration",
+        "Rs/Ld/Lq per configuration",
+        "switching hardware current and voltage limits",
+        "default safe configuration"
+      ],
+      "experiments": [
+        "low-speed and high-speed configuration envelope comparison",
+        "switching point scan",
+        "open/short/stuck-switch fault analysis"
+      ],
+      "acceptance_criteria": [
+        "configuration switch improves weighted envelope versus single winding",
+        "switching point has bounded torque and current transient",
+        "fault default state is safe"
+      ],
+      "failure_modes": [
+        "high-current switching network is too costly or lossy",
+        "switching transient causes torque shock",
+        "EMI or insulation stress exceeds design limit"
+      ],
+      "stage_gate": "Proceed only if multi-configuration scorecard shows large benefit that justifies switching hardware.",
+      "deliverables": [
+        "models/winding_configurations.json",
+        "reports/winding_reconfiguration_switching_review.md",
+        "experiments/exp_009_winding_reconfiguration/results.csv"
+      ]
+    },
+    {
+      "id": "multiphase_phase_group_control",
+      "name": "多相电机 / 相组控制",
+      "route_class": "architecture_and_fault_tolerance",
+      "maturity": "long_term_research",
+      "engineering_goal": "Determine whether additional phase groups add clear value through fault tolerance, current distribution, harmonic control, or effective field shaping.",
+      "modeling_artifacts": [
+        "phase-group equivalent model",
+        "fault-tolerant torque model",
+        "harmonic subspace benefit estimate"
+      ],
+      "required_inputs": [
+        "phase count and winding layout",
+        "inverter channel count",
+        "fault cases",
+        "allowed cost and package increase"
+      ],
+      "experiments": [
+        "phase-loss torque capability scan",
+        "current sharing thermal scan",
+        "harmonic injection torque ripple scan"
+      ],
+      "acceptance_criteria": [
+        "fault-tolerant torque target is met",
+        "thermal or ripple benefit justifies added inverter channels",
+        "control complexity remains bounded by documented modes"
+      ],
+      "failure_modes": [
+        "cost and inverter complexity exceed value",
+        "parameter identification becomes unmanageable",
+        "fault modes multiply without safe coverage"
+      ],
+      "stage_gate": "Proceed only if product requirements explicitly value fault tolerance or phase-group control benefits.",
+      "deliverables": [
+        "reports/multiphase_value_assessment.md",
+        "models/multiphase_equivalent_params.json",
+        "experiments/exp_010_multiphase_fault/results.csv"
+      ]
+    },
+    {
+      "id": "thermal_demag_safety_protection",
+      "name": "温度、退磁和安全保护",
+      "route_class": "safety_and_derating",
+      "maturity": "mandatory_crosscutting",
+      "engineering_goal": "Add safety constraints that prevent optimization routines from commanding thermally unsafe, demagnetizing, over-voltage, or over-current operating points.",
+      "modeling_artifacts": [
+        "Rs(T) and psi_f(T) model",
+        "id_min(T) demag limit table",
+        "thermal derating model"
+      ],
+      "required_inputs": [
+        "winding temperature estimate",
+        "magnet temperature estimate",
+        "demag curve or conservative id_min table",
+        "inverter current and voltage limits"
+      ],
+      "experiments": [
+        "hot motor weak-field scan",
+        "low Vdc high-speed protection scan",
+        "sensor error derating scan",
+        "short-circuit boundary study"
+      ],
+      "acceptance_criteria": [
+        "all optimization candidates respect id_min(T)",
+        "thermal derating prevents continuous over-temperature",
+        "fault scans choose protection over torque tracking"
+      ],
+      "failure_modes": [
+        "efficiency optimization overrides safety limit",
+        "temperature estimate lag permits demag command",
+        "low Vdc high-speed point saturates without derating"
+      ],
+      "stage_gate": "No route may move toward bench or high-voltage testing without this protection layer.",
+      "deliverables": [
+        "models/thermal_demag_limits.json",
+        "reports/safety_derating_review.md",
+        "experiments/exp_011_safety_boundaries/results.csv"
+      ]
+    },
+    {
+      "id": "weighted_efficiency_pareto_selection",
+      "name": "工况加权效率和 Pareto 选择",
+      "route_class": "decision_framework",
+      "maturity": "mandatory_crosscutting",
+      "engineering_goal": "Convert per-route simulation outputs into comparable drive-cycle weighted efficiency, risk, and complexity decisions.",
+      "modeling_artifacts": [
+        "drive-cycle operating point set",
+        "weighted scorecard",
+        "Pareto frontier report"
+      ],
+      "required_inputs": [
+        "operating point weights",
+        "torque and speed distribution",
+        "loss model outputs",
+        "route complexity and risk ratings"
+      ],
+      "experiments": [
+        "weighted efficiency comparison across schemes",
+        "Pareto frontier generation",
+        "sensitivity scan for drive-cycle weights"
+      ],
+      "acceptance_criteria": [
+        "every scheme score traces back to a result file",
+        "decision table includes efficiency, risk, cost, and maturity",
+        "route recommendation is stable under reasonable weight perturbation"
+      ],
+      "failure_modes": [
+        "single high-speed metric dominates real-use efficiency",
+        "risk and maturity are excluded from decision",
+        "scores cannot be traced to simulation data"
+      ],
+      "stage_gate": "Use this scorecard before promoting any route from research to engineering candidate.",
+      "deliverables": [
+        "reports/v2_scheme_scorecard.md",
+        "models/drive_cycle_weights.json",
+        "reports/pareto_route_selection.md"
+      ]
+    }
+  ]
+}

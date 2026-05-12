@@ -1,0 +1,32 @@
+{
+  "params_name": "baseline_ipmsm_v1",
+  "parameter_source": "illustrative_clean_room_baseline",
+  "engineering_validated": false,
+  "model_scope": "quasi_steady_linear_dq_grid_search",
+  "model_limitations": [
+    "no_current_loop_dynamics",
+    "no_nonlinear_flux_lut",
+    "no_iron_loss",
+    "no_inverter_voltage_drop",
+    "no_temperature_derating",
+    "no_demagnetization_boundary"
+  ],
+  "target_torque_nm": 100.0,
+  "temperature_c": 25.0,
+  "vdc_v": 360.0,
+  "vmax_v": 207.8460969082653,
+  "imax_a": 260.0,
+  "scan_step_rpm": 250.0,
+  "max_speed_configured_rpm": 18000.0,
+  "max_speed_scanned_rpm": 18000.0,
+  "id_zero_target_max_speed_rpm": null,
+  "min_current_target_max_speed_rpm": 6750.0,
+  "max_feasible_positive_torque_max_speed_rpm": 18000.0,
+  "csv_path": "G:\\tesla_moto\\experiments\\exp_001_linear_dq\\scan_results.csv",
+  "notes": [
+    "v1 uses quasi-steady linear dq equations and grid search.",
+    "Results are illustrative until parameters are replaced by measured or FEA-derived values.",
+    "min_current_target means minimum-current feasible grid point for target torque under voltage/current constraints.",
+    "max_feasible_torque means maximum feasible torque under voltage/current constraints at each speed."
+  ]
+}

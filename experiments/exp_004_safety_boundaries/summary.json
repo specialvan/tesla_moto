@@ -1,0 +1,36 @@
+{
+  "experiment": "exp_004_safety_boundaries",
+  "model_scope": "temperature_corrected_linear_dq_with_simplified_demag_limit",
+  "engineering_validated": false,
+  "thermal_model": {
+    "reference_c": 25.0,
+    "copper_alpha_per_c": 0.0039,
+    "pm_alpha_per_c": -0.001
+  },
+  "demag_limit_points": [
+    [
+      25.0,
+      -240.0
+    ],
+    [
+      100.0,
+      -210.0
+    ],
+    [
+      140.0,
+      -180.0
+    ]
+  ],
+  "case_count": 6,
+  "worst_case": {
+    "case_id": "baseline_ipmsm_v1_T140_V0.85",
+    "temperature_c": 140.0,
+    "vdc_scale": 0.85,
+    "rs_ohm": 0.0506975,
+    "psi_f_wb": 0.048675,
+    "id_min_allowed_a": -180.0,
+    "unconstrained_target_max_speed_rpm": 5000.0,
+    "demag_limited_target_max_speed_rpm": 5000.0
+  },
+  "csv_path": "G:\\tesla_moto\\experiments\\exp_004_safety_boundaries\\safety_boundary_results.csv"
+}

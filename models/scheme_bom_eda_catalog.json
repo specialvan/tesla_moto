@@ -1,0 +1,114 @@
+{
+  "version": "2026-05-13-v0",
+  "scope": "Architecture-level BOM and EDA integration planning for each controllable-flux route. Specific manufacturer part numbers are intentionally deferred until voltage, current, package, cooling, ASIL, and cost targets are frozen.",
+  "schemes": [
+    {
+      "id": "negative_d_axis_field_weakening",
+      "bom_groups": ["traction inverter power stage", "MCU/control board", "current and Vdc sensing", "resolver/encoder interface", "gate driver and isolated supplies", "thermal sensors"],
+      "eda_blocks": ["three-phase inverter schematic", "FOC MCU + ADC sampling", "isolated gate-driver power", "current/Vdc sensing front end"],
+      "interfaces": ["CAN/CAN-FD torque command", "resolver/SPI encoder feedback", "XCP calibration"],
+      "protections": ["desaturation/overcurrent", "Vdc undervoltage/overvoltage", "id_min(T) demag limit", "gate-driver fault latch"],
+      "pcb_integration_notes": ["separate high-current power loop from analog sensing", "Kelvin source/emitter routing for phase current measurement", "creepage/clearance based on final DC bus"],
+      "design_status": "v1_schematic_planning"
+    },
+    {
+      "id": "mtpa_fw_mtpv_control",
+      "bom_groups": ["traction inverter", "MCU with sufficient flash for LUT", "current sensors", "position sensor", "NVM/calibration memory", "communications transceiver"],
+      "eda_blocks": ["control MCU", "calibration storage", "phase current acquisition", "position interface", "PWM/gate-driver interface"],
+      "interfaces": ["CAN/CAN-FD torque and status", "XCP/UDS calibration and diagnostics", "PWM to gate drivers"],
+      "protections": ["LUT CRC and bounds check", "watchdog reset", "torque command plausibility", "voltage saturation derate"],
+      "pcb_integration_notes": ["reserve flash/NVM margin for multi-dimensional LUT", "route encoder/resolver away from phase switch nodes", "synchronize ADC trigger with PWM carrier"],
+      "design_status": "v1_schematic_planning"
+    },
+    {
+      "id": "svpwm_overmodulation_voltage_utilization",
+      "bom_groups": ["high-speed gate drivers", "power switches", "DC-link capacitors", "phase current sensors with bandwidth margin", "EMI filter components", "Vdc sensing"],
+      "eda_blocks": ["PWM/gate-drive timing block", "DC-link snubber and capacitor bank", "phase current anti-alias filters", "EMI/CM choke interface"],
+      "interfaces": ["MCU PWM outputs", "gate-driver SPI/status", "CAN calibration for modulation mode"],
+      "protections": ["shoot-through prevention", "dead-time monitoring", "overmodulation enable gate", "current THD/NVH fault flag"],
+      "pcb_integration_notes": ["minimize half-bridge commutation loop", "size DC-link ripple current path", "keep current sensor bandwidth compatible with overmodulation harmonics"],
+      "design_status": "v1_schematic_planning"
+    },
+    {
+      "id": "nonlinear_flux_lut",
+      "bom_groups": ["MCU memory resources", "calibration storage", "temperature sensing", "current sensing", "communications/debug interface", "optional external flash"],
+      "eda_blocks": ["NVM or external flash interface", "temperature sensor acquisition", "current/voltage acquisition", "MCU diagnostics and calibration port"],
+      "interfaces": ["XCP calibration", "UDS data download", "CAN status", "optional SPI/QSPI external memory"],
+      "protections": ["LUT dimension/CRC check", "out-of-bounds lockout", "temperature sensor plausibility", "fallback linear model"],
+      "pcb_integration_notes": ["reserve deterministic memory bandwidth for runtime interpolation", "keep external memory traces length matched if QSPI is used", "protect calibration port from ESD"],
+      "design_status": "v0_architecture"
+    },
+    {
+      "id": "magnetic_saturation_codesign",
+      "bom_groups": ["candidate motor terminals", "traction inverter", "instrumentation current probes", "temperature sensor harness", "high-speed rotor validation sensors", "bench data logger"],
+      "eda_blocks": ["candidate calibration ID circuit", "temperature harness input", "high-speed logging interface", "inverter power stage reuse"],
+      "interfaces": ["bench CAN logging", "XCP measurement", "FEA-to-calibration data import"],
+      "protections": ["candidate speed cap", "candidate current cap", "rotor temperature alarm", "demag screening limit"],
+      "pcb_integration_notes": ["design calibration variant ID pins or EEPROM", "reserve sensor harness pins for candidate comparisons", "do not change power stage before FEA candidate is selected"],
+      "design_status": "requires_hardware_trade_study"
+    },
+    {
+      "id": "pmasynrm_high_saliency_low_pm",
+      "bom_groups": ["PMaSynRM motor prototype", "traction inverter", "high-resolution position sensor", "phase current sensors", "NVH/ripple instrumentation", "thermal harness"],
+      "eda_blocks": ["saliency-aware control MCU", "position interface", "phase current acquisition", "NVH/ripple measurement interface"],
+      "interfaces": ["CAN/CAN-FD control", "XCP calibration", "encoder/resolver feedback", "bench vibration logger"],
+      "protections": ["torque ripple derate", "high-speed rotor cap", "overcurrent", "temperature derate"],
+      "pcb_integration_notes": ["keep position feedback jitter low because saliency control is angle-sensitive", "reserve logger interface for torque ripple correlation", "support candidate-specific calibration storage"],
+      "design_status": "requires_hardware_trade_study"
+    },
+    {
+      "id": "variable_magnetization_memory_motor",
+      "bom_groups": ["traction inverter with pulse capability", "DC-link capacitor with pulse margin", "current sensors with pulse range", "flux-state observer sensors", "magnet temperature sensors", "gate drivers with fault telemetry"],
+      "eda_blocks": ["magnetization pulse command path", "pulse current measurement", "flux-state observer acquisition", "safe-state derate supervisor"],
+      "interfaces": ["VCU permission for pulse mode", "CAN state/confidence report", "XCP pulse calibration", "gate-driver fault status"],
+      "protections": ["pulse energy limit", "state-unknown derate", "overcurrent/desaturation", "magnet temperature lockout"],
+      "pcb_integration_notes": ["size DC-link and current measurement for pulse events", "separate pulse permission hardware interlock from software command", "log pulse event waveforms for post-analysis"],
+      "design_status": "requires_hardware_trade_study"
+    },
+    {
+      "id": "hybrid_excitation",
+      "bom_groups": ["main traction inverter", "field winding DC/DC or chopper", "field current sensor", "field winding connector", "field temperature sensor", "isolation/auxiliary supply"],
+      "eda_blocks": ["main inverter", "field excitation converter", "field current loop", "field fault detection", "shared MCU optimizer"],
+      "interfaces": ["CAN torque request", "field current PWM/control", "field fault telemetry", "XCP id/iq/if calibration"],
+      "protections": ["field overcurrent", "loss-of-field derate", "field winding overtemperature", "main inverter overcurrent"],
+      "pcb_integration_notes": ["physically separate field converter heat from logic/analog sections", "route field winding connector with clear fault isolation", "measure field current independently from phase current"],
+      "design_status": "requires_hardware_trade_study"
+    },
+    {
+      "id": "winding_reconfiguration",
+      "bom_groups": ["high-current switch matrix", "traction inverter", "winding configuration sense circuit", "isolation monitor", "precharge/contactor", "fault-rated connectors"],
+      "eda_blocks": ["switch matrix driver", "configuration feedback sensing", "interlock logic", "inverter interface", "isolation and continuity test"],
+      "interfaces": ["MCU switch command", "switch state feedback", "CAN configuration status", "UDS fault snapshot"],
+      "protections": ["switch only below current threshold", "configuration mismatch fault", "isolation fault", "stuck-switch detection"],
+      "pcb_integration_notes": ["high-current switch path likely belongs on power module or busbar assembly", "logic PCB must be galvanically isolated from switch matrix as needed", "add hardware interlock for illegal configurations"],
+      "design_status": "requires_hardware_trade_study"
+    },
+    {
+      "id": "multiphase_phase_group_control",
+      "bom_groups": ["dual/multiphase inverter stages", "multi-channel current sensing", "expanded MCU or control FPGA", "phase-group connectors", "fault isolation components", "thermal sensors per phase group"],
+      "eda_blocks": ["phase group A inverter", "phase group B inverter", "multiphase current acquisition", "fault-tolerant torque allocator", "expanded gate-drive interface"],
+      "interfaces": ["CAN torque and derate", "phase fault status", "XCP phase current measurement", "gate-driver SPI per group"],
+      "protections": ["phase-loss detection", "group overcurrent", "thermal imbalance derate", "available torque limiter"],
+      "pcb_integration_notes": ["keep phase-group current sensors consistently oriented", "separate gate-driver fault domains", "budget MCU ADC/PWM resources before schematic capture"],
+      "design_status": "requires_hardware_trade_study"
+    },
+    {
+      "id": "thermal_demag_safety_protection",
+      "bom_groups": ["winding temperature sensors", "magnet/rotor temperature estimator inputs", "Vdc and current sensing", "hardware watchdog", "fault logging memory", "safety-rated power supply monitor"],
+      "eda_blocks": ["temperature acquisition", "safety supervisor MCU logic", "watchdog/reset", "fault latch and diagnostics", "current/Vdc plausibility circuits"],
+      "interfaces": ["CAN/UDS DTC reporting", "XCP safety measurements", "hardware gate-disable line", "temperature sensor harness"],
+      "protections": ["hardware gate disable", "id_min(T) clamp", "Imax(T) clamp", "overvoltage/undervoltage", "sensor plausibility fault"],
+      "pcb_integration_notes": ["safety gate-disable path should not depend only on application software", "route temperature harness with ESD and filtering", "fault latch visibility must survive reset"],
+      "design_status": "v1_schematic_planning"
+    },
+    {
+      "id": "weighted_efficiency_pareto_selection",
+      "bom_groups": ["data logger", "calibration memory", "communications transceiver", "bench interface connector", "optional SD/eMMC logging", "diagnostic LEDs/test points"],
+      "eda_blocks": ["logging interface", "calibration storage", "CAN/USB debug bridge", "test point strategy", "route ID/version storage"],
+      "interfaces": ["CAN/CAN-FD telemetry", "XCP data acquisition", "USB/UART engineering debug", "file export from bench tooling"],
+      "protections": ["log overflow handling", "calibration CRC", "route ID mismatch lockout", "watchdog"],
+      "pcb_integration_notes": ["make measurement points accessible for bench correlation", "separate engineering debug from production connector if needed", "store route/version metadata with calibration"],
+      "design_status": "v0_architecture"
+    }
+  ]
+}
