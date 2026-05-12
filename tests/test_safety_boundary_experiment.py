@@ -7,7 +7,7 @@ from sim.run_safety_boundary_experiment import run
 
 
 def test_safety_boundary_experiment_writes_summary_and_csv() -> None:
-    summary = run()
+    summary = run(speed_step_rpm=1000.0)
     summary_path = Path("experiments/exp_004_safety_boundaries/summary.json")
     csv_path = Path("experiments/exp_004_safety_boundaries/safety_boundary_results.csv")
 

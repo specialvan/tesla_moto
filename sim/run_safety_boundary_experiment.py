@@ -50,7 +50,7 @@ def _max_reachable_speed(
     return max(reachable) if reachable else None
 
 
-def run() -> dict[str, Any]:
+def run(speed_step_rpm: float | None = None) -> dict[str, Any]:
     base, raw, grid = load_base()
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -68,7 +68,8 @@ def run() -> dict[str, Any]:
     )
 
     cases: list[dict[str, Any]] = []
-    speed_step_rpm = float(raw.get("base_speed_scan_step_rpm", 250.0))
+    if speed_step_rpm is None:
+        speed_step_rpm = float(raw.get("base_speed_scan_step_rpm", 250.0))
     for temperature_c in [25.0, 100.0, 140.0]:
         for vdc_scale in [1.0, 0.85]:
             hot = apply_temperature(base, temperature_c, thermal_model)
