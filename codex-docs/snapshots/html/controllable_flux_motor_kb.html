@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>可控磁通量电机技术开发知识库</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #111a33;
+      --panel2: #16213f;
+      --text: #e7eefc;
+      --muted: #9fb0d0;
+      --accent: #6ee7f9;
+      --accent2: #a78bfa;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --risk: #fb7185;
+      --line: rgba(255,255,255,.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at top left, #1e2b58, var(--bg) 48%);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    header {
+      padding: 48px 6vw 32px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(110,231,249,.12), rgba(167,139,250,.08));
+    }
+    h1 { margin: 0 0 12px; font-size: clamp(30px, 5vw, 56px); line-height: 1.05; }
+    h2 { margin: 0 0 18px; font-size: 28px; }
+    h3 { margin: 18px 0 10px; color: var(--accent); }
+    p { margin: 8px 0; }
+    .subtitle { max-width: 980px; color: var(--muted); font-size: 18px; }
+    main { padding: 28px 6vw 64px; }
+    nav {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    nav a, .card, .lane, .metric, .task {
+      border: 1px solid var(--line);
+      background: rgba(17,26,51,.82);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.22);
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 14px 16px;
+      transition: .16s ease;
+    }
+    nav a:hover { transform: translateY(-2px); border-color: rgba(110,231,249,.55); }
+    section { margin: 28px 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { padding: 20px; }
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; color: #06131d; background: var(--accent); font-weight: 700; }
+    .badge.ok { background: var(--ok); }
+    .badge.warn { background: var(--warn); }
+    .badge.risk { background: var(--risk); color: #24040b; }
+    .formula {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid var(--line);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      color: #d8f5ff;
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; }
+    th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; }
+    th { background: rgba(110,231,249,.12); text-align: left; }
+    tr:nth-child(even) td { background: rgba(255,255,255,.03); }
+    .timeline { display: grid; gap: 12px; }
+    .lane { padding: 16px; border-left: 5px solid var(--accent); }
+    .lane:nth-child(2n) { border-left-color: var(--accent2); }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+    .metric { padding: 16px; background: rgba(22,33,63,.8); }
+    .metric strong { display: block; font-size: 22px; color: var(--accent); }
+    .tasks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+    .task { padding: 16px; }
+    .task ul { padding-left: 20px; margin: 8px 0 0; }
+    code { color: #c4b5fd; }
+    footer { padding: 24px 6vw; color: var(--muted); border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>可控磁通量电机技术开发知识库</h1>
+    <p class="subtitle">目标：通过公开物理模型、开源工具链、仿真闭环和 agent/Codex 持续推演，逼近高速工况低合成磁链、低端电压需求、低损耗的工程可落地电机控制与电磁设计方案；真实 Ke/ψf 调节仅限可变磁化、混合励磁或绕组重构等路线。</p>
+  </header>
+
+  <main>
+    <nav>
+      <a href="#goal">目标定义</a>
+      <a href="#physics">核心方程</a>
+      <a href="#routes">技术路线</a>
+      <a href="#experiments">实验矩阵</a>
+      <a href="#toolchain">开源工具链</a>
+      <a href="#roadmap">研发里程碑</a>
+      <a href="#agents">Agent/Codex 分工</a>
+      <a href="#risks">风险边界</a>
+    </nav>
+
+    <section id="goal" class="card">
+      <h2>1. 目标定义</h2>
+      <p>不依赖闭源资料，不推测任何厂商实现。以干净室方式从 dq 方程、电磁有限元、控制优化和台架数据出发，构建“等效控磁通”技术体系。</p>
+      <div class="grid">
+        <div class="card"><span class="badge ok">低速</span><h3>高磁链 / 高转矩</h3><p>保持峰值转矩、起步能力和中低速效率。</p></div>
+        <div class="card"><span class="badge warn">高速</span><h3>低合成磁链 / 低端电压需求</h3><p>普通弱磁降低合成 d 轴磁链和端电压压力；只有可变磁化、混合励磁或绕组重构才改变等效 Ke/ψf。</p></div>
+        <div class="card"><span class="badge">全域</span><h3>效率地图最优</h3><p>按工况权重优化电机 + 逆变器系统效率，而不是单点峰值。</p></div>
+        <div class="card"><span class="badge risk">安全</span><h3>退磁、过压和电压饱和保护</h3><p>区分低 Vdc 高转速下的电压饱和风险，以及再生/负载突卸下的母线过压风险。</p></div>
+      </div>
+    </section>
+
+    <section id="physics">
+      <h2>2. 核心物理方程</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>dq 电压模型</h3>
+          <div class="formula">完整动态：<br/>vd = Rs·id + dλd/dt - ωe·λq<br/>vq = Rs·iq + dλq/dt + ωe·λd<br/><br/>准稳态扫描：<br/>vd ≈ Rs·id - ωe·λq<br/>vq ≈ Rs·iq + ωe·λd</div>
+          <p>转矩-转速和 MTPV 边界先用准稳态模型；电流环、切换和故障仿真必须使用动态模型。</p>
+        </div>
+        <div class="card">
+          <h3>磁链模型</h3>
+          <div class="formula">线性：λd = Ld·id + ψf，λq = Lq·iq<br/>非线性：λd=LUTd(id,iq,T)，λq=LUTq(id,iq,T)</div>
+          <p>LUT 必须约定单位、温度维度、插值方式和边界裁剪，禁止无保护外推。</p>
+        </div>
+        <div class="card">
+          <h3>转矩模型</h3>
+          <div class="formula">线性：Te = 1.5·p·[ψf·iq + (Ld-Lq)·id·iq]<br/>非线性：Te = 1.5·p·(λd·iq - λq·id)</div>
+        </div>
+        <div class="card">
+          <h3>单位与约束</h3>
+          <div class="formula">sqrt(vd²+vq²) ≤ Vmax<br/>sqrt(id²+iq²) ≤ Imax<br/>ωe = p·ωm</div>
+          <p>首版统一采用幅值不变 dq、相电压峰值、相电流峰值、单相 Rs；SVPWM 下 Vmax 由 Vdc 换算。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="routes">
+      <h2>3. 技术路线假设树</h2>
+      <table>
+        <thead><tr><th>路线</th><th>机理</th><th>成熟度</th><th>研究优先级</th><th>关键验证</th></tr></thead>
+        <tbody>
+          <tr><td>IPMSM 负 d 轴弱磁</td><td>用负 id 降低合成 d 轴磁链和端电压需求，不改变永磁体本身 Ke</td><td>高</td><td>最高</td><td>最高速电压裕度、铜耗、退磁裕度</td></tr>
+          <tr><td>MTPA/FW/MTPV 连续控制</td><td>低速电流最优，高速电压极限最优</td><td>高</td><td>最高</td><td>转矩-转速曲线、效率地图、切换平滑性</td></tr>
+          <tr><td>非线性磁链表</td><td>用 λd/λq 查表表达饱和和交叉饱和</td><td>中高</td><td>高</td><td>转矩误差、MTPV 边界、参数鲁棒性</td></tr>
+          <tr><td>磁路饱和协同设计</td><td>通过磁桥/隔磁槽设计放大电流调磁效果</td><td>中</td><td>高</td><td>FEA 磁通路径、转子强度、铁耗</td></tr>
+          <tr><td>可变磁化状态</td><td>通过磁化/去磁脉冲改变 ψf 档位</td><td>低中</td><td>中</td><td>状态可观测、可重复、热稳定和寿命</td></tr>
+          <tr><td>混合励磁</td><td>永磁 + 励磁绕组连续调磁</td><td>中</td><td>中</td><td>ΔKe/励磁损耗、热管理、故障安全</td></tr>
+          <tr><td>绕组重构/多相控制</td><td>改变等效匝数或相组磁场合成</td><td>中低</td><td>中低</td><td>切换瞬态、大电流开关、EMI</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="experiments">
+      <h2>4. 可执行实验矩阵</h2>
+      <div class="tasks">
+        <div class="task"><h3>EXP-01 基线 dq 仿真</h3><ul><li>扫描转速、转矩、Vdc、Imax</li><li>输出电压/电流裕度</li><li>对比 id=0、MTPA、FW、MTPV</li></ul></div>
+        <div class="task"><h3>EXP-02 弱磁能力</h3><ul><li>扫描负 id</li><li>计算最高速和铜耗</li><li>建立退磁保护边界</li></ul></div>
+        <div class="task"><h3>EXP-03 MTPV 边界寻优</h3><ul><li>电压椭圆 + 电流圆约束</li><li>求最大转矩电流角</li><li>生成高速 LUT</li></ul></div>
+        <div class="task"><h3>EXP-04 非线性磁链表</h3><ul><li>导入 FEM/台架 λd/λq</li><li>替换线性 Ld/Lq</li><li>比较转矩误差和效率</li></ul></div>
+        <div class="task"><h3>EXP-05 可变 ψf 档位</h3><ul><li>已实现 100/80/60/40Nm 多目标扫描</li><li>当前样例显示低 ψf 会先损失转矩能力</li><li>下一步需与凸极比、MTPV 和状态切换协同设计</li></ul></div>
+        <div class="task"><h3>EXP-06 参数族协同扫描</h3><ul><li>已完成 ψf/Ld/Lq/Vdc/Imax 共 108 个组合</li><li>最高分为 ψf100%、Ld80%、Lq160%、Vdc115%、Imax115%</li><li>低 ψf70% 只有配合高凸极比、较高 Vdc/Imax 才进入候选</li></ul></div>
+        <div class="task"><h3>EXP-07 工况加权效率</h3><ul><li>加入车辆负载模型</li><li>按高速巡航/加速/爬坡权重评估</li><li>输出 Pareto 前沿</li></ul></div>
+      </div>
+    </section>
+
+    <section id="toolchain">
+      <h2>5. 开源工具链</h2>
+      <div class="grid">
+        <div class="card"><h3>控制仿真</h3><p>Python dq model、motulator、OpenModelica。</p></div>
+        <div class="card"><h3>电磁仿真</h3><p>Pyleecan + FEMM、SyR-e、Elmer FEM。</p></div>
+        <div class="card"><h3>固件参考</h3><p>VESC、MESC。SimpleFOC 仅用于低压教学验证。</p></div>
+        <div class="card"><h3>知识沉淀</h3><p>HTML 知识库、<a href="wiki/controllable_flux_motor_research_plan.md" style="color: var(--accent);">wiki Markdown</a>、实验数据 JSON/CSV、agent manifest。</p></div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <h2>6. 研发里程碑</h2>
+      <div class="timeline">
+        <div class="lane"><strong>M0 需求冻结</strong><p>明确峰值功率、转矩、最高速、母线电压、电流上限、冷却和包络。</p></div>
+        <div class="lane"><strong>M1 线性 dq 闭环</strong><p>完成 MTPA/FW/MTPV 初版仿真，输出转矩-转速和电压裕度。</p></div>
+        <div class="lane"><strong>M2 非线性磁链闭环</strong><p>引入 λd/λq 查表，更新控制轨迹和效率地图。</p></div>
+        <div class="lane"><strong>M3 电磁设计协同</strong><p>用 IPMSM/PMaSynRM 结构参数扫描优化凸极比、Ke、退磁裕度。</p></div>
+        <div class="lane"><strong>M4 可变 ψf 预研</strong><p>EXP-002 已完成虚拟 ψf 缩放扫描；当前结论是低 ψf 不能单独带来收益，必须结合电磁拓扑和控制轨迹重设计。</p></div>
+        <div class="lane"><strong>M5 参数族协同</strong><p>EXP-003 显示低 ψf 候选需要更高凸极比、母线电压或电流能力支撑；当前最佳是 ψf100% + Ld80% + Lq160% + Vdc/Imax 提升，低 ψf70% 的同类高凸极候选排名第二。</p></div>
+        <div class="lane"><strong>M6 台架闭环</strong><p>低压硬件验证 FOC、弱磁和日志采集，回灌模型。</p></div>
+      </div>
+    </section>
+
+    <section id="agents">
+      <h2>7. Agent / Codex 并行推演工作包</h2>
+      <div class="tasks">
+        <div class="task"><h3>Agent A：控制算法</h3><ul><li>实现 MTPA/FW/MTPV 求解器</li><li>输出 id/iq 轨迹 LUT</li><li>验证电压/电流约束</li></ul></div>
+        <div class="task"><h3>Agent B：电磁参数</h3><ul><li>整理 IPMSM/PMaSynRM 参数模板</li><li>生成 λd/λq 数据结构</li><li>对接 Pyleecan/FEMM 输出</li></ul></div>
+        <div class="task"><h3>Agent C：损耗与热</h3><ul><li>铜耗、铁耗、逆变器损耗</li><li>一阶热模型</li><li>热降额策略</li></ul></div>
+        <div class="task"><h3>Agent D：可变磁链</h3><ul><li>ψf 多档模型</li><li>磁化状态观测假设</li><li>切换收益阈值</li></ul></div>
+        <div class="task"><h3>Agent E：验证与可视化</h3><ul><li>生成曲线和效率地图</li><li>沉淀实验报告</li><li>更新 HTML/wiki</li></ul></div>
+        <div class="task"><h3>Codex：代码实现</h3><ul><li>根据 wiki 任务逐模块编码</li><li>维护单元测试</li><li>输出可复现实验脚本</li></ul></div>
+      </div>
+    </section>
+
+    <section id="risks">
+      <h2>8. 风险边界与判断标准</h2>
+      <div class="metrics">
+        <div class="metric"><strong>V 裕度</strong><span>Vmax - sqrt(vd²+vq²)，高速控制核心指标。</span></div>
+        <div class="metric"><strong>I 裕度</strong><span>Imax - sqrt(id²+iq²)，决定弱磁和转矩能力。</span></div>
+        <div class="metric"><strong>Ke 降低</strong><span>低磁链状态下反电势常数下降比例。</span></div>
+        <div class="metric"><strong>CPSR</strong><span>最高速 / 基速，衡量恒功率扩展能力。</span></div>
+        <div class="metric"><strong>加权效率</strong><span>按真实工况权重汇总效率，而非只看峰值。</span></div>
+        <div class="metric"><strong>退磁裕度</strong><span>高温 + 负 id + 短路工况下必须安全。</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    干净室研发原则：不复刻闭源方案；所有结论必须来自公开模型、开源工具、仿真数据或台架实验。AI/Codex 输出只作为研发草案，不能直接部署到高压高速实机，必须经过人工审查、仿真、HIL/台架和硬件保护验证。
+  </footer>
+</body>
+</html>
