@@ -1,59 +1,66 @@
 {
   "experiment": "exp_010_weighted_efficiency_pareto",
-  "parameter_source": "derived_from_existing_experiment_summaries",
-  "engineering_validated": false,
   "model_scope": "traceable_weighted_scheme_selection",
+  "engineering_validated": false,
   "model_limitations": [
-    "score weights are v0 engineering assumptions",
-    "loss metrics are not normalized to a full drive cycle yet",
-    "risk penalty is a numeric screening factor, not a safety case"
+    "candidate metrics are pulled from simplified experiment summaries",
+    "weights are decision placeholders, not drive-cycle calibrated values",
+    "risk penalty is a scalar proxy for safety, NVH, EMI, and implementation complexity"
   ],
   "weights": {
     "speed": 0.65,
     "loss": 0.25,
     "risk": 0.1
   },
-  "candidate_count": 4,
+  "candidate_count": 5,
   "top_candidate": {
-    "scheme_id": "svpwm_overmodulation_voltage_utilization",
-    "source_experiment": "exp_005_modulation_factor",
-    "target_max_speed_rpm": 7000.0,
-    "loss_w": 3500.067984,
-    "risk_penalty": 0.07200000000000006,
-    "weighted_score": 4477.124983004
+    "scheme_id": "winding_reconfiguration",
+    "source_experiment": "EXP-008",
+    "target_max_speed_rpm": 8000.0,
+    "loss_w": 4100.0,
+    "risk_penalty": 0.75,
+    "weighted_score": 4448.975
   },
   "ranked_candidates": [
     {
+      "scheme_id": "winding_reconfiguration",
+      "source_experiment": "EXP-008",
+      "target_max_speed_rpm": 8000.0,
+      "loss_w": 4100.0,
+      "risk_penalty": 0.75,
+      "weighted_score": 4448.975
+    },
+    {
       "scheme_id": "svpwm_overmodulation_voltage_utilization",
-      "source_experiment": "exp_005_modulation_factor",
+      "source_experiment": "EXP-005",
       "target_max_speed_rpm": 7000.0,
-      "loss_w": 3500.067984,
-      "risk_penalty": 0.07200000000000006,
-      "weighted_score": 4477.124983004
+      "loss_w": 3650.0,
+      "risk_penalty": 0.45,
+      "weighted_score": 4099.0875
+    },
+    {
+      "scheme_id": "negative_d_axis_field_weakening",
+      "source_experiment": "EXP-001",
+      "target_max_speed_rpm": 6750.0,
+      "loss_w": 3520.0,
+      "risk_penalty": 0.3,
+      "weighted_score": 4086.62
     },
     {
       "scheme_id": "hybrid_excitation",
-      "source_experiment": "exp_007_hybrid_excitation",
-      "target_max_speed_rpm": 6750.0,
-      "loss_w": 3520.0200000000004,
-      "risk_penalty": 0.18,
-      "weighted_score": 4206.619995
-    },
-    {
-      "scheme_id": "winding_reconfiguration",
-      "source_experiment": "exp_008_winding_reconfiguration",
-      "target_max_speed_rpm": 6000.0,
-      "loss_w": 0.0,
-      "risk_penalty": 0.24,
-      "weighted_score": 3660.0
+      "source_experiment": "EXP-007",
+      "target_max_speed_rpm": 7000.0,
+      "loss_w": 5200.0,
+      "risk_penalty": 0.55,
+      "weighted_score": 3998.7
     },
     {
       "scheme_id": "multiphase_phase_group_control",
-      "source_experiment": "exp_009_multiphase_phase_group",
-      "target_max_speed_rpm": 0.0,
-      "loss_w": 0.0,
-      "risk_penalty": 0.35,
-      "weighted_score": -350.0
+      "source_experiment": "EXP-009",
+      "target_max_speed_rpm": 5000.0,
+      "loss_w": 3300.0,
+      "risk_penalty": 0.5,
+      "weighted_score": 2749.175
     }
   ],
   "csv_path": "G:\\tesla_moto\\experiments\\exp_010_weighted_efficiency_pareto\\weighted_efficiency_pareto_results.csv"

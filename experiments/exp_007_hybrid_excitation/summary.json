@@ -20,17 +20,17 @@
       0.0,
       20.0
     ],
-    "speed_step_rpm": 250.0
+    "speed_step_rpm": 1000.0
   },
   "best_tradeoff": {
     "field_current_a": 0.0,
     "effective_psi_f_wb": 0.055,
-    "target_max_speed_rpm": 6750.0,
-    "boundary_current_a": 258.93628559937287,
-    "boundary_copper_loss_w": 3520.0200000000004,
+    "target_max_speed_rpm": 6000.0,
+    "boundary_current_a": 240.68236329236922,
+    "boundary_copper_loss_w": 3041.2200000000003,
     "field_loss_w": 0.0,
-    "combined_loss_w": 3520.0200000000004,
-    "tradeoff_score": 6714.7998
+    "combined_loss_w": 3041.2200000000003,
+    "tradeoff_score": 5969.5878
   },
   "row_count": 5,
   "csv_path": "G:\\tesla_moto\\experiments\\exp_007_hybrid_excitation\\hybrid_excitation_results.csv"
