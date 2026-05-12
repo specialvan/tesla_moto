@@ -19,6 +19,7 @@
 | `handoff_context.md` | 给下一位 agent / 工程师的上下文交接 |
 | `evidence_manifest.md` | 关键证据文件、哈希、来源和用途 |
 | `simulation_traceability.md` | 12 类方案到当前仿真/待建模状态的追踪矩阵 |
+| `toolchain_selection_and_github_references.md` | Maxwell / Motor-CAD / Simulink / GitHub 参考项目选型 |
 | `wiki_html_evidence.md` | wiki 与 HTML 知识库快照说明 |
 | `snapshots/wiki/controllable_flux_motor_research_plan.md` | wiki 原始快照 |
 | `snapshots/html/controllable_flux_motor_kb.html` | HTML 知识库原始快照 |

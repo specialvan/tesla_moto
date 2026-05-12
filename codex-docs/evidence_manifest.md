@@ -14,6 +14,7 @@
 | 仿真覆盖目录 | `models/scheme_simulation_coverage.json` | `791C76F13D7255B26D716E1DD3159952B2F1F8C798B6B7A1854F72E608C46792` | 12 个方案的状态、测试和产物映射 |
 | V2 数值闭环记录 | `codex-reviwe/v2_numeric_simulation_closure.md` | `797129D3129D2437308D757D76E3CE336FA538A387F17911D6AC526D7421D0C2` | EXP-005 到 EXP-010 的工程解释 |
 | Claude 对 Codex 线评审 | `claude-review/codex_development_review.md` | `C67E9503A9AABC19ABB7AB4362C85307BCEA9E85A57D5B41BF2BA901325132D5` | Codex 开发线优缺点、合并建议和风险评审 |
+| 高保真工具链选型 | `codex-docs/toolchain_selection_and_github_references.md` | `DC61F45433169869271D7EC12C953CE2731BD269078F1A7055DD09E9437E215B` | Maxwell / Motor-CAD / Simulink / GitHub 参考项目和质量门槛 |
 | 工程落地矩阵 | `reports/scheme_engineering_landing_matrix.md` | `DAD3B892A4B034A0111A21D98CA08E576FE9CB6EEC9B0B06D868F8E5B9B70526` | 每种方案的工程目标、输入、实验、验收 |
 | 驱动/上电/协议图 | `reports/scheme_driver_power_protocol_diagrams.md` | `59A41D2AE4ACB08C4B5D1368F458961A824BEE1E2285512891BDE63217BF0DBB` | 每种方案对应驱动设计图、上电时序图、协议链路图 |
 | BOM/EDA 集成 | `reports/scheme_bom_eda_integration_design.md` | `3BC3F288F0D106836CA9199E057BF4833585CF2476055F5A0572038E3E1F5128` | BOM 配件分组、EDA 电路模块、接口和保护 |
