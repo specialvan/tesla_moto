@@ -42,8 +42,14 @@ def test_at_least_mainline_schemes_have_numeric_simulation_results() -> None:
         "negative_d_axis_field_weakening",
         "mtpa_fw_mtpv_control",
         "variable_magnetization_memory_motor",
+        "nonlinear_flux_lut",
+        "hybrid_excitation",
+        "winding_reconfiguration",
+        "multiphase_phase_group_control",
         "magnetic_saturation_codesign",
         "pmasynrm_high_saliency_low_pm",
+        "svpwm_overmodulation_voltage_utilization",
         "thermal_demag_safety_protection",
+        "weighted_efficiency_pareto_selection",
     }:
         assert statuses[scheme_id] == "passed_numeric_simulation"
