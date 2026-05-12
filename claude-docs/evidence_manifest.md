@@ -18,6 +18,9 @@
 | Stage-gate 流程 | `reports/scheme_industry_design_stage_gate_process.md` | 成熟业界设计推进流程和评审门槛 |
 | 工程目录 JSON | `models/scheme_engineering_catalog.json` | 方案目录、证据路径和工程元数据 |
 | 行业阶段门 JSON | `models/scheme_industry_stage_gate_process.json` | 阶段门结构化数据 |
+| 高保真工具链选型 | `claude-docs/toolchain_selection_and_github_references.md` | Maxwell / Motor-CAD / Simulink / GitHub 参考项目和质量门槛 |
+| Maxwell / Motor-CAD 仿真方案 | `claude-docs/maxwell_motorcad_simulation_plan.md` | 确定工程主线仿真平台、FEA/热/NVH/控制闭环和中文报告结构 |
+| Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据
 

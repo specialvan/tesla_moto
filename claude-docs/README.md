@@ -20,6 +20,9 @@
 | `evidence_manifest.md` | 关键证据文件、来源和用途 |
 | `simulation_traceability.md` | 12 类方案到当前仿真/待建模状态的追踪矩阵 |
 | `wiki_html_evidence.md` | wiki 与 HTML 知识库快照说明 |
+| `toolchain_selection_and_github_references.md` | 高保真仿真工具链选型与 GitHub 参考项目 |
+| `maxwell_motorcad_simulation_plan.md` | Maxwell / Motor-CAD / 开源工具链仿真设计落地方案 |
+| `migration_alignment_index.md` | Claude 文档迁移与 Codex 对齐索引 |
 | `snapshots/wiki/controllable_flux_motor_research_plan.md` | wiki 原始快照 |
 | `snapshots/html/controllable_flux_motor_kb.html` | HTML 知识库原始快照 |
 
@@ -30,6 +33,7 @@
 - 当前落地实验：EXP-001、EXP-002、EXP-003、EXP-004
 - 当前关键结论：低 `ψf` 不能单独带来高速收益，必须与高凸极比、母线电压、电流能力、MTPV 轨迹和安全边界协同设计
 - 当前工程文档：`reports/` 下已有工程落地矩阵、驱动/上电/协议图、BOM/EDA、stage-gate 流程
+- 当前仿真方案：`toolchain_selection_and_github_references.md` 和 `maxwell_motorcad_simulation_plan.md` 已明确 Motor-CAD + Maxwell 2D/3D 为工程主线，Pyleecan/FEMM/SyR-e/Simulink/Python 为开源复核与控制闭环
 
 ## 4. 主线证明了什么
 
