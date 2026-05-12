@@ -1,0 +1,51 @@
+{
+  "version": "2026-05-13-v0",
+  "source_review": "claude-review/codex_development_review.md",
+  "target_branch": "claude-mainline",
+  "review_summary": "Claude review classifies Codex work as valuable review/planning material but rejects direct adoption of duplicate EXP-001 code paths.",
+  "current_branch_fact_check": {
+    "sim_control_search_exists": false,
+    "exp001_compat_runner_exists": false,
+    "test_control_search_exists": false,
+    "codex_phase1_plan_exists": false,
+    "landed_experiments": ["exp_001", "exp_002", "exp_003", "exp_004"],
+    "coverage_status_counts": {
+      "passed_numeric_simulation": 6,
+      "needs_next_numeric_model": 5,
+      "passed_architecture_verification": 1
+    }
+  },
+  "actions": [
+    {
+      "id": "CR-001",
+      "title": "Keep EXP-001 single official runner",
+      "status": "accepted_no_code_change_needed",
+      "evidence": ["sim/run_linear_dq_experiment.py"],
+      "blocked_files": ["sim/control_search.py", "experiments/exp_001_linear_dq/run.py"]
+    },
+    {
+      "id": "CR-002",
+      "title": "Use GridSpec as the traceable current grid interface",
+      "status": "accepted_current_mainline_compliant",
+      "evidence": ["sim/search.py", "models/motor_params.json"]
+    },
+    {
+      "id": "CR-003",
+      "title": "Rewrite Codex smoke-test intent against mainline search",
+      "status": "queued",
+      "target_tests": ["tests/test_dq_model.py", "tests/test_exp_001_runner.py"]
+    },
+    {
+      "id": "CR-004",
+      "title": "Remove agent-specific execution instructions from long-lived docs",
+      "status": "accepted_no_code_change_needed",
+      "evidence": ["codex-reviwe/phase1_linear_dq_implementation_plan.md is not present on current mainline"]
+    },
+    {
+      "id": "CR-005",
+      "title": "Add model maturity field when EXP-005 to EXP-010 enter mainline",
+      "status": "queued",
+      "required_fields": ["parameter_source", "model_scope", "model_limitations", "model_maturity", "engineering_validated"]
+    }
+  ]
+}
