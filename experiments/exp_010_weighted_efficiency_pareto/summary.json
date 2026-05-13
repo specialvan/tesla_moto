@@ -1,0 +1,142 @@
+{
+  "experiment": "exp_010_weighted_efficiency_pareto",
+  "parameter_source": "illustrative_clean_room_baseline_plus_candidate_family",
+  "engineering_validated": false,
+  "model_scope": "drive_cycle_weighted_copper_loss_with_grid_search",
+  "model_limitations": [
+    "drive cycles are illustrative and not from a measured dyno run",
+    "scoring uses copper loss only; iron, mechanical, inverter losses ignored",
+    "no transient acceleration / regen energy weighting"
+  ],
+  "loss_scale_w": 3000.0,
+  "cycles": [
+    {
+      "name": "urban_low_speed",
+      "points": [
+        {
+          "speed_rpm": 500.0,
+          "torque_nm": 60.0,
+          "weight": 0.2
+        },
+        {
+          "speed_rpm": 1000.0,
+          "torque_nm": 80.0,
+          "weight": 0.3
+        },
+        {
+          "speed_rpm": 2000.0,
+          "torque_nm": 60.0,
+          "weight": 0.3
+        },
+        {
+          "speed_rpm": 3000.0,
+          "torque_nm": 40.0,
+          "weight": 0.2
+        }
+      ],
+      "total_weight": 1.0
+    },
+    {
+      "name": "highway_high_speed",
+      "points": [
+        {
+          "speed_rpm": 3000.0,
+          "torque_nm": 40.0,
+          "weight": 0.2
+        },
+        {
+          "speed_rpm": 4000.0,
+          "torque_nm": 40.0,
+          "weight": 0.3
+        },
+        {
+          "speed_rpm": 5000.0,
+          "torque_nm": 40.0,
+          "weight": 0.3
+        },
+        {
+          "speed_rpm": 6000.0,
+          "torque_nm": 30.0,
+          "weight": 0.2
+        }
+      ],
+      "total_weight": 1.0
+    },
+    {
+      "name": "launch_peak_torque",
+      "points": [
+        {
+          "speed_rpm": 500.0,
+          "torque_nm": 100.0,
+          "weight": 0.5
+        },
+        {
+          "speed_rpm": 1000.0,
+          "torque_nm": 100.0,
+          "weight": 0.5
+        }
+      ],
+      "total_weight": 1.0
+    }
+  ],
+  "candidates": [
+    "baseline",
+    "variable_flux_psi70",
+    "variable_flux_psi55",
+    "hybrid_excitation_if_minus_20",
+    "hybrid_excitation_if_plus_20",
+    "winding_series_torque",
+    "winding_parallel_speed"
+  ],
+  "cycle_winners": {
+    "urban_low_speed": "hybrid_excitation_if_plus_20",
+    "highway_high_speed": "hybrid_excitation_if_plus_20",
+    "launch_peak_torque": "hybrid_excitation_if_plus_20"
+  },
+  "pareto_front": [
+    {
+      "candidate": "hybrid_excitation_if_plus_20",
+      "mean_score": 0.69344363940336,
+      "min_feasible_weight": 1.0,
+      "sum_weighted_copper_loss_w": 4468.317
+    },
+    {
+      "candidate": "baseline",
+      "mean_score": 0.678060963730064,
+      "min_feasible_weight": 1.0,
+      "sum_weighted_copper_loss_w": 4809.21
+    },
+    {
+      "candidate": "winding_series_torque",
+      "mean_score": 0.6734790966641825,
+      "min_feasible_weight": 1.0,
+      "sum_weighted_copper_loss_w": 4915.7199
+    },
+    {
+      "candidate": "hybrid_excitation_if_minus_20",
+      "mean_score": 0.662327342315996,
+      "min_feasible_weight": 1.0,
+      "sum_weighted_copper_loss_w": 5170.347
+    },
+    {
+      "candidate": "winding_parallel_speed",
+      "mean_score": 0.5000309486407456,
+      "min_feasible_weight": 0.0,
+      "sum_weighted_copper_loss_w": 2083.93185
+    },
+    {
+      "candidate": "variable_flux_psi70",
+      "mean_score": 0.4540878213449708,
+      "min_feasible_weight": 0.0,
+      "sum_weighted_copper_loss_w": 2928.786
+    },
+    {
+      "candidate": "variable_flux_psi55",
+      "mean_score": 0.4235644210792236,
+      "min_feasible_weight": 0.0,
+      "sum_weighted_copper_loss_w": 3588.7950000000005
+    }
+  ],
+  "row_count": 21,
+  "csv_path": "G:\\tesla_moto\\experiments\\exp_010_weighted_efficiency_pareto\\weighted_efficiency_pareto_results.csv"
+}

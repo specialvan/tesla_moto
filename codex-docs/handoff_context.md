@@ -4,7 +4,7 @@
 
 - 当前分支：`codex-review-line`
 - 主要目标：把可控磁通量电机技术路线沉淀为可交接、可追踪、可继续开发的 Codex 知识库。
-- 当前状态：EXP-001 到 EXP-004 已在当前分支落地；EXP-005 到 EXP-010 仍应视为下一阶段建模方向，除非后续分支把对应代码、测试和产物重新纳入。
+- 当前状态：EXP-001 到 EXP-010 全部具备**可重跑的 Python 入口 + 单元/烟雾测试 + 模型限制声明**；唯一仍标记 `needs_next_numeric_model` 的方案是 `nonlinear_flux_lut`（缺 lambda_d/lambda_q LUT schema 与插值测试）。
 - 本目录目的：让下一位接手者能快速定位上下文、证据、仿真入口和仍需工程化的缺口。
 
 ## 2. 已完成的主线能力
@@ -21,23 +21,28 @@
 
 ## 3. 当前已落地仿真
 
-| 实验 | 作用 |
-|---|---|
-| EXP-001 | 线性 dq 基线、负 d 轴弱磁、MTPA/FW/MTPV 风格搜索 |
-| EXP-002 | 可变磁链 / memory motor 虚拟 `psi_f` 状态扫描 |
-| EXP-003 | 参数族扫描，覆盖磁饱和协同和 PMaSynRM 方向代理 |
-| EXP-004 | 温度、Vdc 降额、简化退磁边界 |
+| 实验 | 入口 | 作用 |
+|---|---|---|
+| EXP-001 | `sim/run_linear_dq_experiment.py` | 线性 dq 基线、负 d 轴弱磁、MTPA/FW/MTPV 风格搜索 |
+| EXP-002 | `sim/run_variable_flux_experiment.py` | 可变磁链 / memory motor 虚拟 `psi_f` 状态扫描 |
+| EXP-003 | `sim/run_param_sweep_experiment.py` | 参数族扫描，覆盖磁饱和协同和 PMaSynRM 方向代理 |
+| EXP-004 | `sim/run_safety_boundary_experiment.py` | 温度、Vdc 降额、简化退磁边界 |
+| EXP-005 | `sim/run_modulation_factor_experiment.py` | SVPWM 过调制 `k_mod` 扫描 + 谐波 / 逆变器损耗 / 转矩纹波参数化惩罚 |
+| EXP-007 | `sim/run_hybrid_excitation_experiment.py` | 混合励磁等效 `psi_eff = psi_pm + kf*if`，比对 `Pcu+Pf` |
+| EXP-008 | `sim/run_winding_reconfiguration_experiment.py` | 绕组重构 `turns/R/Imax` 扫描 + 切换速度连续性增量 |
+| EXP-009 | `sim/run_multiphase_phase_group_experiment.py` | 相组失效 / 均流不平衡降额下的可达速度 |
+| EXP-010 | `sim/run_weighted_efficiency_pareto_experiment.py` | 城市 / 高速 / 起步三种工况下加权铜耗排名 |
 
 ## 4. 当前待建模方向
 
 | 方向 | 当前覆盖状态 | 下一步 |
 |---|---|---|
-| SVPWM 过调制 | `needs_next_numeric_model` | 增加显式 `k_mod`、谐波、损耗、纹波约束 |
-| 非线性磁链 LUT | `needs_next_numeric_model` | 增加 `lambda_d/lambda_q` LUT schema、插值和转矩测试 |
-| 混合励磁 | `needs_next_numeric_model` | 增加 `psi_eff = psi_pm + kf * if` 和励磁损耗 |
-| 绕组重构 | `needs_next_numeric_model` | 增加多配置 Ke/Kt/R/L 扫描和切换连续性 |
-| 多相相组控制 | `needs_next_numeric_model` | 增加相组失效、均流、降额模型 |
-| 加权效率 Pareto | `passed_architecture_verification` | 增加工况权重和可追溯评分 |
+| 非线性磁链 LUT | `needs_next_numeric_model` | 增加 `lambda_d/lambda_q` LUT schema、插值和转矩测试（仍是唯一缺位） |
+| EXP-005 谐波/损耗曲线 | `passed_numeric_simulation`（参数化代理） | 用实测逆变器损耗图和 PWM 波形重建替换线性代理 |
+| EXP-007 励磁回路动态 | `passed_numeric_simulation`（稳态铜耗） | 增加场绕组电感、励磁机损耗、热耦合 |
+| EXP-008 切换暂态 | `passed_numeric_simulation`（参数缩放） | 增加接触器电弧、循环电流、并联支路热分担 |
+| EXP-009 故障暂态 | `passed_numeric_simulation`（聚合电流降额） | 增加谐波子空间、零序偏移、相级热 RC 故障暂态 |
+| EXP-010 工况评分 | `passed_numeric_simulation`（铜耗+可达性） | 用实测 drive cycle、增加铁耗 / 机械损耗 / 逆变器损耗 |
 
 ## 5. 接手时优先检查
 

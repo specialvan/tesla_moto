@@ -1,0 +1,38 @@
+{
+  "experiment": "exp_005_modulation_factor",
+  "parameter_source": "illustrative_clean_room_baseline",
+  "engineering_validated": false,
+  "model_scope": "linear_dq_with_explicit_voltage_utilization_axis",
+  "model_limitations": [
+    "overmodulation harmonic penalties are parametric estimates",
+    "no PWM waveform reconstruction or phase-current ripple simulation",
+    "no inverter dead-time, device loss map, or EMI model"
+  ],
+  "sweep_axes": {
+    "k_mod_values": [
+      1.0,
+      1.04,
+      1.08,
+      1.12
+    ],
+    "speed_step_rpm": 1000.0
+  },
+  "scoring": {
+    "loss_speed_penalty": 0.01,
+    "harmonic_speed_penalty": 0.215
+  },
+  "best_tradeoff": {
+    "k_mod": 1.04,
+    "svpwm_vmax_factor": 0.600444279957211,
+    "vmax_v": 216.15994078459593,
+    "target_max_speed_rpm": 7000.0,
+    "target_boundary_voltage_margin_v": 0.7269021392296509,
+    "target_boundary_copper_loss_w": 3477.81,
+    "harmonic_current_rms_ratio": 0.07200000000000006,
+    "inverter_loss_multiplier": 1.0064,
+    "torque_ripple_ratio": 0.10000000000000009,
+    "tradeoff_score": 6856.63932016
+  },
+  "row_count": 4,
+  "csv_path": "G:\\tesla_moto\\experiments\\exp_005_modulation_factor\\modulation_sweep_results.csv"
+}
