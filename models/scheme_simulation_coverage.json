@@ -105,10 +105,10 @@
     {
       "id": "weighted_efficiency_pareto_selection",
       "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_drive_cycle.py", "tests/test_weighted_efficiency_pareto_experiment.py"],
-      "result_artifacts": ["experiments/exp_010_weighted_efficiency_pareto/summary.json", "experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv"],
-      "coverage_note": "EXP-010 scores baseline / variable-flux / hybrid-excitation / winding-reconfiguration candidates against urban / highway / launch drive cycles using weighted copper loss and feasibility share.",
-      "next_simulation_step": "Replace illustrative cycles with measured drive-cycle traces; add iron / mechanical / inverter loss components to the score."
+      "pytest_tests": ["tests/test_drive_cycle.py", "tests/test_weighted_efficiency_pareto_experiment.py", "tests/test_iron_loss.py"],
+      "result_artifacts": ["experiments/exp_010_weighted_efficiency_pareto/summary.json", "experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv", "experiments/exp_011_iron_loss/summary.json", "experiments/exp_011_iron_loss/iron_loss_sweep_results.csv", "sim/iron_loss.py"],
+      "coverage_note": "EXP-010 scores candidates against drive cycles using weighted copper loss. EXP-011 extends to combined copper+iron loss using Bertotti three-term model, improving efficiency estimates at high speed.",
+      "next_simulation_step": "Replace iron loss coefficients with FEA-derived material data; add mechanical loss, inverter loss, and temperature coupling to the combined loss model."
     }
   ]
 }

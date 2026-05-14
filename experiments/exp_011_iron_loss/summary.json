@@ -1,0 +1,30 @@
+{
+  "experiment": "exp_011_iron_loss",
+  "parameter_source": "illustrative_clean_room_baseline_plus_bertotti_iron_loss",
+  "engineering_validated": false,
+  "model_scope": "linear_dq_with_iron_loss_estimation",
+  "model_limitations": [
+    "iron loss uses simplified Bertotti model with fixed coefficients",
+    "no FEA-derived B mapping, lamination stack, or frequency-dependent material data",
+    "no thermal coupling to iron loss coefficients",
+    "no PWM harmonics or skin effect in copper",
+    "iron loss assumed uniform across stator/rotor for this clean-room study"
+  ],
+  "iron_loss_model": {
+    "type": "bertotti_three_term",
+    "k_hyst": 0.04,
+    "k_eddy": 0.004,
+    "k_excess": 0.003,
+    "core_radius_m": 0.05
+  },
+  "target_torque_nm": 100.0,
+  "scan_step_rpm": 250.0,
+  "max_speed_configured_rpm": 18000.0,
+  "max_speed_scanned_rpm": 18000.0,
+  "target_torque_feasible_count": 28,
+  "max_torque_feasible_count": 73,
+  "avg_iron_loss_at_target_torque_w": 50089.508474566326,
+  "avg_efficiency_at_target_torque_pct": 43.32049229833387,
+  "iron_loss_vs_copper_loss_ratio": 17.639511087598454,
+  "csv_path": "experiments\\exp_011_iron_loss\\iron_loss_sweep_results.csv"
+}
