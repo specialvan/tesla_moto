@@ -4,7 +4,7 @@
 
 - 主线分支：`claude-mainline`
 - 主要目标：以干净室方式推进可控磁通量电机技术开发，把公开物理模型、仿真闭环、工程路线和证据链沉淀为可继续开发的主线知识库。
-- 当前状态：EXP-001 到 EXP-004 是 Claude 主线的正式落地范围；EXP-005 到 EXP-010 仍应作为后续建模方向或 Codex 扩展线内容，不应直接写成 Claude 主线已验证结论。
+- 当前状态：EXP-001 到 EXP-004 与 EXP-006 是 Claude 主线当前已落地范围；其中 EXP-006 只完成 synthetic `lambda_d/lambda_q` LUT 插值与非线性转矩证明，尚未回灌共享控制搜索。
 - 本目录目的：让后续 agent / 工程师快速恢复上下文，定位仿真入口、证据路径、工程边界和下一步技术任务。
 
 ## 2. 干净室边界
@@ -33,6 +33,7 @@ Claude 主线只允许基于以下来源形成结论：
 | 虚拟可变磁链扫描 | `experiments/exp_002_variable_flux/README.md` |
 | 参数族协同扫描 | `experiments/exp_003_param_sweep/README.md` |
 | 热/退磁安全边界 | `experiments/exp_004_safety_boundaries/summary.json` |
+| 非线性 `lambda_d/lambda_q` LUT | `experiments/exp_006_nonlinear_flux_lut/summary.json` |
 | 工程落地矩阵 | `reports/scheme_engineering_landing_matrix.md` |
 | 驱动、上电时序、协议图 | `reports/scheme_driver_power_protocol_diagrams.md` |
 | BOM / EDA 集成设计 | `reports/scheme_bom_eda_integration_design.md` |
@@ -47,11 +48,12 @@ Claude 主线只允许基于以下来源形成结论：
 | EXP-002 | 可变磁链 / memory motor 虚拟 `psi_f` 状态扫描 | 直接降低 `psi_f` 会显著损失目标转矩能力，不能单独视为收益 |
 | EXP-003 | `psi_f/Ld/Lq/Vdc/Imax` 参数族扫描 | 最优为 `psi1.00_ld0.80_lq1.60_vdc1.15_imax1.15`，低磁链候选必须协同高凸极比和更高 `Vdc/Imax` |
 | EXP-004 | 温度、Vdc 降额、简化退磁边界 | 已建立安全边界数值入口，但需要真实磁钢/FEA 数据替换简化退磁线 |
+| EXP-006 | synthetic `lambda_d/lambda_q` LUT 插值与非线性转矩证明 | 已建立 schema、边界检查、双线性插值和非线性转矩数值入口，但尚未接入电压约束控制搜索 |
 
 ## 5. 后续优先级
 
 1. 把 `negative_d_axis_field_weakening`、`mtpa_fw_mtpv_control`、`thermal_demag_safety_protection` 串成更完整控制 LUT 与安全边界闭环。
-2. 建立非线性 `lambda_d/lambda_q` LUT schema、插值、边界裁剪和非线性转矩测试。
+2. 把 EXP-006 的 synthetic `lambda_d/lambda_q` LUT 从独立插值与非线性转矩证明推进到 FEA/测量数据回灌，并接入电压约束控制搜索。
 3. 用 Pyleecan/FEMM/SyR-e 或等效 FEA 数据替换 EXP-003 的独立缩放代理。
 4. 引入铁耗、逆变器损耗、热模型和工况加权 Pareto 评分。
 5. 仅在仿真收益明确且安全边界充分后，再进入低压台架验证。

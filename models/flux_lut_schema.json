@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SyntheticFluxLut",
+  "type": "object",
+  "required": [
+    "version",
+    "purpose",
+    "pole_pairs",
+    "unit_convention",
+    "id_axis_a",
+    "iq_axis_a",
+    "lambda_d_wb",
+    "lambda_q_wb"
+  ],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "pole_pairs": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "unit_convention": {
+      "type": "object",
+      "required": [
+        "dq_transform",
+        "current",
+        "flux_linkage"
+      ],
+      "properties": {
+        "dq_transform": {
+          "const": "amplitude_invariant"
+        },
+        "current": {
+          "const": "phase_peak_ampere"
+        },
+        "flux_linkage": {
+          "const": "weber"
+        }
+      },
+      "additionalProperties": false
+    },
+    "id_axis_a": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2
+    },
+    "iq_axis_a": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2
+    },
+    "lambda_d_wb": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 2
+      },
+      "minItems": 2
+    },
+    "lambda_q_wb": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 2
+      },
+      "minItems": 2
+    }
+  },
+  "additionalProperties": false
+}

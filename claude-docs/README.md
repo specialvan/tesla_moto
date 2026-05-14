@@ -6,7 +6,7 @@
 
 - 开发上下文 handoff；
 - wiki / HTML 知识库冻结快照；
-- EXP-001 到 EXP-004 的仿真实验证据；
+- EXP-001 到 EXP-004 与 EXP-006 的仿真实验证据；
 - 工程路线、阶段门、报告和覆盖目录的证据索引；
 - 后续 FEA、非线性 LUT、台架验证前的技术边界。
 
@@ -30,10 +30,10 @@
 
 - 主线分支：`claude-mainline`
 - 研发原则：干净室推演，不复制、不猜测闭源厂商实现
-- 当前落地实验：EXP-001、EXP-002、EXP-003、EXP-004
+- 当前落地实验：EXP-001、EXP-002、EXP-003、EXP-004、EXP-006（synthetic `lambda_d/lambda_q` LUT 插值与非线性转矩证明）
 - 当前关键结论：低 `ψf` 不能单独带来高速收益，必须与高凸极比、母线电压、电流能力、MTPV 轨迹和安全边界协同设计
 - 当前工程文档：`reports/` 下已有工程落地矩阵、驱动/上电/协议图、BOM/EDA、stage-gate 流程
-- 当前仿真方案：`toolchain_selection_and_github_references.md` 和 `maxwell_motorcad_simulation_plan.md` 已明确 Motor-CAD + Maxwell 2D/3D 为工程主线，Pyleecan/FEMM/SyR-e/Simulink/Python 为开源复核与控制闭环
+- 当前仿真方案：`toolchain_selection_and_github_references.md` 和 `maxwell_motorcad_simulation_plan.md` 已明确 Motor-CAD + Maxwell 2D/3D 为工程主线，PyMotorCAD/PyAEDT 为自动化入口，PyFluent 仅用于 Fluent 冷却/CFD 支线，Pyleecan/FEMM/SyR-e/Simulink/Python 为开源复核与控制闭环
 
 ## 4. 主线证明了什么
 
@@ -46,7 +46,7 @@
 ## 5. 主线尚未证明什么
 
 - 当前参数族排序不是真实电磁几何推荐。
-- EXP-005 到 EXP-010 不属于 Claude 主线已落地的正式数值闭环。
+- EXP-005、EXP-007 到 EXP-010 不属于 Claude 主线已完成工程闭环的正式结论；EXP-006 当前仅完成独立的 synthetic LUT 数值证明，尚未接入共享控制搜索。
 - 非线性 `lambda_d/lambda_q` LUT、铁耗、逆变器损耗、NVH、EMC、机械强度仍未完成。
 - 任何结果都不能直接用于高压高速实机部署。
 - 工程释放仍需 FEA、HIL/台架、热、绝缘、EMC、功能安全和失效模式验证。

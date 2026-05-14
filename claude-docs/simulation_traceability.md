@@ -18,16 +18,16 @@
 |---|---|---|---|---|
 | `negative_d_axis_field_weakening` | `passed_numeric_simulation` | EXP-001 | `tests/test_dq_model.py`, `tests/test_param_sweep.py` | 增加温度相关 `id_min(T)` |
 | `mtpa_fw_mtpv_control` | `passed_numeric_simulation` | EXP-001 | `tests/test_control_search.py`, `tests/test_dq_model.py` | 生成控制 LUT 并检查模式切换连续性 |
-| `svpwm_overmodulation_voltage_utilization` | `needs_next_numeric_model` | EXP-003 Vdc 缩放代理 | `tests/test_param_sweep.py` | 增加显式 `k_mod`、谐波和损耗列 |
-| `nonlinear_flux_lut` | `needs_next_numeric_model` | 工程文档和 BOM/EDA | `tests/test_scheme_catalog.py` | 增加 LUT schema、插值和非线性转矩测试 |
+| `svpwm_overmodulation_voltage_utilization` | `passed_numeric_simulation` | EXP-005 | `tests/test_modulation.py`, `tests/test_modulation_factor_experiment.py` | 用实测逆变器损耗图和 PWM 重建 THD 替换参数惩罚 |
+| `nonlinear_flux_lut` | `passed_numeric_simulation` | EXP-006 synthetic LUT | `tests/test_nonlinear_flux_lut.py`, `tests/test_scheme_catalog.py` | 用 FEA/测量 `lambda_d/lambda_q` 替换 synthetic LUT，并接入控制搜索 |
 | `magnetic_saturation_codesign` | `passed_numeric_simulation` | EXP-003 | `tests/test_param_sweep.py` | 用 FEA `lambda_d/lambda_q` 替换缩放代理 |
 | `pmasynrm_high_saliency_low_pm` | `passed_numeric_simulation` | EXP-003 | `tests/test_param_sweep.py` | 增加 PM fraction 和转矩脉动筛选 |
 | `variable_magnetization_memory_motor` | `passed_numeric_simulation` | EXP-002 | `tests/test_variable_flux.py` | 增加状态转换能量和未知状态降额 |
-| `hybrid_excitation` | `needs_next_numeric_model` | BOM/EDA 架构 | `tests/test_scheme_catalog.py` | 增加 `psi_eff = psi_pm + kf * if` 与励磁损耗模型 |
-| `winding_reconfiguration` | `needs_next_numeric_model` | 驱动/协议/BOM 架构 | `tests/test_scheme_catalog.py` | 增加多绕组配置和切换连续性扫描 |
-| `multiphase_phase_group_control` | `needs_next_numeric_model` | 驱动/协议/BOM 架构 | `tests/test_scheme_catalog.py` | 增加相组降额和失组工况 |
+| `hybrid_excitation` | `passed_numeric_simulation` | EXP-007 | `tests/test_hybrid_excitation.py`, `tests/test_hybrid_excitation_experiment.py` | 增加励磁绕组电感、励磁损耗和转子漏磁，并做热耦合 |
+| `winding_reconfiguration` | `passed_numeric_simulation` | EXP-008 | `tests/test_winding_reconfiguration.py`, `tests/test_winding_reconfiguration_experiment.py` | 建模接触器切换瞬态、环流和并联支路热分配 |
+| `multiphase_phase_group_control` | `passed_numeric_simulation` | EXP-009 | `tests/test_multiphase_phase_group.py`, `tests/test_multiphase_phase_group_experiment.py` | 增加谐波子空间解耦、中性点偏移电压矢量和每相热 RC |
 | `thermal_demag_safety_protection` | `passed_numeric_simulation` | EXP-004 | `tests/test_safety_limits.py`, `tests/test_safety_boundary_experiment.py` | 用 FEA 或磁钢数据替换简化退磁线 |
-| `weighted_efficiency_pareto_selection` | `passed_architecture_verification` | 工程目录和 stage-gate | `tests/test_scheme_industry_process.py` | 增加工况权重和可追溯评分 |
+| `weighted_efficiency_pareto_selection` | `passed_numeric_simulation` | EXP-010 | `tests/test_drive_cycle.py`, `tests/test_weighted_efficiency_pareto_experiment.py` | 用实测工况替换示意工况，并补充铁耗/机械损耗/逆变器损耗 |
 
 ## 3. 已落地实验
 
@@ -37,6 +37,7 @@
 | EXP-002 | `quasi_steady_linear_dq_virtual_psi_f_scaling` | `experiments/exp_002_variable_flux/summary.json` |
 | EXP-003 | `quasi_steady_linear_dq_scaled_parameter_family` | `experiments/exp_003_param_sweep/summary.json` |
 | EXP-004 | `temperature_corrected_linear_dq_with_simplified_demag_limit` | `experiments/exp_004_safety_boundaries/summary.json` |
+| EXP-006 | `synthetic_lambda_d_lambda_q_lut_interpolation` | `experiments/exp_006_nonlinear_flux_lut/summary.json` |
 
 ## 4. 下一批最小实验包
 

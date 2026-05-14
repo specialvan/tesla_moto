@@ -128,18 +128,19 @@
       "engineering_goal": "Replace fixed Ld/Lq assumptions with lambda_d/lambda_q surfaces so control trajectories reflect saturation and cross-saturation.",
       "modeling_artifacts": [
         "models/flux_lut_schema.json",
-        "future sim/flux_lut.py interpolator",
+        "sim/nonlinear_flux_lut.py interpolator",
         "nonlinear torque equation Te = 1.5 p (lambda_d iq - lambda_q id)"
       ],
       "required_inputs": [
+        "pole pair count",
         "id and iq axes with units",
-        "temperature axis",
         "lambda_d table",
         "lambda_q table",
         "valid interpolation bounds"
       ],
       "experiments": [
         "synthetic physical LUT interface test",
+        "bilinear interpolation and out-of-bound rejection test",
         "linear model versus LUT torque error scan",
         "MTPA/MTPV regeneration from LUT"
       ],
@@ -157,7 +158,8 @@
       "deliverables": [
         "models/flux_lut_schema.json",
         "models/flux_lut_sample.json",
-        "reports/nonlinear_flux_lut_review.md"
+        "experiments/exp_006_nonlinear_flux_lut/summary.json",
+        "experiments/exp_006_nonlinear_flux_lut/nonlinear_flux_lut_results.csv"
       ]
     },
     {

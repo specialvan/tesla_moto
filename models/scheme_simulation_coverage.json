@@ -28,11 +28,16 @@
     },
     {
       "id": "nonlinear_flux_lut",
-      "simulation_status": "needs_next_numeric_model",
-      "pytest_tests": ["tests/test_scheme_catalog.py"],
-      "result_artifacts": ["reports/scheme_engineering_landing_matrix.md", "reports/scheme_bom_eda_integration_design.md"],
-      "coverage_note": "Schema and engineering landing are planned; no numeric lambda_d/lambda_q LUT interpolation test exists yet.",
-      "next_simulation_step": "Create models/flux_lut_schema.json, a synthetic LUT sample, and tests for interpolation bounds and nonlinear torque."
+      "simulation_status": "passed_numeric_simulation",
+      "pytest_tests": ["tests/test_nonlinear_flux_lut.py", "tests/test_scheme_catalog.py"],
+      "result_artifacts": [
+        "models/flux_lut_schema.json",
+        "models/flux_lut_sample.json",
+        "experiments/exp_006_nonlinear_flux_lut/summary.json",
+        "experiments/exp_006_nonlinear_flux_lut/nonlinear_flux_lut_results.csv"
+      ],
+      "coverage_note": "EXP-006 adds a synthetic lambda_d/lambda_q LUT with schema, bounds checks, bilinear interpolation, and nonlinear torque verification; it is a numeric proof, not yet FEA backfeed into control search.",
+      "next_simulation_step": "Replace the synthetic LUT with FEA or measured maps, then couple the LUT to voltage-constrained control search, MTPA/FW/MTPV generation, and thermal/demag boundaries."
     },
     {
       "id": "magnetic_saturation_codesign",
