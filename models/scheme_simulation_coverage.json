@@ -13,10 +13,10 @@
     {
       "id": "mtpa_fw_mtpv_control",
       "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_exp_001_runner.py", "tests/test_dq_model.py"],
-      "result_artifacts": ["experiments/exp_001_linear_dq/summary.json", "experiments/exp_001_linear_dq/scan_results.csv"],
-      "coverage_note": "EXP-001 includes minimum-current target torque points and max-feasible-torque MTPV-style points across speed.",
-      "next_simulation_step": "Unify search interfaces and generate a dedicated control LUT with mode transition continuity checks."
+      "pytest_tests": ["tests/test_exp_001_runner.py", "tests/test_dq_model.py", "tests/test_control_lut_generator.py"],
+      "result_artifacts": ["experiments/exp_001_linear_dq/summary.json", "experiments/exp_001_linear_dq/scan_results.csv", "models/control_lut_schema.json", "models/control_lut.json"],
+      "coverage_note": "EXP-001 includes minimum-current target torque points and max-feasible-torque MTPV-style points across speed. Control LUT generator now exports id/iq trajectories with mode labels and feasibility information.",
+      "next_simulation_step": "Add temperature-dependent id_min(T) demagnetization feasibility, Vdc variation sweeps, and closed-loop mode transition continuity validation to the control LUT."
     },
     {
       "id": "svpwm_overmodulation_voltage_utilization",
@@ -44,7 +44,7 @@
         "experiments/exp_006_nonlinear_flux_lut/README.md"
       ],
       "coverage_note": "EXP-006 now covers both synthetic lambda_d/lambda_q LUT validation and constrained speed-sweep search integration, proving the LUT participates in current/voltage-limited candidate selection while EXP-001 remains the linear baseline.",
-      "next_simulation_step": "Replace the synthetic LUT with FEA or measured maps, then export shared control LUTs and extend the same nonlinear model into MTPA/FW/MTPV, thermal, iron-loss, and demag boundary workflows."
+      "next_simulation_step": "Connect the nonlinear flux LUT to run_control_lut_generator.py for MTPA/FW/MTPV control trajectory export, then extend the same model into iron-loss, thermal, and demagnetization boundary workflows."
     },
     {
       "id": "magnetic_saturation_codesign",

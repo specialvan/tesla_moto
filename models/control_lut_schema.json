@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ControlLookupTable",
+  "description": "电机控制 LUT（查表）数据结构，用于 MTPA/FW/MTPV 连续轨迹控制。该 Schema 支持线性 dq 模型生成的查表数据，以及未来非线性磁链表驱动的控制轨迹。",
+  "version": "2026-05-14-v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "purpose",
+    "unit_convention",
+    "pole_pairs",
+    "motor_params_ref",
+    "grid_definition",
+    "control_points"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Schema 版本号，用于追踪格式演进。格式: YYYY-MM-DD-vN，例如 2026-05-14-v1。",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}-v\\d+$"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "查表数据的用途描述。"
+    },
+    "unit_convention": {
+      "type": "object",
+      "description": "dq 坐标系和物理量单位约定，与 motor_params.json 保持一致。",
+      "required": ["dq_transform", "current", "voltage", "speed"],
+      "properties": {
+        "dq_transform": {
+          "type": "string",
+          "const": "amplitude_invariant",
+          "description": "dq 变换约定：幅值不变（amplitude-invariant）变换，使用相峰值电流。"
+        },
+        "current": {
+          "type": "string",
+          "const": "phase_peak_ampere",
+          "description": "电流单位：相峰值安培（phase-peak ampere）。"
+        },
+        "voltage": {
+          "type": "string",
+          "const": "phase_peak_volt",
+          "description": "电压单位：相峰值伏特（phase-peak volt）。"
+        },
+        "speed": {
+          "type": "string",
+          "const": "mechanical_rpm_input_and_electrical_rad_per_second_internal",
+          "description": "速度约定：外部输入为机械 RPM，内部计算使用电角速度 rad/s。"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pole_pairs": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "电机极对数，用于机械转速到电角速度的转换。omega_e = speed_rpm * 2*pi/60 * pole_pairs"
+    },
+    "model_source": {
+      "type": "object",
+      "description": "数据来源模型信息，用于追溯数据生成路径。",
+      "properties": {
+        "model_type": {
+          "type": "string",
+          "enum": ["linear_dq", "nonlinear_flux_lut", "mixed"],
+          "description": "模型类型：linear_dq（线性 dq 模型）、nonlinear_flux_lut（非线性磁链表）、mixed（混合模式）。"
+        },
+        "linear_dq_ref": {
+          "type": "string",
+          "description": "当 model_type 为 linear_dq 或 mixed 时，引用 motor_params.json 的路径。"
+        },
+        "flux_lut_ref": {
+          "type": "string",
+          "description": "当 model_type 为 nonlinear_flux_lut 或 mixed 时，引用 flux_lut JSON 文件的路径。"
+        },
+        "experiment_ref": {
+          "type": "string",
+          "description": "生成此 LUT 的实验目录引用，例如 experiments/exp_001_linear_dq/"
+        },
+        "search_config": {
+          "type": "object",
+          "description": "搜索算法配置，定义如何从网格搜索得到最优工作点。",
+          "properties": {
+            "search_type": {
+              "type": "string",
+              "enum": ["min_current_for_torque", "max_torque_feasible", "mtpa", "custom"],
+              "description": "搜索类型：min_current_for_torque（最小电流目标转矩）、max_torque_feasible（最大可行转矩）、mtpa（最大转矩电流比）、custom（自定义）。"
+            },
+            "current_grid": {
+              "type": "object",
+              "description": "电流网格规格（与 sim/search.py GridSpec 对应）。",
+              "properties": {
+                "id_min_a": {
+                  "type": "number",
+                  "description": "d 轴电流最小值（A，phase-peak）。"
+                },
+                "id_max_a": {
+                  "type": "number",
+                  "description": "d 轴电流最大值（A，phase-peak）。"
+                },
+                "iq_min_a": {
+                  "type": "number",
+                  "description": "q 轴电流最小值（A，phase-peak）。"
+                },
+                "iq_max_a": {
+                  "type": "number",
+                  "description": "q 轴电流最大值（A，phase-peak）。"
+                },
+                "step_a": {
+                  "type": "number",
+                  "description": "电流网格步长（A，phase-peak）。"
+                }
+              },
+              "required": ["id_min_a", "id_max_a", "iq_min_a", "iq_max_a", "step_a"]
+            }
+          }
+        }
+      }
+    },
+    "motor_params_ref": {
+      "type": "string",
+      "description": "电机参数 JSON 文件引用路径。"
+    },
+    "operating_limits": {
+      "type": "object",
+      "description": "工作限值，与 motor_params 中的值对应。",
+      "properties": {
+        "vdc_v": {
+          "type": "number",
+          "description": "直流母线电压（V）。"
+        },
+        "vmax_v": {
+          "type": "number",
+          "description": "最大相电压峰值（V），通常为 Vdc * svpwm_linear_vmax_factor。"
+        },
+        "imax_a": {
+          "type": "number",
+          "description": "最大相电流峰值（A，phase-peak）。"
+        },
+        "speed_max_rpm": {
+          "type": "number",
+          "description": "电机最大机械转速（RPM）。"
+        },
+        "temperature_c": {
+          "type": "number",
+          "description": "电机工作温度（°C），用于温度相关限值的记录。"
+        }
+      }
+    },
+    "grid_definition": {
+      "type": "object",
+      "description": "查表网格定义。控制 LUT 在速度-转矩二维网格上存储最优 id/iq 命令。",
+      "required": ["speed_axis_rpm", "torque_axis_nm", "interpolation_method"],
+      "properties": {
+        "speed_axis_rpm": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 2,
+          "description": "速度轴（机械 RPM），必须严格递增。例：[0, 250, 500, ..., 18000]。"
+        },
+        "torque_axis_nm": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 2,
+          "description": "转矩轴（Nm），必须严格递增。例：[0, 10, 20, ..., 120]。"
+        },
+        "speed_step_rpm": {
+          "type": "number",
+          "description": "速度网格步长（RPM），用于网格密度信息。"
+        },
+        "torque_step_nm": {
+          "type": "number",
+          "description": "转矩网格步长（Nm），用于网格密度信息。"
+        },
+        "interpolation_method": {
+          "type": "string",
+          "enum": ["bilinear", "nearest", "bicubic", "none"],
+          "description": "插值方法：bilinear（双线性插值）、nearest（最近邻）、bicubic（双三次）、none（无插值，仅使用网格点）。"
+        },
+        "extrapolation_policy": {
+          "type": "string",
+          "enum": ["clamp", "error", "linear_extrapolate"],
+          "description": "外推策略：clamp（钳制到边界）、error（超出范围报错）、linear_extrapolate（线性外推）。"
+        }
+      }
+    },
+    "control_points": {
+      "type": "array",
+      "description": "控制点数组。每个点对应速度-转矩网格上的一个查表条目，包含最优 id/iq 命令、模式标记和约束信息。",
+      "items": {
+        "$ref": "#/$defs/ControlPoint"
+      }
+    },
+    "mode_transitions": {
+      "type": "object",
+      "description": "模式转换边界定义，记录 MTPA/FW/MTPV 模式切换的关键位置。",
+      "properties": {
+        "mtpa_to_fw_boundary": {
+          "type": "array",
+          "description": "MTPA 到 FW 的转换边界点列表。",
+          "items": {"$ref": "#/$defs/TransitionPoint"}
+        },
+        "fw_to_mtpv_boundary": {
+          "type": "array",
+          "description": "FW 到 MTPV 的转换边界点列表（电压极限边界）。",
+          "items": {"$ref": "#/$defs/TransitionPoint"}
+        },
+        "demagnetization_limit": {
+          "type": "array",
+          "description": "去磁极限边界（id_min 约束）。",
+          "items": {"$ref": "#/$defs/TransitionPoint"}
+        },
+        "current_limit_boundary": {
+          "type": "array",
+          "description": "电流极限边界（电压无关的电流圆限制）。",
+          "items": {"$ref": "#/$defs/TransitionPoint"}
+        }
+      }
+    },
+    "feasibility_map": {
+      "type": "object",
+      "description": "可行性地图，记录每个速度-转矩点的可行性状态统计。",
+      "properties": {
+        "total_points": {
+          "type": "integer",
+          "description": "总网格点数。"
+        },
+        "feasible_points": {
+          "type": "integer",
+          "description": "可行网格点数。"
+        },
+        "feasibility_ratio": {
+          "type": "number",
+          "description": "可行性比例（0.0 ~ 1.0）。"
+        },
+        "infeasible_reasons": {
+          "type": "object",
+          "description": "不可行原因统计。",
+          "properties": {
+            "voltage_exceeded": {
+              "type": "integer",
+              "description": "电压超限的点数。"
+            },
+            "current_exceeded": {
+              "type": "integer",
+              "description": "电流超限的点数。"
+            },
+            "demagnetization_risk": {
+              "type": "integer",
+              "description": "去磁风险的点数。"
+            },
+            "out_of_flux_lut_bounds": {
+              "type": "integer",
+              "description": "超出磁链表范围的点数（仅非线性模型）。"
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "description": "验证信息，记录 LUT 生成后的质量检查结果。",
+      "properties": {
+        "mode_continuity_check_passed": {
+          "type": "boolean",
+          "description": "模式连续性检查是否通过（MTPA -> FW -> MTPV 切换点是否有突兀的 id/iq 跳变）。"
+        },
+        "max_id_slope_per_rpm": {
+          "type": "number",
+          "description": "最大 id 斜率（A/RPM），用于检测切换不连续性。"
+        },
+        "max_iq_slope_per_rpm": {
+          "type": "number",
+          "description": "最大 iq 斜率（A/RPM），用于检测切换不连续性。"
+        },
+        "torque_discontinuity_at_transitions_nm": {
+          "type": "number",
+          "description": "模式切换点的最大转矩跳变（Nm）。"
+        },
+        "voltage_margin_warning_threshold_v": {
+          "type": "number",
+          "description": "电压裕度警告阈值（V），低于此值时标记为警告。"
+        },
+        "low_voltage_margin_points": {
+          "type": "integer",
+          "description": "低于警告阈值的点数。"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "元数据，用于追溯和版本管理。",
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "LUT 生成时间（ISO 8601 格式）。"
+        },
+        "generator_script": {
+          "type": "string",
+          "description": "生成此 LUT 的脚本路径或名称。"
+        },
+        "generator_version": {
+          "type": "string",
+          "description": "生成器脚本的版本号。"
+        },
+        "notes": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "附加说明或备注。"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "ControlPoint": {
+      "type": "object",
+      "description": "单个控制点，包含速度、转矩、id/iq 命令和约束信息。",
+      "required": ["speed_rpm", "torque_nm", "id_a", "iq_a", "control_mode", "feasible"],
+      "properties": {
+        "speed_rpm": {
+          "type": "number",
+          "description": "机械转速（RPM）。"
+        },
+        "torque_nm": {
+          "type": "number",
+          "description": "目标转矩（Nm）。正值表示电动，负值表示发电。"
+        },
+        "id_a": {
+          "type": ["number", "null"],
+          "description": "d 轴电流命令（A，phase-peak）。null 表示该工作点不可行或未定义。"
+        },
+        "iq_a": {
+          "type": ["number", "null"],
+          "description": "q 轴电流命令（A，phase-peak）。null 表示该工作点不可行或未定义。"
+        },
+        "control_mode": {
+          "type": "string",
+          "enum": ["MTPA", "FW", "MTPV", "INFEASIBLE", "IDLE", null],
+          "description": "控制模式：MTPA（最大转矩电流比）、FW（弱磁）、MTPV（最大转矩电压限制）、INFEASIBLE（不可行）、IDLE（空闲/零转矩）、null（未定义）���"
+        },
+        "feasible": {
+          "type": "boolean",
+          "description": "该工作点是否满足电压和电流约束。"
+        },
+        "infeasibility_reason": {
+          "type": "string",
+          "enum": ["voltage_exceeded", "current_exceeded", "demagnetization_risk", "out_of_flux_lut_bounds", "search_not_converged", null],
+          "description": "当 feasible=false 时，标识不可行原因。"
+        },
+        "current_a": {
+          "type": ["number", "null"],
+          "description": "电流幅值（A，phase-peak），sqrt(id^2 + iq^2)。"
+        },
+        "voltage_v": {
+          "type": ["number", "null"],
+          "description": "电压幅值（A，phase-peak），sqrt(vd^2 + vq^2)。"
+        },
+        "voltage_margin_v": {
+          "type": ["number", "null"],
+          "description": "电压裕度（V），vmax_v - voltage_v。正值表示有余量，负值或零表示超限。"
+        },
+        "current_margin_a": {
+          "type": ["number", "null"],
+          "description": "电流裕度（A），imax_a - current_a。正值表示有余量，负值或零表示超限。"
+        },
+        "copper_loss_w": {
+          "type": ["number", "null"],
+          "description": "铜损（W），3 * I_rms^2 * Rs。用于效率优化。"
+        },
+        "efficiency": {
+          "type": ["number", "null"],
+          "description": "估算效率（0.0 ~ 1.0）。当前版本可能为 null，待加入损耗模型后填充。"
+        },
+        "search_method": {
+          "type": "string",
+          "enum": ["min_current", "max_torque", "mtpa_analytical", "interpolated", null],
+          "description": "该点的搜索方法：min_current（最小电流搜索）、max_torque（最大转矩搜索）、mtpa_analytical（MTPA 解析计算）、interpolated（从相邻点插值）。"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low", null],
+          "description": "该点数据的置信度：high（网格收敛点）、medium（插值点）、low（外推点）。"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TransitionPoint": {
+      "type": "object",
+      "description": "模式转换边界点，记录相邻模式切换的位置和特性。",
+      "required": ["speed_rpm", "torque_nm", "from_mode", "to_mode"],
+      "properties": {
+        "speed_rpm": {
+          "type": "number",
+          "description": "转换点机械转速（RPM）。"
+        },
+        "torque_nm": {
+          "type": "number",
+          "description": "转换点转矩（Nm）。"
+        },
+        "from_mode": {
+          "type": "string",
+          "enum": ["MTPA", "FW", "MTPV"],
+          "description": "转换前的模式。"
+        },
+        "to_mode": {
+          "type": "string",
+          "enum": ["MTPA", "FW", "MTPV"],
+          "description": "转换后的模式。"
+        },
+        "id_jump_a": {
+          "type": ["number", "null"],
+          "description": "转换时 id 的跳变量（A），用于评估切换平滑性。"
+        },
+        "iq_jump_a": {
+          "type": ["number", "null"],
+          "description": "转换时 iq 的跳变量（A），用于评估切换平滑性。"
+        },
+        "torque_jump_nm": {
+          "type": ["number", "null"],
+          "description": "转换时转矩的跳变量（Nm）。"
+        },
+        "notes": {
+          "type": "string",
+          "description": "附加说明。"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
