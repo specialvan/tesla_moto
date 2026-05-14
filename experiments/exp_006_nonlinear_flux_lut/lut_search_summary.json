@@ -1,0 +1,29 @@
+{
+  "experiment": "exp_006_nonlinear_flux_lut_search",
+  "parameter_source": "synthetic_clean_room_flux_lut",
+  "engineering_validated": false,
+  "model_scope": "quasi_steady_nonlinear_flux_lut_grid_search",
+  "model_limitations": [
+    "sample LUT is synthetic and not FEA-derived",
+    "search grid is clipped to LUT bounds",
+    "no iron loss, inverter drop, thermal, or demagnetization coupling yet",
+    "no shared MTPA, field-weakening, or MTPV LUT export yet"
+  ],
+  "lut_path": "models\\flux_lut_sample.json",
+  "pole_pairs": 4,
+  "lut_bounds": {
+    "id_min_a": -200.0,
+    "id_max_a": 0.0,
+    "iq_min_a": 0.0,
+    "iq_max_a": 200.0
+  },
+  "search_grid_clipped_to_lut_bounds": true,
+  "target_torque_nm": 100.0,
+  "scan_step_rpm": 250.0,
+  "max_speed_configured_rpm": 18000.0,
+  "max_speed_scanned_rpm": 18000.0,
+  "id_zero_target_max_speed_rpm": null,
+  "min_current_target_max_speed_rpm": null,
+  "max_feasible_positive_torque_max_speed_rpm": 18000.0,
+  "csv_path": "experiments\\exp_006_nonlinear_flux_lut\\lut_search_scan_results.csv"
+}
