@@ -28,6 +28,10 @@ def test_each_simulation_record_has_reproducible_artifacts() -> None:
         assert record["pytest_tests"], record["id"]
         assert record["result_artifacts"], record["id"]
         assert record["next_simulation_step"], record["id"]
+        for pytest_test in record["pytest_tests"]:
+            assert Path(
+                pytest_test
+            ).exists(), f"{record['id']} pytest test missing: {pytest_test}"
         for artifact in record["result_artifacts"]:
             assert Path(
                 artifact

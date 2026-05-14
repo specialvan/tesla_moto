@@ -9,7 +9,7 @@ Claude 主线采用分层工具链，不押注单一软件：
 | L0 系统/控制预研 | Python dq / MATLAB / Simulink / motulator | FOC、SVPWM、MTPA、弱磁、MTPV、MRAS、无速度传感器控制 | 控制策略、边界趋势、初始 LUT |
 | L1 快速电机设计 | Ansys Motor-CAD | 拓扑、尺寸、绕组、热、损耗、效率图、驱动循环 | 初始几何、效率图、热边界、候选设计 |
 | L2 高保真电磁 | Ansys Maxwell 2D/3D | PMSM/BLDC/SRM/IM/DC/直线电机电磁 FEA | 反电势、齿槽转矩、转矩脉动、LUT、退磁、铁耗、力波 |
-| L3 多物理 | Maxwell + Motor-CAD + Mechanical / CFD / Icepak / NVH | 热、结构、振动噪声、冷却和应力闭环 | 热包络、NVH、转子应力、冷却方案 |
+| L3 多物理 | Maxwell + Motor-CAD + Mechanical / Fluent / Icepak / NVH | 热、结构、振动噪声、冷却和应力闭环 | 热包络、NVH、转子应力、冷却方案 |
 | L4 控制/HIL/嵌入式 | Simulink / Motor Control Blockset / MCU SDK / HIL | 代码生成、半实物、控制器验证 | FOC/SVPWM/弱磁代码、HIL 测试报告 |
 
 关键判断：
@@ -18,6 +18,7 @@ Claude 主线采用分层工具链，不押注单一软件：
 - Motor-CAD 不是 Maxwell 的替代品，而是前期快速设计和多物理初筛工具。
 - Maxwell 负责最终电磁可信度，Motor-CAD 负责快速拓扑、效率、热和初步 NVH 风险筛选。
 - MATLAB/Simulink 负责控制、功率电子、HIL 和报告级仿真。
+- PyAEDT 是 Python 自动化 Maxwell / AEDT 的主入口；PyFluent 是 Python 自动化 Fluent 的主入口，适合水套、油冷、风冷、流阻和换热 CFD，不用于直接控制 Maxwell 电磁求解。
 - Pyleecan/FEMM/SyR-e/motulator 等开源项目用于可复核基准、二次开发和算法回归，不直接替代商业 FEA 的工程释放。
 
 ## 2. GitHub 参考项目清单
@@ -26,6 +27,7 @@ Claude 主线采用分层工具链，不押注单一软件：
 |---|---|---|---|
 | PyAEDT | https://github.com/ansys/pyaedt | Python 自动化 AEDT，覆盖 Maxwell 2D/3D/RMxprt | 自动建模、批量扫参、导出 Maxwell 结果 |
 | PyMotorCAD | https://github.com/ansys/pymotorcad | Python 控制 Motor-CAD，本地或远程连接 Motor-CAD 实例 | 自动生成 Motor-CAD 参数族、效率图、热分析 |
+| PyFluent | https://github.com/ansys/pyfluent | Python 自动化 Ansys Fluent | 冷却流道、油冷/水冷/风冷、换热和压降 CFD；接收 Maxwell/Motor-CAD 损耗作为热源 |
 | Pyleecan | https://github.com/Eomys/pyleecan | 开源电机多物理设计与优化框架，集成 FEMM/GMSH | 复现实验、开源基线、非商业建模参考 |
 | SyR-e | https://github.com/SyR-e/syre_public | Matlab/Octave 电机设计平台，覆盖 SynRM、PMaSynRM、IPM、SPM | 高凸极、PMaSynRM、低永磁路线参考 |
 | FEMM | https://github.com/cenit/FEMM | 2D 磁场有限元求解器 | 开源复核和低成本教学验证 |

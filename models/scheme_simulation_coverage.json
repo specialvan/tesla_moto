@@ -13,7 +13,7 @@
     {
       "id": "mtpa_fw_mtpv_control",
       "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_control_search.py", "tests/test_dq_model.py"],
+      "pytest_tests": ["tests/test_exp_001_runner.py", "tests/test_dq_model.py"],
       "result_artifacts": ["experiments/exp_001_linear_dq/summary.json", "experiments/exp_001_linear_dq/scan_results.csv"],
       "coverage_note": "EXP-001 includes minimum-current target torque points and max-feasible-torque MTPV-style points across speed.",
       "next_simulation_step": "Unify search interfaces and generate a dedicated control LUT with mode transition continuity checks."
@@ -29,15 +29,22 @@
     {
       "id": "nonlinear_flux_lut",
       "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_nonlinear_flux_lut.py", "tests/test_scheme_catalog.py"],
+      "pytest_tests": [
+        "tests/test_nonlinear_flux_lut.py",
+        "tests/test_nonlinear_flux_lut_search.py",
+        "tests/test_scheme_catalog.py"
+      ],
       "result_artifacts": [
         "models/flux_lut_schema.json",
         "models/flux_lut_sample.json",
         "experiments/exp_006_nonlinear_flux_lut/summary.json",
-        "experiments/exp_006_nonlinear_flux_lut/nonlinear_flux_lut_results.csv"
+        "experiments/exp_006_nonlinear_flux_lut/nonlinear_flux_lut_results.csv",
+        "experiments/exp_006_nonlinear_flux_lut/lut_search_summary.json",
+        "experiments/exp_006_nonlinear_flux_lut/lut_search_scan_results.csv",
+        "experiments/exp_006_nonlinear_flux_lut/README.md"
       ],
-      "coverage_note": "EXP-006 adds a synthetic lambda_d/lambda_q LUT with schema, bounds checks, bilinear interpolation, and nonlinear torque verification; it is a numeric proof, not yet FEA backfeed into control search.",
-      "next_simulation_step": "Replace the synthetic LUT with FEA or measured maps, then couple the LUT to voltage-constrained control search, MTPA/FW/MTPV generation, and thermal/demag boundaries."
+      "coverage_note": "EXP-006 now covers both synthetic lambda_d/lambda_q LUT validation and constrained speed-sweep search integration, proving the LUT participates in current/voltage-limited candidate selection while EXP-001 remains the linear baseline.",
+      "next_simulation_step": "Replace the synthetic LUT with FEA or measured maps, then export shared control LUTs and extend the same nonlinear model into MTPA/FW/MTPV, thermal, iron-loss, and demag boundary workflows."
     },
     {
       "id": "magnetic_saturation_codesign",

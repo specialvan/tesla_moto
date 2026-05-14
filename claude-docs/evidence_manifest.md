@@ -30,6 +30,13 @@
 | EXP-002 | `experiments/exp_002_variable_flux/summary.json` | `experiments/exp_002_variable_flux/variable_flux_scan.csv` | `experiments/exp_002_variable_flux/README.md` |
 | EXP-003 | `experiments/exp_003_param_sweep/summary.json` | `experiments/exp_003_param_sweep/param_sweep_results.csv` | `experiments/exp_003_param_sweep/README.md` |
 | EXP-004 | `experiments/exp_004_safety_boundaries/summary.json` | `experiments/exp_004_safety_boundaries/safety_boundary_results.csv` | `experiments/exp_004_safety_boundaries/README.md` |
+| EXP-005 | `experiments/exp_005_modulation_factor/summary.json` | `experiments/exp_005_modulation_factor/modulation_sweep_results.csv` | `-` |
+| EXP-006 phase-1 | `experiments/exp_006_nonlinear_flux_lut/summary.json` | `experiments/exp_006_nonlinear_flux_lut/nonlinear_flux_lut_results.csv` | `experiments/exp_006_nonlinear_flux_lut/README.md` |
+| EXP-006 phase-2 | `experiments/exp_006_nonlinear_flux_lut/lut_search_summary.json` | `experiments/exp_006_nonlinear_flux_lut/lut_search_scan_results.csv` | `experiments/exp_006_nonlinear_flux_lut/README.md` |
+| EXP-007 | `experiments/exp_007_hybrid_excitation/summary.json` | `experiments/exp_007_hybrid_excitation/hybrid_excitation_results.csv` | `-` |
+| EXP-008 | `experiments/exp_008_winding_reconfiguration/summary.json` | `experiments/exp_008_winding_reconfiguration/winding_reconfiguration_results.csv` | `-` |
+| EXP-009 | `experiments/exp_009_multiphase_phase_group/summary.json` | `experiments/exp_009_multiphase_phase_group/multiphase_phase_group_results.csv` | `-` |
+| EXP-010 | `experiments/exp_010_weighted_efficiency_pareto/summary.json` | `experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv` | `-` |
 
 ## 4. 当前关键证据结论
 
@@ -58,6 +65,24 @@
 - 含义：退磁和热边界必须成为所有控制/拓扑路线的横向安全层。
 - 限制：简化退磁线必须被真实磁钢数据、FEA 或台架数据替换。
 
+### EXP-005
+
+- 模型范围：在线性 dq speed sweep 上显式引入 `k_mod` 调制因子与参数化谐波/损耗惩罚。
+- 含义：已可重跑评估过调制电压利用率收益，但仍需实测逆变器损耗图与 PWM 重建 THD 替换参数化代理。
+
+### EXP-006
+
+- phase-1 模型范围：synthetic `lambda_d/lambda_q` LUT schema、边界检查、双线性插值、非线性转矩。
+- phase-2 模型范围：在现有 `search.py` 上接入 LUT，完成电压/电流约束下的 target torque 与 max feasible torque speed sweep。
+- 含义：主线已证明非线性磁链表不仅能独立成立，还能进入受约束搜索链路；但仍未形成 FEA/实测驱动的工程释放证据。
+
+### EXP-007 ~ EXP-010
+
+- EXP-007：已可重跑混合励磁等效 `psi_eff` 代理实验，下一步是补励磁电感、漏磁和热耦合。
+- EXP-008：已可重跑绕组重构代理实验，下一步是补切换瞬态、环流和支路热分配。
+- EXP-009：已可重跑多相相组降额实验，下一步是补谐波子空间解耦和每相热 RC。
+- EXP-010：已可重跑加权效率路由筛选，下一步是用实测工况与更多损耗项替换示意代理。
+
 ## 5. 当前缺口证据
 
 下列方向仍不是 Claude 主线的完整数值仿真闭环：
@@ -69,7 +94,7 @@
 - `multiphase_phase_group_control`
 - `weighted_efficiency_pareto_selection`
 
-这些项已有工程文档或架构验证证据，但不能写成当前主线已通过完整数值仿真。
+这些项已有工程文档、可复现实验或架构验证证据，但不能写成当前主线已通过完整数值仿真。
 
 ## 6. 更新规则
 

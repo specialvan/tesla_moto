@@ -17,9 +17,9 @@
 | 方案 ID | 当前状态 | 当前证据 | 主要测试 | 下一步 |
 |---|---|---|---|---|
 | `negative_d_axis_field_weakening` | `passed_numeric_simulation` | EXP-001 | `tests/test_dq_model.py`, `tests/test_param_sweep.py` | 增加温度相关 `id_min(T)` |
-| `mtpa_fw_mtpv_control` | `passed_numeric_simulation` | EXP-001 | `tests/test_control_search.py`, `tests/test_dq_model.py` | 生成控制 LUT 并检查模式切换连续性 |
+| `mtpa_fw_mtpv_control` | `passed_numeric_simulation` | EXP-001 | `tests/test_exp_001_runner.py`, `tests/test_dq_model.py` | 生成控制 LUT 并检查模式切换连续性 |
 | `svpwm_overmodulation_voltage_utilization` | `passed_numeric_simulation` | EXP-005 | `tests/test_modulation.py`, `tests/test_modulation_factor_experiment.py` | 用实测逆变器损耗图和 PWM 重建 THD 替换参数惩罚 |
-| `nonlinear_flux_lut` | `passed_numeric_simulation` | EXP-006 synthetic LUT | `tests/test_nonlinear_flux_lut.py`, `tests/test_scheme_catalog.py` | 用 FEA/测量 `lambda_d/lambda_q` 替换 synthetic LUT，并接入控制搜索 |
+| `nonlinear_flux_lut` | `passed_numeric_simulation` | EXP-006 phase-1 + phase-2 synthetic LUT | `tests/test_nonlinear_flux_lut.py`, `tests/test_nonlinear_flux_lut_search.py`, `tests/test_scheme_catalog.py` | 用 FEA/测量 `lambda_d/lambda_q` 替换 synthetic LUT，并导出共享控制 LUT |
 | `magnetic_saturation_codesign` | `passed_numeric_simulation` | EXP-003 | `tests/test_param_sweep.py` | 用 FEA `lambda_d/lambda_q` 替换缩放代理 |
 | `pmasynrm_high_saliency_low_pm` | `passed_numeric_simulation` | EXP-003 | `tests/test_param_sweep.py` | 增加 PM fraction 和转矩脉动筛选 |
 | `variable_magnetization_memory_motor` | `passed_numeric_simulation` | EXP-002 | `tests/test_variable_flux.py` | 增加状态转换能量和未知状态降额 |
@@ -37,18 +37,25 @@
 | EXP-002 | `quasi_steady_linear_dq_virtual_psi_f_scaling` | `experiments/exp_002_variable_flux/summary.json` |
 | EXP-003 | `quasi_steady_linear_dq_scaled_parameter_family` | `experiments/exp_003_param_sweep/summary.json` |
 | EXP-004 | `temperature_corrected_linear_dq_with_simplified_demag_limit` | `experiments/exp_004_safety_boundaries/summary.json` |
+| EXP-005 | `linear_dq_with_explicit_modulation_factor_penalties` | `experiments/exp_005_modulation_factor/summary.json` |
 | EXP-006 | `synthetic_lambda_d_lambda_q_lut_interpolation` | `experiments/exp_006_nonlinear_flux_lut/summary.json` |
+| EXP-006 phase-2 | `quasi_steady_nonlinear_flux_lut_grid_search` | `experiments/exp_006_nonlinear_flux_lut/lut_search_summary.json` |
+| EXP-007 | `quasi_steady_linear_dq_with_hybrid_excitation_proxy` | `experiments/exp_007_hybrid_excitation/summary.json` |
+| EXP-008 | `quasi_steady_linear_dq_with_winding_reconfiguration_proxy` | `experiments/exp_008_winding_reconfiguration/summary.json` |
+| EXP-009 | `quasi_steady_linear_dq_with_multiphase_phase_group_derating` | `experiments/exp_009_multiphase_phase_group/summary.json` |
+| EXP-010 | `weighted_efficiency_route_screening` | `experiments/exp_010_weighted_efficiency_pareto/summary.json` |
 
-## 4. 下一批最小实验包
+## 4. 当前深化方向
 
-| 目标实验 | 对应方案 | 最小验收 |
+| 方向 | 当前基线 | 下一步最小深化 |
 |---|---|---|
-| EXP-005 | SVPWM 过调制 | `k_mod` 轴、谐波电流、转矩脉动、逆变损耗惩罚 |
-| EXP-006 | 非线性磁链 LUT | `lambda_d/lambda_q` 样例、边界检查、插值、非线性转矩 |
-| EXP-007 | 混合励磁 | `psi_eff = psi_pm + kf * if`、励磁铜耗、目标速度边界 |
-| EXP-008 | 绕组重构 | 串/并/基准配置、Ke/Kt/R/L 代理、切换连续性 |
-| EXP-009 | 多相相组 | 健康/失组/不均流、可用电流降额、目标可达性 |
-| EXP-010 | Pareto 选择 | 速度/损耗/风险权重、候选排序、来源追踪 |
+| EXP-004 安全边界 | 简化 `id_min(T)` 退磁线 | 用 FEA 或磁钢数据替换简化退磁线 |
+| EXP-005 调制利用率 | 参数化 `k_mod`、THD/损耗惩罚 | 接入实测逆变器损耗图与 PWM 重建 THD |
+| EXP-006 非线性磁链 LUT | synthetic LUT + constrained search | 用 FEA/测量 `lambda_d/lambda_q` 替换 synthetic LUT，并导出共享控制 LUT |
+| EXP-007 混合励磁 | 等效 `psi_eff = psi_pm + kf * if` | 增加励磁绕组电感、励磁损耗和转子漏磁，并做热耦合 |
+| EXP-008 绕组重构 | 串/并配置代理与切换连续性 | 建模接触器切换瞬态、环流和并联支路热分配 |
+| EXP-009 多相相组 | 相组降额与失组可达性 | 增加谐波子空间解耦、中性点偏移电压矢量和每相热 RC |
+| EXP-010 Pareto 选择 | 示意工况下的加权路由排序 | 用实测工况替换示意工况，并补充铁耗/机械损耗/逆变器损耗 |
 
 ## 5. 验收命令
 

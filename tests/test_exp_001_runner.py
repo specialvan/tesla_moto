@@ -37,3 +37,13 @@ def test_exp_001_csv_outputs_do_not_contain_infinite_values() -> None:
 
     assert "inf" not in text.lower()
     assert "nan" not in text.lower()
+
+
+def test_exp_001_summary_regression_points_remain_linear_baseline() -> None:
+    summary = run()
+
+    assert summary["model_scope"] == "quasi_steady_linear_dq_grid_search"
+    assert "no_nonlinear_flux_lut" in summary["model_limitations"]
+    assert summary["min_current_target_max_speed_rpm"] == 6750.0
+    assert summary["max_feasible_positive_torque_max_speed_rpm"] == 18000.0
+    assert summary["id_zero_target_max_speed_rpm"] is None

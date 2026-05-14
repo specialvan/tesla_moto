@@ -12,7 +12,9 @@ from .dq_model import (
     current_mag_a,
     torque_nm,
     voltage_mag_v,
+    voltage_magnitude,
 )
+from .nonlinear_flux_lut import FluxLut, nonlinear_torque_nm
 
 
 @dataclass(frozen=True)
@@ -99,11 +101,16 @@ def current_grid(grid: GridSpec) -> Iterable[tuple[float, float]]:
 
 
 def make_candidate(
-    params: MotorParams, id_a: float, iq_a: float, omega_e: float
+    params: MotorParams,
+    id_a: float,
+    iq_a: float,
+    omega_e: float,
+    flux_lut: FluxLut | None = None,
 ) -> Candidate:
-    torque = torque_nm(params, id_a, iq_a)
+    torque, voltage = _torque_and_voltage_from_model(
+        params, id_a, iq_a, omega_e, flux_lut=flux_lut
+    )
     current = current_mag_a(id_a, iq_a)
-    voltage = voltage_mag_v(params, id_a, iq_a, omega_e)
     return Candidate(
         id_a=id_a,
         iq_a=iq_a,
@@ -122,12 +129,16 @@ def find_min_current_for_torque(
     omega_e: float,
     target_torque_nm: float,
     grid: GridSpec,
+    flux_lut: FluxLut | None = None,
 ) -> Candidate | None:
     """Find the feasible grid point with minimum current and target torque reached."""
+    effective_grid = _clip_grid_to_flux_lut(grid, flux_lut)
+    if effective_grid is None:
+        return None
     best: Candidate | None = None
     best_key: tuple[float, float] | None = None
-    for id_a, iq_a in current_grid(grid):
-        candidate = make_candidate(params, id_a, iq_a, omega_e)
+    for id_a, iq_a in current_grid(effective_grid):
+        candidate = make_candidate(params, id_a, iq_a, omega_e, flux_lut=flux_lut)
         if not candidate.feasible or candidate.torque_nm < target_torque_nm:
             continue
         key = (candidate.current_a, abs(candidate.torque_nm - target_torque_nm))
@@ -138,12 +149,18 @@ def find_min_current_for_torque(
 
 
 def find_max_torque_feasible(
-    params: MotorParams, omega_e: float, grid: GridSpec
+    params: MotorParams,
+    omega_e: float,
+    grid: GridSpec,
+    flux_lut: FluxLut | None = None,
 ) -> Candidate | None:
     """Find the feasible grid point with maximum torque at a speed."""
+    effective_grid = _clip_grid_to_flux_lut(grid, flux_lut)
+    if effective_grid is None:
+        return None
     best: Candidate | None = None
-    for id_a, iq_a in current_grid(grid):
-        candidate = make_candidate(params, id_a, iq_a, omega_e)
+    for id_a, iq_a in current_grid(effective_grid):
+        candidate = make_candidate(params, id_a, iq_a, omega_e, flux_lut=flux_lut)
         if not candidate.feasible:
             continue
         if best is None or candidate.torque_nm > best.torque_nm:
@@ -152,13 +169,22 @@ def find_max_torque_feasible(
 
 
 def find_id_zero_candidate(
-    params: MotorParams, omega_e: float, target_torque_nm: float, grid: GridSpec
+    params: MotorParams,
+    omega_e: float,
+    target_torque_nm: float,
+    grid: GridSpec,
+    flux_lut: FluxLut | None = None,
 ) -> Candidate | None:
     """Find an id=0 feasible point that reaches target torque with least overshoot."""
+    effective_grid = _clip_grid_to_flux_lut(grid, flux_lut)
+    if effective_grid is None:
+        return None
+    if not (effective_grid.id_min_a <= 0.0 <= effective_grid.id_max_a):
+        return None
     best: Candidate | None = None
     best_error: float | None = None
-    for iq_a in axis_grid(grid.iq_min_a, grid.iq_max_a, grid.step_a):
-        candidate = make_candidate(params, 0.0, iq_a, omega_e)
+    for iq_a in axis_grid(effective_grid.iq_min_a, effective_grid.iq_max_a, effective_grid.step_a):
+        candidate = make_candidate(params, 0.0, iq_a, omega_e, flux_lut=flux_lut)
         if not candidate.feasible or candidate.torque_nm < target_torque_nm:
             continue
         error = abs(candidate.torque_nm - target_torque_nm)
@@ -166,3 +192,39 @@ def find_id_zero_candidate(
             best = candidate
             best_error = error
     return best
+
+
+def _clip_grid_to_flux_lut(
+    grid: GridSpec, flux_lut: FluxLut | None
+) -> GridSpec | None:
+    if flux_lut is None:
+        return grid
+    id_min = max(grid.id_min_a, flux_lut.id_axis_a[0])
+    id_max = min(grid.id_max_a, flux_lut.id_axis_a[-1])
+    iq_min = max(grid.iq_min_a, flux_lut.iq_axis_a[0])
+    iq_max = min(grid.iq_max_a, flux_lut.iq_axis_a[-1])
+    if id_min > id_max or iq_min > iq_max:
+        return None
+    return GridSpec(
+        id_min_a=id_min,
+        id_max_a=id_max,
+        iq_min_a=iq_min,
+        iq_max_a=iq_max,
+        step_a=grid.step_a,
+    )
+
+
+def _torque_and_voltage_from_model(
+    params: MotorParams,
+    id_a: float,
+    iq_a: float,
+    omega_e: float,
+    flux_lut: FluxLut | None = None,
+) -> tuple[float, float]:
+    if flux_lut is None:
+        return torque_nm(params, id_a, iq_a), voltage_mag_v(params, id_a, iq_a, omega_e)
+    lambdas = flux_lut.interpolate(id_a, iq_a)
+    torque = nonlinear_torque_nm(flux_lut, flux_lut.pole_pairs, id_a, iq_a)
+    vd_v = params.rs_ohm * id_a - omega_e * lambdas.lambda_q_wb
+    vq_v = params.rs_ohm * iq_a + omega_e * lambdas.lambda_d_wb
+    return torque, voltage_magnitude(vd_v, vq_v)

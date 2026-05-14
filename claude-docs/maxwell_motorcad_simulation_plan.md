@@ -6,6 +6,8 @@
 
 ```text
 Ansys Motor-CAD + Ansys Maxwell 2D/3D 作为工程主线
+PyMotorCAD + PyAEDT 作为 Python 自动化入口
+PyFluent 仅用于 Fluent 冷却/CFD 多物理支线
 Pyleecan/FEMM/SyR-e 作为开源前置验证与干净室复核
 MATLAB/Simulink + Python 作为控制、系统级和自动化数据闭环
 ```
@@ -15,6 +17,9 @@ MATLAB/Simulink + Python 作为控制、系统级和自动化数据闭环
 - Motor-CAD：快速尺寸设计、热/效率地图预筛、参数族扫描。
 - Maxwell 2D：主电磁 FEA，输出反电势、转矩、Ld/Lq、`lambda_d/lambda_q`、铁耗、退磁裕度。
 - Maxwell 3D：端部效应、斜槽/斜极、局部饱和、端部漏磁、复杂结构复核。
+- PyAEDT：Python 控制 AEDT/Maxwell 的首选自动化入口，用于建模、扫参、求解和导出。
+- PyMotorCAD：Python 控制 Motor-CAD 的首选自动化入口，用于尺寸、热、效率图和候选族自动化。
+- PyFluent：只控制 Ansys Fluent，用于水冷/油冷/风冷 CFD、换热系数、压降和冷却结构验证；它不是 Maxwell 电磁仿真的控制入口。
 - Simulink/Python：FOC、SVPWM、MTPA、弱磁、MTPV、热降额、系统级闭环。
 - Pyleecan/FEMM/SyR-e：开源参考、候选拓扑预筛、干净室可复现验证。
 
@@ -33,7 +38,7 @@ Python / Simulink 控制仿真
   ↓
 MTPA / 弱磁 / MTPV / SVPWM / 热降额策略
   ↓
-Maxwell 3D / Mechanical / 热仿真复核
+Maxwell 3D / Mechanical / Fluent / Icepak 热流固复核
   ↓
 中文技术报告、参数表、仿真图、控制策略和下一轮优化
 ```
@@ -84,7 +89,7 @@ lambda_d/lambda_q LUT
 
 ### Phase E：热、结构和 NVH 复核
 
-- 热分析：绕组铜耗、铁耗、磁钢涡流损耗、轴承/风摩损耗、壳体/水套/油冷或风冷路径、连续功率温升、热降额曲线。
+- 热分析：绕组铜耗、铁耗、磁钢涡流损耗、轴承/风摩损耗、壳体/水套/油冷或风冷路径、连续功率温升、热降额曲线。Motor-CAD 可做快速热网络和效率图，Fluent/PyFluent 用于冷却流道 CFD、换热和压降细化。
 - 结构分析：转子最高速应力、磁钢固定安全系数、磁桥强度、套筒或胶层约束、模态。
 - NVH：齿槽转矩、转矩脉动、径向电磁力波、定子模态耦合风险、SVPWM/过调制谐波影响。
 
