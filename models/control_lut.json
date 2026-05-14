@@ -1406,7 +1406,7 @@
     "low_voltage_margin_points": 7
   },
   "metadata": {
-    "generated_at": "2026-05-14T12:56:14.224820+00:00",
+    "generated_at": "2026-05-14T12:58:40.822407+00:00",
     "generator_script": "sim/run_control_lut_generator.py",
     "generator_version": "2026-05-14-v1",
     "notes": [
