@@ -1,0 +1,263 @@
+{
+  "version": "2026-05-14-v0",
+  "package": "codex-review/docs",
+  "purpose": "Machine-readable landing work packages for the 12 controllable-flux motor schemes. These packages turn review findings into executable engineering next steps without claiming engineering validation.",
+  "global_constraints": [
+    "passed_numeric_simulation means reproducible numeric/proxy simulation only",
+    "engineering_validated remains false until FEA, HIL, bench, thermal, EMC, insulation, safety, and hardware evidence exist",
+    "safety limits override torque and efficiency objectives",
+    "all generated artifacts must be traceable from coverage JSON, experiment summary, tests, and human-readable docs"
+  ],
+  "work_packages": [
+    {
+      "id": "P0-EVIDENCE-001",
+      "scheme_ids": ["all"],
+      "priority": "P0",
+      "status": "completed_2026-05-14",
+      "title": "Repair simulation coverage evidence chain",
+      "rationale": "models/scheme_simulation_coverage.json currently references tests/test_control_search.py, which is not present in tests/.",
+      "deliverables": [
+        "models/scheme_simulation_coverage.json uses only existing pytest test paths",
+        "tests/test_scheme_simulation_coverage.py asserts every pytest_tests path exists"
+      ],
+      "acceptance_criteria": [
+        "python -m pytest tests/test_scheme_simulation_coverage.py -q passes",
+        "all pytest_tests paths in coverage JSON exist on disk"
+      ],
+      "completion_evidence": [
+        "models/scheme_simulation_coverage.json now references tests/test_exp_001_runner.py for mtpa_fw_mtpv_control",
+        "tests/test_scheme_simulation_coverage.py now checks pytest_tests path existence",
+        "python -m pytest tests/test_scheme_simulation_coverage.py -q returned 3 passed"
+      ],
+      "blocked_by": []
+    },
+    {
+      "id": "P0-DOCS-001",
+      "scheme_ids": ["all"],
+      "priority": "P0",
+      "title": "Synchronize Claude docs with EXP-001 through EXP-010 current status",
+      "rationale": "claude-docs README, handoff, manifest, wiki evidence, and HTML evidence lag behind current simulation coverage.",
+      "deliverables": [
+        "claude-docs/README.md updated",
+        "claude-docs/handoff_context.md updated",
+        "claude-docs/evidence_manifest.md updated",
+        "claude-docs/simulation_traceability.md wording aligned",
+        "claude-docs/wiki_html_evidence.md updated"
+      ],
+      "acceptance_criteria": [
+        "EXP-001 through EXP-010 are represented consistently",
+        "every represented proxy result still states the engineering validation limitation"
+      ],
+      "blocked_by": ["P0-EVIDENCE-001"]
+    },
+    {
+      "id": "P1-WIKI-HTML-001",
+      "scheme_ids": ["all"],
+      "priority": "P1",
+      "title": "Update wiki and HTML experiment matrices",
+      "rationale": "The active wiki and HTML knowledge base still use stale experiment numbering and omit current EXP-005 through EXP-010 status.",
+      "deliverables": [
+        "wiki/controllable_flux_motor_research_plan.md has an EXP-001 through EXP-010 status table",
+        "controllable_flux_motor_kb.html has matching EXP-001 through EXP-010 cards",
+        "claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md refreshed",
+        "claude-docs/snapshots/html/controllable_flux_motor_kb.html refreshed"
+      ],
+      "acceptance_criteria": [
+        "HTML and wiki do not contradict models/scheme_simulation_coverage.json",
+        "manifest references refreshed snapshots"
+      ],
+      "blocked_by": ["P0-DOCS-001"]
+    },
+    {
+      "id": "CTRL-001",
+      "scheme_ids": ["negative_d_axis_field_weakening", "mtpa_fw_mtpv_control", "thermal_demag_safety_protection"],
+      "priority": "P1",
+      "title": "Create safety-aware control LUT foundation",
+      "rationale": "The short-term landing path must connect field weakening, MTPA/FW/MTPV search, and thermal/demag safety limits before any bench work.",
+      "deliverables": [
+        "models/control_lut_schema.json",
+        "id_min(T) or demag limit schema",
+        "control LUT generator runner",
+        "trajectory continuity report"
+      ],
+      "acceptance_criteria": [
+        "control LUT marks infeasible regions",
+        "candidate search respects current, voltage, thermal, and demag constraints",
+        "mode transitions have bounded id/iq and torque discontinuity"
+      ],
+      "blocked_by": ["P0-EVIDENCE-001"]
+    },
+    {
+      "id": "LUT-001",
+      "scheme_ids": ["nonlinear_flux_lut", "mtpa_fw_mtpv_control"],
+      "priority": "P1",
+      "title": "Connect nonlinear flux LUT to shared voltage-constrained search",
+      "rationale": "EXP-006 currently proves synthetic LUT interpolation and nonlinear torque, but not a committed shared search/control trajectory integration.",
+      "deliverables": [
+        "sim/search.py supports optional nonlinear flux LUT without breaking linear baseline",
+        "sim/run_nonlinear_flux_lut_search_experiment.py",
+        "experiments/exp_006_nonlinear_flux_lut/lut_search_summary.json",
+        "experiments/exp_006_nonlinear_flux_lut/lut_search_scan_results.csv",
+        "tests for linear baseline regression and LUT path behavior"
+      ],
+      "acceptance_criteria": [
+        "EXP-001 linear summary regression remains unchanged",
+        "LUT search refuses or clips out-of-bounds points explicitly",
+        "LUT search CSV schema remains compatible with EXP-001 scan schema"
+      ],
+      "blocked_by": ["P0-EVIDENCE-001"]
+    },
+    {
+      "id": "MOD-001",
+      "scheme_ids": ["svpwm_overmodulation_voltage_utilization"],
+      "priority": "P2",
+      "title": "Replace modulation proxy penalties with measurable limits",
+      "rationale": "EXP-005 uses parametric THD, inverter loss, and torque ripple penalties that must be replaced before controller enablement.",
+      "deliverables": [
+        "models/modulation_strategy_limits.json",
+        "PWM reconstruction or THD estimation script",
+        "inverter loss map schema",
+        "overmodulation enable gate definition"
+      ],
+      "acceptance_criteria": [
+        "each k_mod candidate has a documented speed/load/Vdc enable region",
+        "THD, torque ripple, inverter loss, and NVH risk are bounded",
+        "overmodulation falls back to linear SVPWM outside allowed region"
+      ],
+      "blocked_by": ["CTRL-001"]
+    },
+    {
+      "id": "EM-001",
+      "scheme_ids": ["magnetic_saturation_codesign", "pmasynrm_high_saliency_low_pm", "nonlinear_flux_lut"],
+      "priority": "P2",
+      "title": "Define FEA candidate and LUT backfeed contract",
+      "rationale": "EXP-003 uses scaled Ld/Lq/psi_f proxies; landing requires FEA-derived lambda_d/lambda_q candidate maps and scorecards.",
+      "deliverables": [
+        "em_design/candidates/candidate_matrix.md",
+        "FEA-to-LUT import convention",
+        "candidate scorecard template",
+        "PM fraction and saliency sweep plan"
+      ],
+      "acceptance_criteria": [
+        "candidate variables have units, bounds, and constraints",
+        "FEA LUT data can be consumed by the nonlinear LUT schema",
+        "scorecard includes torque, voltage margin, iron loss, demag, rotor stress, and torque ripple risk"
+      ],
+      "blocked_by": ["LUT-001"]
+    },
+    {
+      "id": "MEM-001",
+      "scheme_ids": ["variable_magnetization_memory_motor"],
+      "priority": "P3",
+      "title": "Add state confidence and pulse-energy model for memory motor route",
+      "rationale": "EXP-002 proves that simple psi_f reduction is not automatically beneficial; real memory-motor landing depends on state observability and safe pulse energy.",
+      "deliverables": [
+        "models/psi_f_state_schema.json",
+        "state confidence and unknown-state derating model",
+        "magnetization pulse energy estimate",
+        "state mismatch fault table"
+      ],
+      "acceptance_criteria": [
+        "unknown flux state derates torque safely",
+        "pulse current and energy stay within inverter, DC-link, thermal, and demag limits",
+        "route has explicit go/no-go business case"
+      ],
+      "blocked_by": ["CTRL-001", "PAR-001"]
+    },
+    {
+      "id": "HYB-001",
+      "scheme_ids": ["hybrid_excitation"],
+      "priority": "P3",
+      "title": "Upgrade hybrid excitation from equivalent psi shift to field circuit model",
+      "rationale": "EXP-007 only models steady-state equivalent flux and field copper loss; landing requires field dynamics, thermal coupling, and fault handling.",
+      "deliverables": [
+        "models/hybrid_excitation_params.json",
+        "id/iq/if optimizer runner",
+        "field winding thermal limit model",
+        "loss-of-field derating behavior"
+      ],
+      "acceptance_criteria": [
+        "field current command respects thermal and electrical limits",
+        "weighted total loss beats control-only weak-field baseline before hardware trade study",
+        "loss-of-field and over-excitation fault modes have safe derates"
+      ],
+      "blocked_by": ["CTRL-001", "PAR-001"]
+    },
+    {
+      "id": "WR-001",
+      "scheme_ids": ["winding_reconfiguration"],
+      "priority": "P3",
+      "title": "Convert winding reconfiguration proxy into switch-state and transient model",
+      "rationale": "EXP-008 uses parametric winding scaling and continuity proxy; hardware landing depends on legal states, switching transients, interlocks, and failure handling.",
+      "deliverables": [
+        "models/winding_configurations.json",
+        "switching transient proxy model",
+        "switch matrix interlock specification",
+        "stuck-switch and illegal configuration fault table"
+      ],
+      "acceptance_criteria": [
+        "all legal and illegal configurations are enumerated",
+        "switching only occurs inside a documented safe current/voltage window",
+        "benefit exceeds switch matrix loss, cost, reliability, and EMI risk"
+      ],
+      "blocked_by": ["CTRL-001", "PAR-001"]
+    },
+    {
+      "id": "MPH-001",
+      "scheme_ids": ["multiphase_phase_group_control"],
+      "priority": "P3",
+      "title": "Establish multiphase use case and resource budget before hardware study",
+      "rationale": "EXP-009 uses aggregate current derating; landing requires a product reason for multiphase plus harmonic subspace, thermal, and controller resource models.",
+      "deliverables": [
+        "multiphase use-case brief",
+        "harmonic subspace or neutral-shift model plan",
+        "MCU/FPGA PWM and ADC resource budget",
+        "phase-loss DVP&R outline"
+      ],
+      "acceptance_criteria": [
+        "route has a product-level fault tolerance or thermal/NVH value proposition",
+        "controller and gate-driver resources fit the target control period",
+        "phase-loss behavior is represented beyond aggregate current derating"
+      ],
+      "blocked_by": ["PAR-001"]
+    },
+    {
+      "id": "PAR-001",
+      "scheme_ids": ["weighted_efficiency_pareto_selection"],
+      "priority": "P1",
+      "title": "Upgrade Pareto scorecard beyond illustrative copper loss",
+      "rationale": "EXP-010 ranks candidates using illustrative drive cycles and copper loss only; route promotion requires broader and traceable scoring.",
+      "deliverables": [
+        "models/route_scorecard_schema.json",
+        "loss model extension plan for copper, iron, inverter, mechanical losses",
+        "representative or measured drive-cycle input format",
+        "promotion review checklist"
+      ],
+      "acceptance_criteria": [
+        "scorecard traces every score to artifacts",
+        "risk, cost, maturity, safety, and evidence level are included",
+        "ranking sensitivity to drive-cycle weights is reported"
+      ],
+      "blocked_by": ["P0-EVIDENCE-001"]
+    },
+    {
+      "id": "SAFE-001",
+      "scheme_ids": ["thermal_demag_safety_protection"],
+      "priority": "P1",
+      "title": "Promote thermal and demag safety to mandatory cross-cutting gate",
+      "rationale": "EXP-004 uses simplified thermal/demag boundaries; all landing routes require a stronger safety layer before bench or high-voltage work.",
+      "deliverables": [
+        "models/thermal_demag_limits.json",
+        "safety limit hierarchy",
+        "fault injection DVP&R cases",
+        "gate-disable and fault-latch verification plan"
+      ],
+      "acceptance_criteria": [
+        "optimization cannot override safety limits",
+        "thermal, current, voltage, and demag constraints can be applied during candidate search",
+        "fault cases choose derating or shutdown over torque tracking"
+      ],
+      "blocked_by": ["P0-EVIDENCE-001"]
+    }
+  ]
+}

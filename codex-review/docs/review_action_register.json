@@ -1,0 +1,128 @@
+{
+  "version": "2026-05-14-v0",
+  "review_package": "codex-review/docs",
+  "review_subject": "Claude-developed controllable-flux motor documentation, wiki, HTML, experiments, tests, reports, and git state",
+  "baseline": {
+    "branch": "claude-mainline",
+    "remote_relation": "ahead_origin_by_4_commits_at_review_time",
+    "head_commit": "7b9887e feat(sim): 补齐EXP-006非线性磁链LUT实验",
+    "uncommitted_changes_observed": [
+      "claude-docs/maxwell_motorcad_simulation_plan.md",
+      "claude-docs/toolchain_selection_and_github_references.md"
+    ],
+    "untracked_paths_observed": [".claude/"]
+  },
+  "summary": {
+    "overall_assessment": "Claude mainline has advanced to reproducible numeric proxy coverage for EXP-001 through EXP-010, but documentation entry points, wiki, HTML, manifests, and some metadata lag behind the current experiment and coverage facts.",
+    "highest_risk": "State drift between models/scheme_simulation_coverage.json and human-facing documentation can cause duplicated work or incorrect engineering interpretation.",
+    "engineering_boundary": "passed_numeric_simulation means reproducible numeric/proxy simulation only; all current results remain engineering_validated=false unless explicitly replaced by FEA, HIL, bench, thermal, EMC, safety, and hardware evidence."
+  },
+  "findings": [
+    {
+      "id": "CDR-001",
+      "title": "Claude docs entry points lag behind current EXP-001 through EXP-010 coverage",
+      "severity": "P0",
+      "status": "open",
+      "evidence": [
+        "claude-docs/README.md",
+        "claude-docs/handoff_context.md",
+        "models/scheme_simulation_coverage.json",
+        "experiments/exp_005_modulation_factor/summary.json",
+        "experiments/exp_010_weighted_efficiency_pareto/summary.json"
+      ],
+      "recommended_action": "Update README and handoff to state that EXP-001 through EXP-010 have reproducible numeric/proxy coverage while preserving engineering_validated=false limitations."
+    },
+    {
+      "id": "CDR-002",
+      "title": "Claude evidence manifest does not index latest experiment artifacts",
+      "severity": "P0",
+      "status": "open",
+      "evidence": [
+        "claude-docs/evidence_manifest.md",
+        "experiments/exp_006_nonlinear_flux_lut/summary.json",
+        "models/flux_lut_schema.json",
+        "models/flux_lut_sample.json"
+      ],
+      "recommended_action": "Add EXP-005 through EXP-010 plus EXP-006 schema/sample/summary/CSV to the manifest."
+    },
+    {
+      "id": "CDR-003",
+      "title": "Wiki and HTML experiment matrices use stale numbering and stale status",
+      "severity": "P1",
+      "status": "open",
+      "evidence": [
+        "wiki/controllable_flux_motor_research_plan.md",
+        "controllable_flux_motor_kb.html",
+        "models/scheme_simulation_coverage.json"
+      ],
+      "recommended_action": "Rewrite the active wiki and HTML experiment matrix around actual EXP-001 through EXP-010 directories, then refresh claude-docs snapshots and manifest references."
+    },
+    {
+      "id": "CDR-004",
+      "title": "codex-docs still treats nonlinear_flux_lut as the only needs_next_numeric_model item",
+      "severity": "P1",
+      "status": "open",
+      "evidence": [
+        "codex-docs/handoff_context.md",
+        "codex-docs/simulation_traceability.md",
+        "models/scheme_simulation_coverage.json",
+        "experiments/exp_006_nonlinear_flux_lut/summary.json"
+      ],
+      "recommended_action": "Either mark codex-docs as historical branch documentation or update it to acknowledge the current EXP-006 synthetic LUT numeric proof."
+    },
+    {
+      "id": "CDR-005",
+      "title": "Coverage metadata references a non-existent pytest file",
+      "severity": "P0",
+      "status": "resolved_2026-05-14",
+      "evidence": [
+        "models/scheme_simulation_coverage.json",
+        "tests/test_scheme_simulation_coverage.py",
+        "tests/"
+      ],
+      "recommended_action": "Replace tests/test_control_search.py with an existing mainline test or add the missing test, then strengthen coverage tests to assert every pytest_tests path exists.",
+      "resolution": [
+        "Replaced the missing tests/test_control_search.py coverage reference with tests/test_exp_001_runner.py.",
+        "Strengthened tests/test_scheme_simulation_coverage.py to assert every pytest_tests path exists.",
+        "Verified with python -m pytest tests/test_scheme_simulation_coverage.py -q."
+      ]
+    },
+    {
+      "id": "CDR-006",
+      "title": "Engineering catalog deliverables mix existing artifacts and future placeholders",
+      "severity": "P1",
+      "status": "open",
+      "evidence": [
+        "models/scheme_engineering_catalog.json",
+        "experiments/"
+      ],
+      "recommended_action": "Split deliverables into existing_artifacts and planned_deliverables, and test that existing artifacts exist."
+    },
+    {
+      "id": "CDR-007",
+      "title": "Toolchain documentation has uncommitted PyFluent and Fluent clarification changes",
+      "severity": "P2",
+      "status": "open",
+      "evidence": [
+        "claude-docs/toolchain_selection_and_github_references.md",
+        "claude-docs/maxwell_motorcad_simulation_plan.md",
+        "git status --short --branch"
+      ],
+      "recommended_action": "Review and commit the toolchain clarification separately from experiment-status synchronization."
+    },
+    {
+      "id": "CDR-008",
+      "title": ".claude local agent directory is untracked and not ignored",
+      "severity": "P2",
+      "status": "open",
+      "evidence": [".claude/", ".gitignore", "git status --short --branch"],
+      "recommended_action": "Decide whether to ignore .claude/ or extract only intentional long-lived workflow files into a tracked project directory."
+    }
+  ],
+  "next_review_steps": [
+    "Fix P0 documentation and coverage drift before adding new experiments.",
+    "Regenerate or manually align wiki, HTML, snapshots, and evidence manifest after active source updates.",
+    "Add automated consistency checks so stale pytest paths, stale artifact paths, and missing engineering_validated fields fail early.",
+    "Continue appending future Codex review reports under codex-review/docs with evidence-backed findings."
+  ]
+}
