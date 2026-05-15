@@ -94,7 +94,7 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
 | PCB | 电流采样、Vdc 采样、相电压重建、温度采样、gate-disable / fault latch 页 | `V2-S01-PCB-sensing_fault_path-r00.md` | G4 | ERC/DRC 通过，采样精度与 fault latch 路径可追溯 | `draft` |
-| 3D/CAD | 逆变器到电机三相连接、母排、电流传感器安装、温度传感器布置 | `V2-S01-CAD-sensor_busbar_layout-r00.step` | G3 | 间隙、爬电、装配空间和热路径明确 | `missing` |
+| 3D/CAD | 逆变器到电机三相连接、母排、电流传感器安装、温度传感器布置 CAD 边界草案 | `V2-S01-CAD-sensor_busbar_layout-r00.md` | G3 | 间隙、爬电、装配空间和热路径待在真实 CAD 中闭合 | `draft` |
 | Controller | 弱磁状态机、`id_min(T,fault)` 限幅、低压/高温 derating、fallback | `V2-S01-CTRL-field_weakening_state_machine-r00.drawio` | G3 | control LUT 不可行原因和降额动作闭合 | `draft` |
 | BOM/EDA | 传感器、隔离采样、栅极关断、诊断输入 BOM/EDA 风险登记草案 | `V2-S01-BOM-sensing_fault_components-r00.md` | G4 | 关键器件精度、温漂、诊断覆盖字段待在真实 BOM/EDA 中闭合 | `draft` |
 | Test | 高速低压、高温、传感器故障注入 DVP&R | `V2-S01-DVP-fw_fault_injection-r00.md` | G5 | 台架能复现电压/电流/退磁边界 | `missing` |
@@ -104,7 +104,7 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
 | PCB | MCU/NVM、resolver、ADC、电流采样、CAN/诊断接口页 | `V2-S02-PCB-control_io_map-r00.md` | G4 | 控制 LUT 存储、刷新、CRC、诊断链路明确 | `draft` |
-| 3D/CAD | 控制器壳体、接插件、散热路径、线束出口 | `V2-S02-CAD-controller_packaging-r00.step` | G3 | 接插件方向、线束半径和热界面可评审 | `missing` |
+| 3D/CAD | 控制器壳体、接插件、散热路径、线束出口 CAD 边界草案 | `V2-S02-CAD-controller_packaging-r00.md` | G3 | 接插件方向、线束半径和热界面待在真实 CAD 中闭合 | `draft` |
 | Controller | MTPA/FW/MTPV 模式图、二维速度-转矩 LUT、切换连续性图 | `V2-S02-CTRL-mode_transition_lut-r00.drawio` | G3 | `id_jump/iq_jump/torque_jump` 有限且有回归测试 | `draft` |
 | BOM/EDA | MCU、NVM、resolver interface、通讯与标定接口 BOM/EDA 风险登记草案 | `V2-S02-EDA-controller_core_bom-r00.md` | G4 | 容量、时序、ASIL/诊断字段待在真实 BOM/EDA 中闭合 | `draft` |
 | Test | HIL 模式切换、LUT CRC、断电恢复、标定一致性 | `V2-S02-TEST-lut_mode_hil-r00.md` | G5 | HIL 覆盖全部模式和不可行区 | `missing` |
@@ -124,7 +124,7 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
 | PCB | 无新增功率页；需要温度、位置、电流采样精度证明页 | `V2-S04-PCB-lut_observer_inputs-r00.md` | G4 | LUT 输入信号精度支持插值误差预算 | `draft` |
-| 3D/CAD | Maxwell/Motor-CAD 几何源、dq 坐标定义、FEA 网格截图 | `V2-S04-CAD-fea_geometry_source-r00.step` | G3 | 几何版本、坐标、单位、材料与 LUT 版本绑定 | `missing` |
+| 3D/CAD | Maxwell/Motor-CAD 几何源、dq 坐标定义、FEA 网格边界草案 | `V2-S04-CAD-fea_geometry_source-r00.md` | G3 | 几何版本、坐标、单位、材料与 LUT 版本待在真实 CAD/FEA 中闭合 | `draft` |
 | Controller | LUT 插值框图、边界 clamp/拒绝策略、误差监控 | `V2-S04-CTRL-flux_lut_interpolation-r00.drawio` | G3 | 越界原因、插值误差和 fallback 有测试 | `draft` |
 | BOM/EDA | 位置/温度/电流传感器精度与采样链 BOM/EDA 风险登记草案 | `V2-S04-BOM-lut_sensor_chain-r00.md` | G4 | 传感器误差待在真实 BOM/EDA 与 LUT 误差预算中闭合 | `draft` |
 | Test | FEA 回灌、台架反标定、LUT 误差报告 | `V2-S04-TEST-flux_lut_correlation-r00.md` | G5 | FEA/实测与控制 LUT 误差闭合 | `missing` |
@@ -194,7 +194,7 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
 | PCB | 磁钢/油温/绕组温度采样、gate-disable、fault latch、ASIL 诊断页 | `V2-S11-PCB-safety_fault_latch-r00.md` | G4 | 故障检测、锁存、关断链路和诊断覆盖明确 | `draft` |
-| 3D/CAD | 温度传感器安装、油路、磁钢热路径、控制器散热 CAD | `V2-S11-CAD-thermal_sensor_cooling-r00.step` | G3 | 传感位置与热模型可对应 | `missing` |
+| 3D/CAD | 温度传感器安装、油路、磁钢热路径、控制器散热 CAD 边界草案 | `V2-S11-CAD-thermal_sensor_cooling-r00.md` | G3 | 传感位置与热模型映射待在真实 CAD/热模型中闭合 | `draft` |
 | Controller | fault state machine、derating、unknown sensor fallback、gate-disable 映射 | `V2-S11-CTRL-safety_fault_state_machine-r00.drawio` | G3 | 所有方案进入硬件门前必须复用 | `draft` |
 | BOM/EDA | 传感器、隔离、诊断、关断、锁存器件 BOM/EDA 风险登记草案 | `V2-S11-BOM-safety_chain-r00.md` | G4 | ASIL/诊断覆盖、温漂和失效模式字段待在真实 BOM/EDA 中闭合 | `draft` |
 | Test | 高温、退磁、传感器开短路、gate-disable fault injection DVP&R | `V2-S11-DVP-safety_fault_injection-r00.md` | G5 | 不能证明故障安全则禁止进硬件门 | `missing` |

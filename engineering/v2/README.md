@@ -29,17 +29,17 @@ scheme-XX/
 
 | ID | 方案 | 目录 | 当前图纸包状态 |
 |---|---|---|---|
-| S01 | 负 d 轴弱磁 | `scheme-01/` | PCB 接口页、控制器草图和 BOM/EDA 风险草案已落地，CAD/DVP 仍缺失 |
-| S02 | MTPA/FW/MTPV 连续控制 | `scheme-02/` | PCB 接口页、控制器草图和 BOM/EDA 风险草案已落地，CAD/DVP 仍缺失 |
+| S01 | 负 d 轴弱磁 | `scheme-01/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
+| S02 | MTPA/FW/MTPV 连续控制 | `scheme-02/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
 | S03 | SVPWM/过调制 | `scheme-03/` | README 索引已建，图纸未落地 |
-| S04 | 非线性磁链 LUT | `scheme-04/` | PCB 接口页、控制器草图和 BOM/EDA 风险草案已落地，CAD/DVP 仍缺失 |
+| S04 | 非线性磁链 LUT | `scheme-04/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
 | S05 | 磁路饱和协同设计 | `scheme-05/` | README 索引已建，图纸未落地 |
 | S06 | PMaSynRM / 高凸极低永磁占比 | `scheme-06/` | README 索引已建，图纸未落地 |
 | S07 | 可变磁化状态 / Memory Motor | `scheme-07/` | README 索引已建，图纸未落地 |
 | S08 | 混合励磁 | `scheme-08/` | README 索引已建，图纸未落地 |
 | S09 | 绕组重构 | `scheme-09/` | README 索引已建，图纸未落地 |
 | S10 | 多相 / 相组控制 | `scheme-10/` | README 索引已建，图纸未落地 |
-| S11 | 温度 / 退磁 / 安全保护 | `scheme-11/` | PCB 接口页、控制器草图和 BOM/EDA 风险草案已落地，CAD/DVP 仍缺失 |
+| S11 | 温度 / 退磁 / 安全保护 | `scheme-11/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
 | S12 | 工况加权效率 / Pareto 选择 | `scheme-12/` | README 索引已建，图纸未落地 |
 
 ## 3. 当前结论

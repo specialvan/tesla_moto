@@ -7,7 +7,7 @@
 | 分类 | 必需文件 | 当前状态 | 下一步 |
 |---|---|---|---|
 | PCB | `pcb/V2-S02-PCB-control_io_map-r00.md` | draft | 已落地 MCU/NVM、ADC、位置、通信和 LUT 版本诊断页面级草案 |
-| 3D/CAD | `cad/V2-S02-CAD-controller_packaging-r00.step` | missing | 定义控制器壳体、接插件、线束和散热路径 |
+| 3D/CAD | `cad/V2-S02-CAD-controller_packaging-r00.md` | draft | 已落地控制器壳体、接插件、线束出口、散热路径和 EMI 分区边界草案 |
 | Controller | `controller/V2-S02-CTRL-mode_transition_lut-r00.drawio` | draft | 已落地 MTPA/FW/MTPV 模式切换、LUT CRC 和 fallback 状态机草图 |
 | BOM/EDA | `bom_eda/V2-S02-EDA-controller_core_bom-r00.md` | draft | 已落地 MCU/NVM、ADC、位置接口、通信和 LUT 发布器件族风险草案 |
 | Test/DVP | `test_dvpr/V2-S02-TEST-lut_mode_hil-r00.md` | missing | 定义 HIL 模式切换、CRC 和断电恢复测试 |

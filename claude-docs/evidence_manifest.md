@@ -48,6 +48,10 @@
 | S02 BOM/EDA 风险草案 | `engineering/v2/scheme-02/bom_eda/V2-S02-EDA-controller_core_bom-r00.md` | 控制核心 MCU/NVM、ADC、位置接口、通信和 LUT 发布器件族风险登记 |
 | S04 BOM/EDA 风险草案 | `engineering/v2/scheme-04/bom_eda/V2-S04-BOM-lut_sensor_chain-r00.md` | 非线性 LUT 电流、位置、温度、Vdc 和诊断存储器件族风险登记 |
 | S11 BOM/EDA 风险草案 | `engineering/v2/scheme-11/bom_eda/V2-S11-BOM-safety_chain-r00.md` | 温度/退磁安全链、安全锁存、gate-disable、隔离和故障回读器件族风险登记 |
+| S01 CAD 边界草案 | `engineering/v2/scheme-01/cad/V2-S01-CAD-sensor_busbar_layout-r00.md` | 三相母排、电流传感器、温度传感、LV/HV 分区和线束封装边界草案 |
+| S02 CAD 边界草案 | `engineering/v2/scheme-02/cad/V2-S02-CAD-controller_packaging-r00.md` | 控制器壳体、接插件、线束出口、散热路径和 EMI 分区边界草案 |
+| S04 CAD/FEA 边界草案 | `engineering/v2/scheme-04/cad/V2-S04-CAD-fea_geometry_source-r00.md` | FEA 几何源、dq 坐标、材料表、网格边界和 LUT 版本绑定草案 |
+| S11 CAD 热边界草案 | `engineering/v2/scheme-11/cad/V2-S11-CAD-thermal_sensor_cooling-r00.md` | 磁钢/绕组/油温传感、冷却路径、控制器散热和维修边界草案 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据

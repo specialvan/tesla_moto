@@ -7,7 +7,7 @@
 | 分类 | 必需文件 | 当前状态 | 下一步 |
 |---|---|---|---|
 | PCB | `pcb/V2-S04-PCB-lut_observer_inputs-r00.md` | draft | 已落地 LUT 观测输入、边界检查、fallback 诊断和误差预算页面级草案 |
-| 3D/CAD | `cad/V2-S04-CAD-fea_geometry_source-r00.step` | missing | 绑定 Maxwell/Motor-CAD 几何源、坐标和材料版本 |
+| 3D/CAD | `cad/V2-S04-CAD-fea_geometry_source-r00.md` | draft | 已落地 FEA 几何源、dq 坐标、材料表、网格边界和传感器位置版本绑定草案 |
 | Controller | `controller/V2-S04-CTRL-flux_lut_interpolation-r00.drawio` | draft | 已落地 LUT 边界检查、双线性插值、误差监控和 fallback 草图 |
 | BOM/EDA | `bom_eda/V2-S04-BOM-lut_sensor_chain-r00.md` | draft | 已落地电流、位置、温度、Vdc 和诊断存储器件族风险草案 |
 | Test/DVP | `test_dvpr/V2-S04-TEST-flux_lut_correlation-r00.md` | missing | 定义 FEA 回灌、台架反标定和 LUT 误差报告 |
