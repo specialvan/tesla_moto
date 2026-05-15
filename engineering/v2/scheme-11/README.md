@@ -9,7 +9,7 @@
 | PCB | `pcb/V2-S11-PCB-safety_fault_latch-r00.md` | draft | 已落地温度/退磁安全链、fault latch、gate-disable 和故障分类页面级草案 |
 | 3D/CAD | `cad/V2-S11-CAD-thermal_sensor_cooling-r00.step` | missing | 绘制温度传感器安装、油路、磁钢热路径和控制器散热 CAD |
 | Controller | `controller/V2-S11-CTRL-safety_fault_state_machine-r00.drawio` | draft | 已落地热/退磁 warning、derating、unknown sensor fallback 和 gate-disable 状态机草图 |
-| BOM/EDA | `bom_eda/V2-S11-BOM-safety_chain-r00.xlsx` | missing | 列出传感器、隔离、诊断、关断和锁存器件 |
+| BOM/EDA | `bom_eda/V2-S11-BOM-safety_chain-r00.md` | draft | 已落地温度传感、安全锁存、gate-disable、隔离和故障回读器件族风险草案 |
 | Test/DVP | `test_dvpr/V2-S11-DVP-safety_fault_injection-r00.md` | missing | 定义高温、退磁、传感器开短路、gate-disable fault injection |
 | Simulation | `simulation/V2-S11-SIM-thermal_demag_fault_trace-r00.md` | missing | 关联温度、退磁、传感器开短路和 gate-disable 故障注入证据 |
 

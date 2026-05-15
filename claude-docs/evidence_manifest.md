@@ -44,6 +44,10 @@
 | S02 PCB 接口页草案 | `engineering/v2/scheme-02/pcb/V2-S02-PCB-control_io_map-r00.md` | MTPA/FW/MTPV 控制所需 MCU/NVM、ADC、位置、通信和 LUT 版本诊断页面级草案 |
 | S04 PCB 接口页草案 | `engineering/v2/scheme-04/pcb/V2-S04-PCB-lut_observer_inputs-r00.md` | 非线性磁链 LUT 所需观测输入、边界检查、fallback 诊断和误差预算页面级草案 |
 | S11 PCB 接口页草案 | `engineering/v2/scheme-11/pcb/V2-S11-PCB-safety_fault_latch-r00.md` | 温度/退磁安全链、fault latch、gate-disable 和故障分类页面级草案 |
+| S01 BOM/EDA 风险草案 | `engineering/v2/scheme-01/bom_eda/V2-S01-BOM-sensing_fault_components-r00.md` | 弱磁采样链、温度输入、gate-disable latch 和 fault feedback 器件族风险登记 |
+| S02 BOM/EDA 风险草案 | `engineering/v2/scheme-02/bom_eda/V2-S02-EDA-controller_core_bom-r00.md` | 控制核心 MCU/NVM、ADC、位置接口、通信和 LUT 发布器件族风险登记 |
+| S04 BOM/EDA 风险草案 | `engineering/v2/scheme-04/bom_eda/V2-S04-BOM-lut_sensor_chain-r00.md` | 非线性 LUT 电流、位置、温度、Vdc 和诊断存储器件族风险登记 |
+| S11 BOM/EDA 风险草案 | `engineering/v2/scheme-11/bom_eda/V2-S11-BOM-safety_chain-r00.md` | 温度/退磁安全链、安全锁存、gate-disable、隔离和故障回读器件族风险登记 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据
