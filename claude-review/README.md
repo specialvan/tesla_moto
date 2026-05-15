@@ -28,6 +28,8 @@
 | `docs/2026-05-15/v2_review_pr_engineering_prd.html` | V2 PRD 的 HTML 阅读版，便于评审、汇报和离线浏览 |
 | `docs/2026-05-15/v2_scheme_engineering_playbook.md` | V2 每个方案深度推进工程落地的分方案 playbook |
 | `docs/2026-05-15/v2_scheme_engineering_playbook.html` | V2 分方案工程落地 playbook 的 HTML 阅读版 |
+| `docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md` | V2 每个方案 PCB、3D/CAD、控制器、BOM/EDA 与 gate 图纸包交付矩阵 |
+| `docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的 HTML 阅读版 |
 
 ## 3. 当前核验结论
 

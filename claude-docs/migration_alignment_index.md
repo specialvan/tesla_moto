@@ -18,9 +18,11 @@
 | `claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md` | 已落地 | wiki 冻结快照 |
 | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | 已落地 | V2 review-pr 工程落地差距 Wiki 快照 |
 | `claude-docs/snapshots/wiki/v2_scheme_engineering_playbook_wiki.md` | 已落地 | V2 分方案工程落地 Wiki 快照 |
+| `claude-docs/snapshots/wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | 已落地 | V2 分方案物理工程交付物 Wiki 快照 |
 | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` | 已落地 | HTML 冻结快照 |
 | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` | 已落地 | V2 review-pr 工程落地差距 HTML 快照 |
 | `claude-docs/snapshots/html/v2_scheme_engineering_playbook.html` | 已落地 | V2 分方案工程落地 HTML 快照 |
+| `claude-docs/snapshots/html/v2_scheme_physical_deliverables_matrix.html` | 已落地 | V2 分方案物理工程交付物 HTML 快照 |
 
 ## 3. 与 Codex-docs 的结构对齐
 
@@ -47,6 +49,9 @@
 | `wiki/v2_scheme_engineering_playbook_wiki.md` | `claude-docs/snapshots/wiki/v2_scheme_engineering_playbook_wiki.md` | 已迁移 |
 | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.html` | `claude-docs/snapshots/html/v2_scheme_engineering_playbook.html` | 已迁移 |
 | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.md` | `claude-docs/evidence_manifest.md` | 已索引 |
+| `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | `claude-docs/snapshots/wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | 已迁移 |
+| `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | `claude-docs/snapshots/html/v2_scheme_physical_deliverables_matrix.html` | 已迁移 |
+| `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md` | `claude-docs/evidence_manifest.md` | 已索引 |
 | `experiments/exp_001_linear_dq/README.md` | `claude-docs/evidence_manifest.md` | 已索引 |
 | `experiments/exp_002_variable_flux/README.md` | `claude-docs/evidence_manifest.md` | 已索引 |
 | `experiments/exp_003_param_sweep/README.md` | `claude-docs/evidence_manifest.md` | 已索引 |
@@ -70,6 +75,7 @@
 + 仿真追踪矩阵
 + 高保真工具链选型
 + Maxwell/Motor-CAD 落地方案
++ V2 分方案物理工程交付物矩阵
 ```
 
 仍未纳入 `claude-docs` 的内容主要是活动源本体，而非缺失：`sim/` 源码、`tests/` 测试、`models/` 结构化 JSON、`reports/` 工程报告、`experiments/` 实验产物。这些目录不复制进 `claude-docs`，只在 `evidence_manifest.md` 和 `simulation_traceability.md` 中索引，避免文档包重复存放活动事实源。

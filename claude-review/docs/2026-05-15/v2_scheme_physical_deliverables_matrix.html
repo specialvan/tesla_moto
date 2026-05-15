@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>V2 分方案物理工程交付物矩阵</title>
+  <style>
+    :root{--bg:#07111f;--panel:#101d33;--text:#e8f1ff;--muted:#9bb0ca;--accent:#7dd3fc;--ok:#22c55e;--warn:#facc15;--risk:#fb7185;--line:rgba(255,255,255,.13)}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top right,#1e3a5f,var(--bg) 52%);color:var(--text);line-height:1.65}header{padding:48px 6vw 34px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(125,211,252,.14),rgba(34,197,94,.08))}h1{margin:0 0 12px;font-size:clamp(30px,5vw,52px);line-height:1.08}h2{margin:0 0 18px;font-size:28px}h3{margin:18px 0 10px;color:var(--accent)}p{margin:8px 0}.subtitle{max-width:1120px;color:var(--muted);font-size:18px}main{padding:28px 6vw 64px}nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:28px}nav a,.card{border:1px solid var(--line);background:rgba(16,29,51,.84);border-radius:16px;box-shadow:0 16px 42px rgba(0,0,0,.22)}nav a{color:var(--text);text-decoration:none;padding:14px 16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.card{padding:20px;margin:14px 0}.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;color:#06131d;background:var(--accent);font-weight:700}.ok{background:var(--ok)}.warn{background:var(--warn)}.risk{background:var(--risk);color:#24040b}.stub{background:#c4b5fd}table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;margin:12px 0}th,td{border:1px solid var(--line);padding:10px 12px;vertical-align:top}th{background:rgba(125,211,252,.12);text-align:left}tr:nth-child(even)td{background:rgba(255,255,255,.035)}code{color:#c4b5fd}.callout{border-left:5px solid var(--accent);background:rgba(20,36,62,.82);padding:16px 18px;border-radius:14px}.tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}.task{padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(20,36,62,.78)}footer{padding:24px 6vw;color:var(--muted);border-top:1px solid var(--line)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>V2 分方案物理工程交付物矩阵</h1>
+    <p class="subtitle">面向 12 条路线补齐 PCB、3D/CAD、控制器设计、BOM/EDA、DVP&R/DFMEA 和 gate evidence 要求。本文是摘要阅读版，完整内容以同目录 Markdown 矩阵为准。</p>
+  </header>
+  <main>
+    <nav><a href="#why">为什么要补</a><a href="#evidence">硬证据分类</a><a href="#table">12 方案总览</a><a href="#gates">Gate 验收</a><a href="#next">下一步</a></nav>
+
+    <section id="why" class="card">
+      <h2>1. 为什么要补物理工程交付物</h2>
+      <p>V2 每个方案若要从研究项进入工程落地，必须能回答：PCB 在哪里、3D/CAD 在哪里、控制器图在哪里、BOM/EDA 在哪里、DVP&R/DFMEA 如何验证。</p>
+      <div class="callout"><strong>硬规则：</strong>数值仿真、参数扫描和 playbook 文字不能替代 PCB、CAD、控制器图和制造交付物。</div>
+    </section>
+
+    <section id="evidence" class="card">
+      <h2>2. 统一硬证据分类</h2>
+      <div class="grid">
+        <div class="card"><span class="badge warn">PCB</span><h3>PCB / EDA</h3><p>原理图、Layout、stackup、采样链、gate-disable、fault latch、Gerber、ODB++。</p></div>
+        <div class="card"><span class="badge warn">CAD</span><h3>3D / CAD</h3><p>转子/定子、壳体、冷却油路、母排、传感器安装、控制器封装。</p></div>
+        <div class="card"><span class="badge stub">CTRL</span><h3>控制器设计</h3><p>状态机、故障路径、LUT 插值、模式切换、标定 map、fallback。</p></div>
+        <div class="card"><span class="badge risk">DVP</span><h3>BOM / DVP&R / DFMEA</h3><p>BOM、制造包、供应风险、测试阈值、故障注入和发布证据。</p></div>
+      </div>
+    </section>
+
+    <section id="table" class="card">
+      <h2>3. 12 个方案图纸交付状态总览</h2>
+      <table>
+        <thead><tr><th>ID</th><th>方案</th><th>PCB/EDA</th><th>3D/CAD</th><th>控制器图</th><th>BOM/MFG</th><th>DVP&R/DFMEA</th><th>当前判断</th></tr></thead>
+        <tbody>
+          <tr><td>S01</td><td>负 d 轴弱磁</td><td>stub</td><td>missing</td><td>draft</td><td>missing</td><td>missing</td><td>先补传感/故障页和弱磁状态机</td></tr>
+          <tr><td>S02</td><td>MTPA/FW/MTPV</td><td>stub</td><td>missing</td><td>draft</td><td>missing</td><td>missing</td><td>先补 LUT 模式切换和控制器接口</td></tr>
+          <tr><td>S03</td><td>SVPWM/过调制</td><td>missing</td><td>missing</td><td>stub</td><td>missing</td><td>missing</td><td>需补逆变器功率级和 THD/EMC/NVH 图纸</td></tr>
+          <tr><td>S04</td><td>非线性磁链 LUT</td><td>stub</td><td>missing</td><td>draft</td><td>missing</td><td>missing</td><td>需补 FEA 几何源和 LUT 插值图</td></tr>
+          <tr><td>S05</td><td>磁路饱和协同</td><td>missing</td><td>missing</td><td>stub</td><td>missing</td><td>missing</td><td>需补 barrier/bridge CAD 和 FEA scorecard</td></tr>
+          <tr><td>S06</td><td>PMaSynRM</td><td>missing</td><td>missing</td><td>stub</td><td>missing</td><td>missing</td><td>需补转子/定子 CAD、PM fraction 和风险 BOM</td></tr>
+          <tr><td>S07</td><td>Memory Motor</td><td>missing</td><td>missing</td><td>stub</td><td>missing</td><td>missing</td><td>需补磁化脉冲驱动和磁状态机</td></tr>
+          <tr><td>S08</td><td>混合励磁</td><td>missing</td><td>missing</td><td>stub</td><td>missing</td><td>missing</td><td>需补励磁 DC/DC、field winding CAD 和三变量控制图</td></tr>
+          <tr><td>S09</td><td>绕组重构</td><td>missing</td><td>missing</td><td>stub</td><td>missing</td><td>missing</td><td>需补开关矩阵、互锁、arc 和非法状态图</td></tr>
+          <tr><td>S10</td><td>多相相组</td><td>missing</td><td>missing</td><td>stub</td><td>missing</td><td>missing</td><td>需补多相逆变器、相组封装和 fault allocator</td></tr>
+          <tr><td>S11</td><td>温度/退磁/安全</td><td>stub</td><td>missing</td><td>draft</td><td>missing</td><td>missing</td><td>先补 safety fault latch 和热传感 CAD</td></tr>
+          <tr><td>S12</td><td>Pareto 决策</td><td>stub</td><td>stub</td><td>draft</td><td>missing</td><td>missing</td><td>需绑定候选图纸/BOM 版本，防止空泛 ranking</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="gates" class="card">
+      <h2>4. Gate 验收规则</h2>
+      <table>
+        <thead><tr><th>Gate</th><th>最低要求</th><th>禁止通过条件</th></tr></thead>
+        <tbody>
+          <tr><td>G0-G1</td><td>方案边界、风险、图纸目录和命名规则</td><td>没有图纸目录</td></tr>
+          <tr><td>G2</td><td>PCB/CAD/CTRL 三类至少 stub，BOM 初表</td><td>只有仿真或文字描述</td></tr>
+          <tr><td>G3</td><td>FEA/CAD/控制器图进入 draft</td><td>参数缩放未回灌物理约束</td></tr>
+          <tr><td>G4</td><td>PCB 原理图、BOM/EDA、控制器状态机评审</td><td>没有 ERC/DRC、BOM 或 fault path</td></tr>
+          <tr><td>G5</td><td>样机制造包、HIL/bench、DVP&R、DFMEA</td><td>无台架或故障注入计划</td></tr>
+          <tr><td>G6-G7</td><td>released 制造包、DVP&R 执行、PV/PPAP</td><td>numeric simulation 替代工程验证</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="next" class="card">
+      <h2>5. 近期最小推进顺序</h2>
+      <ol>
+        <li>P0 主线：补 S01/S02/S04/S11 的控制器状态机、传感/故障 PCB 页和热/退磁 CAD 安装图。</li>
+        <li>P1 候选：补 S03/S05/S06/S12 的逆变器、FEA/CAD、BOM scorecard 和系统损耗图纸索引。</li>
+        <li>P2 研究池：补 S07/S08/S09/S10 的关键硬件拓扑、互锁、故障路径和停止条件图。</li>
+      </ol>
+    </section>
+  </main>
+  <footer>生成日期：2026-05-15；源文档：claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md</footer>
+</body>
+</html>

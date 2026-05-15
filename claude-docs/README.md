@@ -26,9 +26,11 @@
 | `snapshots/wiki/controllable_flux_motor_research_plan.md` | wiki 原始快照 |
 | `snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | V2 review-pr 工程落地差距 Wiki 快照 |
 | `snapshots/wiki/v2_scheme_engineering_playbook_wiki.md` | V2 分方案工程落地 playbook Wiki 快照 |
+| `snapshots/wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | V2 分方案物理工程交付物矩阵 Wiki 快照 |
 | `snapshots/html/controllable_flux_motor_kb.html` | HTML 知识库原始快照 |
 | `snapshots/html/v2_review_pr_engineering_prd.html` | V2 review-pr 工程落地差距 HTML 快照 |
 | `snapshots/html/v2_scheme_engineering_playbook.html` | V2 分方案工程落地 playbook HTML 快照 |
+| `snapshots/html/v2_scheme_physical_deliverables_matrix.html` | V2 分方案物理工程交付物矩阵 HTML 快照 |
 
 ## 3. 当前主线状态
 

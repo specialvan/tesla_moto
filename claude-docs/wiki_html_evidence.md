@@ -9,9 +9,11 @@
 | Wiki 研究计划 | `wiki/controllable_flux_motor_research_plan.md` | `claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md` |
 | V2 review-pr 工程差距 Wiki | `wiki/v2_review_pr_engineering_prd_wiki.md` | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` |
 | V2 分方案工程落地 Wiki | `wiki/v2_scheme_engineering_playbook_wiki.md` | `claude-docs/snapshots/wiki/v2_scheme_engineering_playbook_wiki.md` |
+| V2 分方案物理工程交付物 Wiki | `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | `claude-docs/snapshots/wiki/v2_scheme_physical_deliverables_matrix_wiki.md` |
 | HTML 可视化知识库 | `controllable_flux_motor_kb.html` | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` |
 | V2 review-pr 工程差距 HTML | `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.html` | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` |
 | V2 分方案工程落地 HTML | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.html` | `claude-docs/snapshots/html/v2_scheme_engineering_playbook.html` |
+| V2 分方案物理工程交付物 HTML | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | `claude-docs/snapshots/html/v2_scheme_physical_deliverables_matrix.html` |
 
 快照用于上下文恢复和证据留痕。活动源发生变更时，应重新复制到 `snapshots/` 并更新 `evidence_manifest.md`。
 
@@ -78,7 +80,18 @@
 - P2 研究池路线必须先有 guardrail：Memory Motor、混合励磁、绕组重构、多相相组都要明确禁止误判和必补证据。
 - V2 推进纪律是主线先闭环，候选靠 scorecard 晋级，研究池靠 guardrail 防止误判。
 
-## 6. 使用方式
+## 6. V2 分方案物理工程交付物矩阵补充
+
+`wiki/v2_scheme_physical_deliverables_matrix_wiki.md` 和 `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` 用于承载 V2 每个方案 PCB、3D/CAD、控制器设计、BOM/EDA、DVP&R/DFMEA 的可见图纸包要求。
+
+关键结论：
+
+- V2 每个方案必须具备可见的 PCB、3D/CAD、控制器图、BOM/EDA 和 gate evidence，才能从“方案描述”进入“工程落地”。
+- 数值仿真、参数扫描和 playbook 文字不得替代物理设计图纸、制造交付物和 DVP&R/DFMEA。
+- P0 主线优先补传感/故障 PCB 页、控制器状态机和热/退磁 CAD 安装图。
+- P1/P2 路线必须先补硬件拓扑、互锁、FEA/CAD、BOM scorecard 和停止条件，再谈晋级。
+
+## 7. 使用方式
 
 1. 面向工程继续开发时，以活动源为准。
 2. 面向上下文交接或审计时，使用 `claude-docs/snapshots/` 中的冻结快照。
