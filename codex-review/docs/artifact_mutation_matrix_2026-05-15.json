@@ -1,0 +1,93 @@
+{
+  "version": "2026-05-15-v0",
+  "review_package": "codex-review/docs",
+  "subject": "tracked artifact mutation and reproducibility risks in tests and experiment runners",
+  "current_branch": {
+    "name": "codex-review-line",
+    "head": "69b40b4 docs: 新增Claude开发深度评审工程包",
+    "dirty_artifacts_observed": [
+      {
+        "path": "experiments/exp_001_linear_dq/summary.json",
+        "field": "csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      },
+      {
+        "path": "experiments/exp_004_safety_boundaries/summary.json",
+        "field": "csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      },
+      {
+        "path": "experiments/exp_005_modulation_factor/summary.json",
+        "field": "csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      },
+      {
+        "path": "experiments/exp_006_nonlinear_flux_lut/summary.json",
+        "field": "lut_path,csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      },
+      {
+        "path": "experiments/exp_007_hybrid_excitation/summary.json",
+        "field": "csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      },
+      {
+        "path": "experiments/exp_008_winding_reconfiguration/summary.json",
+        "field": "csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      },
+      {
+        "path": "experiments/exp_009_multiphase_phase_group/summary.json",
+        "field": "csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      },
+      {
+        "path": "experiments/exp_010_weighted_efficiency_pareto/summary.json",
+        "field": "csv_path",
+        "issue": "absolute worktree path changed from G:\\tesla_moto to G:\\tesla_moto-codex"
+      }
+    ]
+  },
+  "claude_mainline": {
+    "name": "claude-mainline",
+    "head": "391ce20 feat(exp011): 新增铁损模型和Bertotti三相铁损速度扫描实验",
+    "dirty_artifacts_observed": [
+      {
+        "path": "models/control_lut.json",
+        "field": "metadata.generated_at",
+        "issue": "generated timestamp changed after generator/test execution"
+      }
+    ],
+    "relative_path_improvements_observed": [
+      "experiments/exp_006_nonlinear_flux_lut/summary.json",
+      "experiments/exp_006_nonlinear_flux_lut/lut_search_summary.json",
+      "experiments/exp_011_iron_loss/summary.json"
+    ]
+  },
+  "risk_classes": [
+    {
+      "id": "AMR-001",
+      "severity": "P0",
+      "title": "ordinary tests write tracked artifacts",
+      "recommended_gate": "Tests should write to tmp_path or explicit temporary output paths."
+    },
+    {
+      "id": "AMR-002",
+      "severity": "P0",
+      "title": "frozen summaries include local absolute paths",
+      "recommended_gate": "Summary JSON paths should be repository-relative unless explicitly marked external."
+    },
+    {
+      "id": "AMR-003",
+      "severity": "P1",
+      "title": "generated timestamps make committed LUTs nondeterministic",
+      "recommended_gate": "Inject fixed timestamps in tests or keep generated_at outside committed deterministic artifacts."
+    },
+    {
+      "id": "AMR-004",
+      "severity": "P1",
+      "title": "green tests do not prove a clean worktree",
+      "recommended_gate": "Run pytest followed by git diff --exit-code for release validation."
+    }
+  ]
+}

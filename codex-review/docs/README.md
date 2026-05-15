@@ -11,6 +11,8 @@
 | 文件 | 用途 |
 |---|---|
 | `claude_development_review_2026-05-15.md` | 本轮 Claude 开发内容深度评审报告 |
+| `artifact_mutation_review_2026-05-15.md` | 测试和 runner 写入跟踪产物的专项评审 |
+| `artifact_mutation_matrix_2026-05-15.json` | 机器可读的产物写入风险矩阵 |
 | `evidence_index_2026-05-15.md` | 本轮读取的文档、wiki、HTML、Git、代码和测试证据索引 |
 | `git_state_2026-05-15.md` | 当前评审线与 Claude 主线的 Git 状态、分叉和工作树风险 |
 | `review_action_register_2026-05-15.json` | 机器可读评审发现、严重度、状态和建议动作 |
