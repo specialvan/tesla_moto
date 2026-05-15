@@ -40,6 +40,10 @@
 | S02 控制器草图 | `engineering/v2/scheme-02/controller/V2-S02-CTRL-mode_transition_lut-r00.drawio` | MTPA/FW/MTPV 模式切换、LUT CRC 和安全回退状态机草案 |
 | S04 控制器草图 | `engineering/v2/scheme-04/controller/V2-S04-CTRL-flux_lut_interpolation-r00.drawio` | 非线性磁链 LUT 边界检查、插值、误差监控和 fallback 草案 |
 | S11 控制器草图 | `engineering/v2/scheme-11/controller/V2-S11-CTRL-safety_fault_state_machine-r00.drawio` | 热/退磁安全、derating、unknown sensor fallback 和 gate-disable 状态机草案 |
+| S01 PCB 接口页草案 | `engineering/v2/scheme-01/pcb/V2-S01-PCB-sensing_fault_path-r00.md` | 负 d 轴弱磁所需电流/Vdc/温度采样、gate-disable 和 fault latch 页面级草案 |
+| S02 PCB 接口页草案 | `engineering/v2/scheme-02/pcb/V2-S02-PCB-control_io_map-r00.md` | MTPA/FW/MTPV 控制所需 MCU/NVM、ADC、位置、通信和 LUT 版本诊断页面级草案 |
+| S04 PCB 接口页草案 | `engineering/v2/scheme-04/pcb/V2-S04-PCB-lut_observer_inputs-r00.md` | 非线性磁链 LUT 所需观测输入、边界检查、fallback 诊断和误差预算页面级草案 |
+| S11 PCB 接口页草案 | `engineering/v2/scheme-11/pcb/V2-S11-PCB-safety_fault_latch-r00.md` | 温度/退磁安全链、fault latch、gate-disable 和故障分类页面级草案 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据

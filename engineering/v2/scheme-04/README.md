@@ -6,7 +6,7 @@
 
 | 分类 | 必需文件 | 当前状态 | 下一步 |
 |---|---|---|---|
-| PCB | `pcb/V2-S04-PCB-lut_observer_inputs-r00.pdf` | missing | 绘制 LUT 所需温度、位置、电流采样精度链路 |
+| PCB | `pcb/V2-S04-PCB-lut_observer_inputs-r00.md` | draft | 已落地 LUT 观测输入、边界检查、fallback 诊断和误差预算页面级草案 |
 | 3D/CAD | `cad/V2-S04-CAD-fea_geometry_source-r00.step` | missing | 绑定 Maxwell/Motor-CAD 几何源、坐标和材料版本 |
 | Controller | `controller/V2-S04-CTRL-flux_lut_interpolation-r00.drawio` | draft | 已落地 LUT 边界检查、双线性插值、误差监控和 fallback 草图 |
 | BOM/EDA | `bom_eda/V2-S04-BOM-lut_sensor_chain-r00.xlsx` | missing | 列出传感器精度、温漂和采样链器件 |

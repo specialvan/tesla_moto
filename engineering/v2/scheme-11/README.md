@@ -6,7 +6,7 @@
 
 | 分类 | 必需文件 | 当前状态 | 下一步 |
 |---|---|---|---|
-| PCB | `pcb/V2-S11-PCB-safety_fault_latch-r00.pdf` | missing | 绘制磁钢/油温/绕组温度采样、gate-disable、fault latch 和 ASIL 诊断页 |
+| PCB | `pcb/V2-S11-PCB-safety_fault_latch-r00.md` | draft | 已落地温度/退磁安全链、fault latch、gate-disable 和故障分类页面级草案 |
 | 3D/CAD | `cad/V2-S11-CAD-thermal_sensor_cooling-r00.step` | missing | 绘制温度传感器安装、油路、磁钢热路径和控制器散热 CAD |
 | Controller | `controller/V2-S11-CTRL-safety_fault_state_machine-r00.drawio` | draft | 已落地热/退磁 warning、derating、unknown sensor fallback 和 gate-disable 状态机草图 |
 | BOM/EDA | `bom_eda/V2-S11-BOM-safety_chain-r00.xlsx` | missing | 列出传感器、隔离、诊断、关断和锁存器件 |

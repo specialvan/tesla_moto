@@ -6,7 +6,7 @@
 
 | 分类 | 必需文件 | 当前状态 | 下一步 |
 |---|---|---|---|
-| PCB | `pcb/V2-S01-PCB-sensing_fault_path-r00.pdf` | missing | 绘制电流/Vdc/温度采样与 gate-disable/fault latch 页 |
+| PCB | `pcb/V2-S01-PCB-sensing_fault_path-r00.md` | draft | 已落地采样链、温度输入、gate-disable 和 fault latch 页面级草案 |
 | 3D/CAD | `cad/V2-S01-CAD-sensor_busbar_layout-r00.step` | missing | 定义母排、传感器安装和热路径 |
 | Controller | `controller/V2-S01-CTRL-field_weakening_state_machine-r00.drawio` | draft | 已落地弱磁、`id_min(T,fault)`、降额和 fault fallback 状态机草图 |
 | BOM/EDA | `bom_eda/V2-S01-BOM-sensing_fault_components-r00.xlsx` | missing | 列出采样链、隔离和故障锁存器件 |
