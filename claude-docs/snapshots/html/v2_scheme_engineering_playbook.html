@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>V2 分方案工程落地 Playbook</title>
+  <style>
+    :root{--bg:#0b1020;--panel:#111a33;--text:#e7eefc;--muted:#9fb0d0;--accent:#6ee7f9;--ok:#34d399;--warn:#fbbf24;--risk:#fb7185;--line:rgba(255,255,255,.12)}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top left,#1e2b58,var(--bg) 48%);color:var(--text);line-height:1.65}header{padding:48px 6vw 34px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(110,231,249,.12),rgba(167,139,250,.08))}h1{margin:0 0 12px;font-size:clamp(30px,5vw,54px);line-height:1.08}h2{margin:0 0 18px;font-size:28px}h3{margin:18px 0 10px;color:var(--accent)}p{margin:8px 0}.subtitle{max-width:1100px;color:var(--muted);font-size:18px}main{padding:28px 6vw 64px}nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:28px}nav a,.card{border:1px solid var(--line);background:rgba(17,26,51,.84);border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.22)}nav a{color:var(--text);text-decoration:none;padding:14px 16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.card{padding:20px;margin:14px 0}.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;color:#06131d;background:var(--accent);font-weight:700}.ok{background:var(--ok)}.warn{background:var(--warn)}.risk{background:var(--risk);color:#24040b}table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;margin:12px 0}th,td{border:1px solid var(--line);padding:10px 12px;vertical-align:top}th{background:rgba(110,231,249,.12);text-align:left}tr:nth-child(even)td{background:rgba(255,255,255,.03)}code{color:#c4b5fd}.callout{border-left:5px solid var(--accent);background:rgba(22,33,63,.8);padding:16px 18px;border-radius:14px}.tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}.task{padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(22,33,63,.78)}footer{padding:24px 6vw;color:var(--muted);border-top:1px solid var(--line)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>V2 分方案工程落地 Playbook</h1>
+    <p class="subtitle">面向 12 条研究/候选/主线路线，逐条明确 V2 定位、输入输出、BOM/EDA 影响、验证证据和进退条件。本文是摘要阅读版，完整内容以同目录 Markdown playbook 为准。</p>
+  </header>
+  <main>
+    <nav><a href="#strategy">推进策略</a><a href="#table">优先级总表</a><a href="#mainline">主线四件套</a><a href="#candidate">中期候选</a><a href="#guardrail">研究池</a><a href="#order">执行顺序</a></nav>
+
+    <section id="strategy" class="card">
+      <h2>1. V2 推进策略</h2>
+      <p>V2 不把所有路线都推向硬件，而是给每条路线明确：是否进入近期主线、输入模型和输出接口、BOM/EDA 影响、缺失验证证据、进入下一门或停止推进条件。</p>
+      <div class="callout"><strong>总纪律：</strong>主线先闭环，候选靠 scorecard 晋级，研究池靠 guardrail 防止误判。</div>
+    </section>
+
+    <section id="table" class="card">
+      <h2>2. 分方案优先级总表</h2>
+      <table>
+        <thead><tr><th>优先级</th><th>方案</th><th>V2 定位</th><th>下一步动作</th><th>阶段门目标</th></tr></thead>
+        <tbody>
+          <tr><td>P0</td><td>负 d 轴弱磁</td><td>近期主线</td><td>安全边界进入 LUT、低压/高温联合扫描</td><td>G3 主线</td></tr>
+          <tr><td>P0</td><td>MTPA/FW/MTPV</td><td>控制主干出口</td><td>二维 control LUT、模式连续性、不行原因闭合</td><td>G3 主线</td></tr>
+          <tr><td>P0</td><td>非线性磁链 LUT</td><td>高可信模型底座</td><td>FEA/实测导入规范、LUT 模式生成控制 LUT</td><td>G3 主线底座</td></tr>
+          <tr><td>P0</td><td>温度/退磁安全保护</td><td>横切强制层</td><td><code>id_min(T,fault)</code>、sensor fault、gate-disable 映射</td><td>G3/G4 前置</td></tr>
+          <tr><td>P1</td><td>SVPWM/过调制</td><td>高速区增强项</td><td>THD/NVH/损耗边界和启停窗口</td><td>G3 候选</td></tr>
+          <tr><td>P1</td><td>磁路饱和协同</td><td>中期候选</td><td>candidate geometry → FEA LUT → scorecard</td><td>G2-G3 候选</td></tr>
+          <tr><td>P1</td><td>PMaSynRM</td><td>中期候选拓扑</td><td>PM fraction / ripple / stress / demag scorecard</td><td>G2-G3 候选</td></tr>
+          <tr><td>P1</td><td>Pareto 决策</td><td>统一决策出口</td><td>系统损耗 + 成熟度 + 风险评分</td><td>决策层</td></tr>
+          <tr><td>P2</td><td>Memory Motor</td><td>研究池重点规范</td><td>磁状态机、脉冲、状态观测、未知状态回退</td><td>研究池规范</td></tr>
+          <tr><td>P2</td><td>混合励磁</td><td>重硬件研究候选</td><td>三变量优化、field converter 损耗和故障</td><td>研究候选</td></tr>
+          <tr><td>P2</td><td>绕组重构</td><td>研究池</td><td>切换瞬态、互锁、环流、非法状态</td><td>研究池</td></tr>
+          <tr><td>P2</td><td>多相相组</td><td>容错需求牵引研究池</td><td>fault torque allocator、资源预算、容错需求</td><td>研究池</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="mainline">
+      <h2>3. 主线四件套</h2>
+      <div class="grid">
+        <div class="card"><span class="badge ok">P0</span><h3>负 d 轴弱磁</h3><p>必补 <code>id_min(T,fault)</code>、油冷边界、Vdc_min、传感器可信度；输出 voltage/current/demag/thermal margin。</p></div>
+        <div class="card"><span class="badge ok">P0</span><h3>MTPA/FW/MTPV</h3><p>必补二维速度-转矩 LUT、mode transition、CRC、generator metadata；输出发布型 control LUT。</p></div>
+        <div class="card"><span class="badge ok">P0</span><h3>非线性磁链 LUT</h3><p>必补单位、坐标、峰值/RMS、温度维度、candidate ID；输出 LUT 模式控制轨迹和越界原因。</p></div>
+        <div class="card"><span class="badge ok">P0</span><h3>安全保护</h3><p>必补磁钢温度、油温、sensor fault、gate-disable、fault latch；任何方案不能证明故障安全，不允许进硬件门。</p></div>
+      </div>
+    </section>
+
+    <section id="candidate">
+      <h2>4. 中期候选</h2>
+      <div class="tasks">
+        <div class="task"><h3>SVPWM / 过调制</h3><p>高速区附加模式；必须证明 THD/NVH、逆变器损耗、启停窗口和退出条件可控。</p></div>
+        <div class="task"><h3>磁路饱和协同</h3><p>必须走候选几何 → FEA LUT → 控制评分，不允许只靠参数缩放晋级。</p></div>
+        <div class="task"><h3>PMaSynRM</h3><p>必须证明低 PM 成本收益不牺牲主工况效率、峰值转矩、ripple、stress 和 demag 安全。</p></div>
+        <div class="task"><h3>Pareto 决策</h3><p>所有路线统一出口；必须区分 research rank 与 engineering recommendation。</p></div>
+      </div>
+    </section>
+
+    <section id="guardrail" class="card">
+      <h2>5. 研究池 Guardrail</h2>
+      <table>
+        <thead><tr><th>方案</th><th>禁止误判</th><th>必补证据</th></tr></thead>
+        <tbody>
+          <tr><td>Memory Motor</td><td>不能用 <code>psi_f</code> 缩放代表工程可行性</td><td>磁状态机、脉冲能量、状态观测、未知状态回退、寿命</td></tr>
+          <tr><td>混合励磁</td><td>不能只看 <code>psi_eff = psi_pm + kf * if</code></td><td>三变量优化、field converter 损耗、field thermal、loss-of-field</td></tr>
+          <tr><td>绕组重构</td><td>不能只看静态 Ke/Kt 缩放</td><td>切换瞬态、环流、arc、interlock、open/short/stuck fault</td></tr>
+          <tr><td>多相相组</td><td>不能只用可用电流降额代理</td><td>fault torque allocator、harmonic subspace、资源预算、容错需求</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="order" class="card">
+      <h2>6. 近期执行顺序</h2>
+      <ol>
+        <li>主线四件套闭环：弱磁 + 控制 LUT + 非线性 LUT + 安全保护。</li>
+        <li>候选 scorecard：FEA LUT、扁线、油冷、系统损耗、NVH、制造风险。</li>
+        <li>研究池 guardrail：Memory Motor、混合励磁、绕组重构、多相全部设停/进条件。</li>
+      </ol>
+    </section>
+  </main>
+  <footer>生成日期：2026-05-15；源文档：claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.md</footer>
+</body>
+</html>

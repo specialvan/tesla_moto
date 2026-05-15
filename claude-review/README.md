@@ -26,6 +26,8 @@
 | `docs/2026-05-15/v0.3_t2_t3_code_landing_plan.md` | T2 不可行原因统一与 T3 安全边界接入 control LUT 主干的代码级落地蓝图 |
 | `docs/2026-05-15/v2_review_pr_engineering_prd.md` | 基于 review-pr 两篇外部资料逐条对齐真实工程落地差距的 V2 PRD |
 | `docs/2026-05-15/v2_review_pr_engineering_prd.html` | V2 PRD 的 HTML 阅读版，便于评审、汇报和离线浏览 |
+| `docs/2026-05-15/v2_scheme_engineering_playbook.md` | V2 每个方案深度推进工程落地的分方案 playbook |
+| `docs/2026-05-15/v2_scheme_engineering_playbook.html` | V2 分方案工程落地 playbook 的 HTML 阅读版 |
 
 ## 3. 当前核验结论
 

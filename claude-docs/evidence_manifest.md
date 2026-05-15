@@ -6,8 +6,10 @@
 |---|---|---|
 | wiki 研究计划 | `claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md` | 研发目标、物理模型、假设树、路线图和实验矩阵源证据 |
 | V2 review-pr 工程差距 Wiki | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | 外部资料到真实工程落地差距的知识库证据 |
+| V2 分方案工程落地 Wiki | `claude-docs/snapshots/wiki/v2_scheme_engineering_playbook_wiki.md` | 12 条主线、候选、研究池路线逐条推进的知识库证据 |
 | HTML 知识库 | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` | 可视化知识库和页面化证据 |
 | V2 review-pr 工程差距 HTML | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` | V2 PRD 的页面化评审证据 |
+| V2 分方案工程落地 HTML | `claude-docs/snapshots/html/v2_scheme_engineering_playbook.html` | V2 分方案 playbook 的页面化评审证据 |
 
 ## 2. 活动证据源
 
@@ -25,6 +27,9 @@
 | V2 review-pr PRD | `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.md` | 可变磁通、扁线、油冷、多合一外部资料到工程落地差距的完整需求源 |
 | V2 review-pr Wiki | `wiki/v2_review_pr_engineering_prd_wiki.md` | V2 PRD 的知识库索引活动源 |
 | V2 review-pr HTML | `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.html` | V2 PRD 的页面化活动源 |
+| V2 分方案工程落地 Playbook | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.md` | 12 条路线逐条明确输入输出、BOM/EDA 影响、缺失证据和阶段门条件的完整执行源 |
+| V2 分方案工程落地 Wiki | `wiki/v2_scheme_engineering_playbook_wiki.md` | V2 分方案 playbook 的知识库索引活动源 |
+| V2 分方案工程落地 HTML | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.html` | V2 分方案 playbook 的页面化活动源 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据
