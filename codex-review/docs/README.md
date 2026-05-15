@@ -13,6 +13,8 @@
 | `claude_development_review_2026-05-15.md` | 本轮 Claude 开发内容深度评审报告 |
 | `artifact_mutation_review_2026-05-15.md` | 测试和 runner 写入跟踪产物的专项评审 |
 | `artifact_mutation_matrix_2026-05-15.json` | 机器可读的产物写入风险矩阵 |
+| `goal_traceability_audit_2026-05-15.md` | 用户目标到评审包产物的覆盖审计 |
+| `goal_traceability_checklist_2026-05-15.json` | 机器可读目标覆盖 checklist |
 | `evidence_index_2026-05-15.md` | 本轮读取的文档、wiki、HTML、Git、代码和测试证据索引 |
 | `git_state_2026-05-15.md` | 当前评审线与 Claude 主线的 Git 状态、分叉和工作树风险 |
 | `review_action_register_2026-05-15.json` | 机器可读评审发现、严重度、状态和建议动作 |
@@ -23,10 +25,10 @@
 |---|---|
 | 当前工作区 | `G:\tesla_moto-codex` |
 | 当前分支 | `codex-review-line` |
-| 当前 HEAD | `4e0c489 feat: 增加PyFluent高保真工作流入口` |
+| 初始评审基线 HEAD | `4e0c489 feat: 增加PyFluent高保真工作流入口` |
 | 对照主线 | `claude-mainline` |
 | 对照主线 HEAD | `391ce20 feat(exp011): 新增铁损模型和Bertotti三相铁损速度扫描实验` |
-| 当前分支本地状态 | ahead origin 1，且有 8 个实验 summary 的路径差异 |
+| 初始本地状态 | ahead origin 1，且有 8 个实验 summary 的路径差异 |
 | Claude 主线本地状态 | `models/control_lut.json` 已修改，`.claude/` 未跟踪 |
 
 ## 4. 维护规则
