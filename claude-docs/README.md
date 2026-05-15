@@ -31,6 +31,7 @@
 | `snapshots/html/v2_review_pr_engineering_prd.html` | V2 review-pr 工程落地差距 HTML 快照 |
 | `snapshots/html/v2_scheme_engineering_playbook.html` | V2 分方案工程落地 playbook HTML 快照 |
 | `snapshots/html/v2_scheme_physical_deliverables_matrix.html` | V2 分方案物理工程交付物矩阵 HTML 快照 |
+| `../engineering/v2/README.md` | V2 12 个方案图纸包仓库落点和 README 审计索引 |
 
 ## 3. 当前主线状态
 

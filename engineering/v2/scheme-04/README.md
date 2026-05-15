@@ -1,0 +1,22 @@
+# S04 非线性磁链 LUT 图纸包
+
+方案 ID：`nonlinear_flux_lut`
+
+## 必需交付物
+
+| 分类 | 必需文件 | 当前状态 | 下一步 |
+|---|---|---|---|
+| PCB | `pcb/V2-S04-PCB-lut_observer_inputs-r00.pdf` | missing | 绘制 LUT 所需温度、位置、电流采样精度链路 |
+| 3D/CAD | `cad/V2-S04-CAD-fea_geometry_source-r00.step` | missing | 绑定 Maxwell/Motor-CAD 几何源、坐标和材料版本 |
+| Controller | `controller/V2-S04-CTRL-flux_lut_interpolation-r00.drawio` | missing | 绘制 LUT 插值、越界拒绝、fallback 和误差监控 |
+| BOM/EDA | `bom_eda/V2-S04-BOM-lut_sensor_chain-r00.xlsx` | missing | 列出传感器精度、温漂和采样链器件 |
+| Test/DVP | `test_dvpr/V2-S04-TEST-flux_lut_correlation-r00.md` | missing | 定义 FEA 回灌、台架反标定和 LUT 误差报告 |
+| Simulation | `simulation/V2-S04-SIM-flux_lut_correlation-r00.md` | missing | 关联非线性磁链 LUT、插值边界和 FEA/实测回灌证据 |
+
+## 现有证据
+
+- `models/flux_lut_sample.json` 和 EXP-006 提供 synthetic LUT 数值证明。
+
+## 当前判断
+
+LUT 数值链已存在，但真实 FEA/CAD 几何源与传感器图纸尚未落地。

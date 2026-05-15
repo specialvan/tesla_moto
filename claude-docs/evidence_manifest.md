@@ -32,9 +32,10 @@
 | V2 分方案工程落地 Playbook | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.md` | 12 条路线逐条明确输入输出、BOM/EDA 影响、缺失证据和阶段门条件的完整执行源 |
 | V2 分方案工程落地 Wiki | `wiki/v2_scheme_engineering_playbook_wiki.md` | V2 分方案 playbook 的知识库索引活动源 |
 | V2 分方案工程落地 HTML | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.html` | V2 分方案 playbook 的页面化活动源 |
-| V2 分方案物理工程交付物矩阵 | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md` | 每个方案 PCB、3D/CAD、控制器设计、BOM/EDA、DVP&R/DFMEA 和 gate 图纸包的完整交付物源 |
+| V2 分方案物理工程交付物矩阵 | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md` | 每个方案 PCB、3D/CAD、控制器设计、BOM/EDA、DVP&R/DFMEA 和 gate 图纸包的交付物要求源，不代表图纸本体已交付 |
 | V2 分方案物理工程交付物 Wiki | `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | V2 物理工程交付物矩阵的知识库索引活动源 |
 | V2 分方案物理工程交付物 HTML | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的页面化活动源 |
+| V2 工程图纸包索引 | `engineering/v2/README.md` | 12 个方案 PCB、3D/CAD、控制器、BOM/EDA、DVP&R 仓库落点的 README 审计索引 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据

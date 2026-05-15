@@ -30,6 +30,7 @@
 | `docs/2026-05-15/v2_scheme_engineering_playbook.html` | V2 分方案工程落地 playbook 的 HTML 阅读版 |
 | `docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md` | V2 每个方案 PCB、3D/CAD、控制器、BOM/EDA 与 gate 图纸包交付矩阵 |
 | `docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的 HTML 阅读版 |
+| `../engineering/v2/README.md` | V2 12 个方案图纸包仓库落点和 README 审计索引 |
 
 ## 3. 当前核验结论
 
