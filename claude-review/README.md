@@ -19,6 +19,12 @@
 | `codex_development_review.md` | Claude 返回的原始评审 |
 | `codex_review_deep_triage.md` | 对评审意见的逐条核验和深度处置 |
 | `review_action_register.json` | 机器可读的行动项登记表 |
+| `docs/2026-05-15/research_scheme_engineering_landing_matrix.md` | 按方案拆解当前研究路线的工程落地矩阵、主线收敛建议与推进优先级 |
+| `docs/2026-05-15/version_execution_roadmap.md` | 按版本收敛主线能力、候选路线与研究池边界的推进路线图 |
+| `docs/2026-05-15/stage_gate_execution_checklist.md` | 把阶段门定义落成可执行检查清单，并标注已有证据与缺失项 |
+| `docs/2026-05-15/v0.3_implementation_taskboard.md` | 将 v0.3 主干收敛目标拆成文件级实施任务、测试矩阵与建议执行顺序 |
+| `docs/2026-05-15/v0.3_t2_t3_code_landing_plan.md` | T2 不可行原因统一与 T3 安全边界接入 control LUT 主干的代码级落地蓝图 |
+| `docs/2026-05-15/v2_review_pr_engineering_prd.md` | 基于 review-pr 两篇外部资料逐条对齐真实工程落地差距的 V2 PRD |
 
 ## 3. 当前核验结论
 
