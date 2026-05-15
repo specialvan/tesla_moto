@@ -36,6 +36,10 @@
 | V2 分方案物理工程交付物 Wiki | `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | V2 物理工程交付物矩阵的知识库索引活动源 |
 | V2 分方案物理工程交付物 HTML | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的页面化活动源 |
 | V2 工程图纸包索引 | `engineering/v2/README.md` | 12 个方案 PCB、3D/CAD、控制器、BOM/EDA、DVP&R 仓库落点的 README 审计索引 |
+| S01 控制器草图 | `engineering/v2/scheme-01/controller/V2-S01-CTRL-field_weakening_state_machine-r00.drawio` | 负 d 轴弱磁、`id_min(T,fault)`、降额和故障回退状态机草案 |
+| S02 控制器草图 | `engineering/v2/scheme-02/controller/V2-S02-CTRL-mode_transition_lut-r00.drawio` | MTPA/FW/MTPV 模式切换、LUT CRC 和安全回退状态机草案 |
+| S04 控制器草图 | `engineering/v2/scheme-04/controller/V2-S04-CTRL-flux_lut_interpolation-r00.drawio` | 非线性磁链 LUT 边界检查、插值、误差监控和 fallback 草案 |
+| S11 控制器草图 | `engineering/v2/scheme-11/controller/V2-S11-CTRL-safety_fault_state_machine-r00.drawio` | 热/退磁安全、derating、unknown sensor fallback 和 gate-disable 状态机草案 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据
