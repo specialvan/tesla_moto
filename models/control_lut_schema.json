@@ -161,8 +161,8 @@
         "torque_axis_nm": {
           "type": "array",
           "items": {"type": "number"},
-          "minItems": 2,
-          "description": "转矩轴（Nm），必须严格递增。例：[0, 10, 20, ..., 120]。"
+          "minItems": 1,
+          "description": "转矩轴（Nm），单目标转矩 LUT 可只有一个点，多目标转矩 LUT 必须严格递增。例：[100] 或 [0, 10, 20, ..., 120]。"
         },
         "speed_step_rpm": {
           "type": "number",
@@ -252,6 +252,10 @@
             "out_of_flux_lut_bounds": {
               "type": "integer",
               "description": "超出磁链表范围的点数（仅非线性模型）。"
+            },
+            "search_not_converged": {
+              "type": "integer",
+              "description": "搜索未找到满足目标转矩和约束的工作点数。"
             }
           }
         }
@@ -303,6 +307,31 @@
         "generator_version": {
           "type": "string",
           "description": "生成器脚本的版本号。"
+        },
+        "demag_limit": {
+          "type": ["object", "null"],
+          "description": "退磁保护限制元数据；未启用退磁限制时为 null。",
+          "properties": {
+            "points_c_to_id_min_a": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "temperature_c": {"type": "number"},
+                  "id_min_a": {"type": "number"}
+                },
+                "required": ["temperature_c", "id_min_a"]
+              }
+            },
+            "effective_temperature_c": {
+              "type": "number",
+              "description": "生成 LUT 时用于退磁限制插值的温度。"
+            },
+            "effective_id_min_a": {
+              "type": "number",
+              "description": "当前温度下允许的最小 d 轴电流。"
+            }
+          }
         },
         "notes": {
           "type": "array",
