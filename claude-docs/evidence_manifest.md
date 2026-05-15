@@ -5,7 +5,9 @@
 | 证据 | 快照路径 | 用途 |
 |---|---|---|
 | wiki 研究计划 | `claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md` | 研发目标、物理模型、假设树、路线图和实验矩阵源证据 |
+| V2 review-pr 工程差距 Wiki | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | 外部资料到真实工程落地差距的知识库证据 |
 | HTML 知识库 | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` | 可视化知识库和页面化证据 |
+| V2 review-pr 工程差距 HTML | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` | V2 PRD 的页面化评审证据 |
 
 ## 2. 活动证据源
 
@@ -20,6 +22,9 @@
 | 行业阶段门 JSON | `models/scheme_industry_stage_gate_process.json` | 阶段门结构化数据 |
 | 高保真工具链选型 | `claude-docs/toolchain_selection_and_github_references.md` | Maxwell / Motor-CAD / Simulink / GitHub 参考项目和质量门槛 |
 | Maxwell / Motor-CAD 仿真方案 | `claude-docs/maxwell_motorcad_simulation_plan.md` | 确定工程主线仿真平台、FEA/热/NVH/控制闭环和中文报告结构 |
+| V2 review-pr PRD | `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.md` | 可变磁通、扁线、油冷、多合一外部资料到工程落地差距的完整需求源 |
+| V2 review-pr Wiki | `wiki/v2_review_pr_engineering_prd_wiki.md` | V2 PRD 的知识库索引活动源 |
+| V2 review-pr HTML | `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.html` | V2 PRD 的页面化活动源 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据

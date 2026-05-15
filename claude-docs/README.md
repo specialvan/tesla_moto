@@ -24,7 +24,9 @@
 | `maxwell_motorcad_simulation_plan.md` | Maxwell / Motor-CAD / 开源工具链仿真设计落地方案 |
 | `migration_alignment_index.md` | Claude 文档迁移与 Codex 对齐索引 |
 | `snapshots/wiki/controllable_flux_motor_research_plan.md` | wiki 原始快照 |
+| `snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | V2 review-pr 工程落地差距 Wiki 快照 |
 | `snapshots/html/controllable_flux_motor_kb.html` | HTML 知识库原始快照 |
+| `snapshots/html/v2_review_pr_engineering_prd.html` | V2 review-pr 工程落地差距 HTML 快照 |
 
 ## 3. 当前主线状态
 

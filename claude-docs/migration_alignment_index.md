@@ -16,7 +16,9 @@
 | `claude-docs/toolchain_selection_and_github_references.md` | 已落地 | 高保真仿真工具链和 GitHub 参考项目 |
 | `claude-docs/maxwell_motorcad_simulation_plan.md` | 已落地 | Maxwell / Motor-CAD / 开源链路详细落地方案 |
 | `claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md` | 已落地 | wiki 冻结快照 |
+| `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | 已落地 | V2 review-pr 工程落地差距 Wiki 快照 |
 | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` | 已落地 | HTML 冻结快照 |
+| `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` | 已落地 | V2 review-pr 工程落地差距 HTML 快照 |
 
 ## 3. 与 Codex-docs 的结构对齐
 
@@ -38,6 +40,8 @@
 |---|---|---|
 | `wiki/controllable_flux_motor_research_plan.md` | `claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md` | 已迁移 |
 | `controllable_flux_motor_kb.html` | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` | 已迁移 |
+| `wiki/v2_review_pr_engineering_prd_wiki.md` | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | 已迁移 |
+| `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.html` | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` | 已迁移 |
 | `experiments/exp_001_linear_dq/README.md` | `claude-docs/evidence_manifest.md` | 已索引 |
 | `experiments/exp_002_variable_flux/README.md` | `claude-docs/evidence_manifest.md` | 已索引 |
 | `experiments/exp_003_param_sweep/README.md` | `claude-docs/evidence_manifest.md` | 已索引 |

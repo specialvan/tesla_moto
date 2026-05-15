@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>V2 PRD：review-pr 工程落地差距</title>
+  <style>
+    :root { --bg:#0b1020; --panel:#111a33; --panel2:#17213f; --text:#e7eefc; --muted:#9fb0d0; --accent:#6ee7f9; --accent2:#a78bfa; --ok:#34d399; --warn:#fbbf24; --risk:#fb7185; --line:rgba(255,255,255,.12); }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif; background:radial-gradient(circle at top left,#1d2b58,var(--bg) 48%); color:var(--text); line-height:1.65; }
+    header { padding:48px 6vw 34px; border-bottom:1px solid var(--line); background:linear-gradient(135deg,rgba(110,231,249,.12),rgba(167,139,250,.08)); }
+    h1 { margin:0 0 12px; font-size:clamp(30px,5vw,54px); line-height:1.08; }
+    h2 { margin:0 0 18px; font-size:28px; }
+    h3 { margin:18px 0 10px; color:var(--accent); }
+    p { margin:8px 0; }
+    code { color:#c4b5fd; }
+    .subtitle { max-width:1100px; color:var(--muted); font-size:18px; }
+    main { padding:28px 6vw 64px; }
+    nav { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:28px; }
+    nav a, .card { border:1px solid var(--line); background:rgba(17,26,51,.84); border-radius:16px; box-shadow:0 16px 40px rgba(0,0,0,.22); }
+    nav a { color:var(--text); text-decoration:none; padding:14px 16px; transition:.16s ease; }
+    nav a:hover { transform:translateY(-2px); border-color:rgba(110,231,249,.55); }
+    section { margin:28px 0; }
+    .card { padding:20px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .badge { display:inline-block; padding:2px 9px; border-radius:999px; font-size:12px; color:#06131d; background:var(--accent); font-weight:700; }
+    .badge.ok { background:var(--ok); }
+    .badge.warn { background:var(--warn); }
+    .badge.risk { background:var(--risk); color:#24040b; }
+    table { width:100%; border-collapse:collapse; overflow:hidden; border-radius:14px; margin:12px 0; }
+    th, td { border:1px solid var(--line); padding:10px 12px; vertical-align:top; }
+    th { background:rgba(110,231,249,.12); text-align:left; }
+    tr:nth-child(even) td { background:rgba(255,255,255,.03); }
+    .callout { border-left:5px solid var(--accent); background:rgba(22,33,63,.8); padding:16px 18px; border-radius:14px; }
+    .warnbox { border-left-color:var(--warn); }
+    .riskbox { border-left-color:var(--risk); }
+    .tasks { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+    .task { padding:16px; border:1px solid var(--line); border-radius:14px; background:rgba(22,33,63,.78); }
+    footer { padding:24px 6vw; color:var(--muted); border-top:1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>V2 PRD：review-pr 工程落地差距</h1>
+    <p class="subtitle">基于可变磁通、扁线、油冷、多合一两篇外部资料，逐条对齐当前可控磁通研究主线与真实量产电驱工程之间的差距。本文是摘要阅读版，完整需求以同目录 Markdown PRD 为准。</p>
+  </header>
+  <main>
+    <nav>
+      <a href="#summary">总判断</a>
+      <a href="#mapping">条目化映射</a>
+      <a href="#requirements">功能需求</a>
+      <a href="#gates">阶段门</a>
+      <a href="#priority">优先级</a>
+      <a href="#rules">维护规则</a>
+    </nav>
+
+    <section id="summary" class="card">
+      <h2>1. V2 总判断</h2>
+      <div class="grid">
+        <div class="card"><span class="badge ok">继承主线</span><h3>v0.3 控制骨架继续有效</h3><p>弱磁、MTPA/FW/MTPV、非线性磁链 LUT、热/退磁安全保护仍是近期最现实的工程主线。</p></div>
+        <div class="card"><span class="badge warn">研究池重点</span><h3>可变磁通必须变成状态机问题</h3><p>不能把 <code>psi_f</code> 档位缩放实验误写成 Memory Motor 工程可行性证明。</p></div>
+        <div class="card"><span class="badge risk">硬件阶段门</span><h3>扁线、油冷、多合一必须入门</h3><p>真实工程放行依赖绕组、冷却、BOM/EDA、DFMEA、DVP&R、台架和 PV 证据。</p></div>
+      </div>
+      <div class="callout warnbox"><strong>核心结论：</strong>V2 不是继续横向增加实验，而是把控制主线、磁状态研究池和系统工程阶段门拉到同一条证据链上。</div>
+    </section>
+
+    <section id="mapping">
+      <h2>2. review-pr 条目化映射</h2>
+      <div class="card">
+        <h3>资料 A：可变磁通 / 电磁调磁</h3>
+        <table>
+          <thead><tr><th>条目</th><th>外部资料主张</th><th>当前状态</th><th>V2 要求</th></tr></thead>
+          <tbody>
+            <tr><td>A-1</td><td>电磁脉冲改变等效磁通</td><td>仅有静态 <code>psi_f</code> 档位</td><td>增加磁化/去磁脉冲能量、电流、电压、时间</td></tr>
+            <tr><td>A-2</td><td>低速高磁链、高速低磁链</td><td>弱磁与变量磁链实验分离</td><td>区分负 <code>id</code> 弱磁和真实磁状态改变</td></tr>
+            <tr><td>A-3</td><td>磁状态需要保持和重复切换</td><td>无保持、漂移、寿命模型</td><td>定义保持时间、漂移、重复切换寿命</td></tr>
+            <tr><td>A-4</td><td>无机械调磁但控制更复杂</td><td>无状态机和回退策略</td><td>定义磁状态机、禁止区、fallback state</td></tr>
+            <tr><td>A-5</td><td>高速收益受退磁和电压裕度约束</td><td>只有简化 demag limit</td><td>将磁状态、温度、Vdc、退磁统一进入 LUT 过滤</td></tr>
+            <tr><td>A-6</td><td>工程价值取决于可控可观测可保护</td><td>只有数值假设</td><td>禁止把 <code>psi_f</code> 缩放实验写成工程可行性证明</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>资料 B：扁线 / 油冷 / 多合一</h3>
+        <table>
+          <thead><tr><th>条目</th><th>外部资料主张</th><th>当前状态</th><th>V2 要求</th></tr></thead>
+          <tbody>
+            <tr><td>B-1</td><td>扁线提升槽满率和功率密度</td><td>电机参数无绕组几何</td><td>增加绕组类型、槽满率、导体截面、端部长度</td></tr>
+            <tr><td>B-2</td><td>扁线带来 AC 铜耗、制造和 NVH 风险</td><td>损耗模型仍简化</td><td>scorecard 加入 AC 铜耗、制造风险、NVH 风险</td></tr>
+            <tr><td>B-3</td><td>油冷支撑高热流密度</td><td>只有简化温度模型</td><td>增加油温、流量、压力、喷油/甩油路径</td></tr>
+            <tr><td>B-4</td><td>磁钢温度约束退磁边界</td><td><code>id_min(T)</code> 来源简化</td><td>demag curve 必须追溯材料、FEA 或台架数据</td></tr>
+            <tr><td>B-5</td><td>多合一集成耦合热、EMC、NVH、服务性</td><td>BOM/EDA 只有目录级规划</td><td>输出页级 BOM/EDA、接口、接地、连接器和冷却约束</td></tr>
+            <tr><td>B-6</td><td>量产放行依赖硬证据</td><td>仓库主要是数值仿真</td><td>numeric simulation 不能替代 G4-G7 证据</td></tr>
+            <tr><td>B-7</td><td>高效率要看系统损耗</td><td>未覆盖逆变器/机械/油泵/冷却惩罚</td><td>Pareto 增加 system loss breakdown</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="requirements">
+      <h2>3. V2 功能需求</h2>
+      <div class="tasks">
+        <div class="task"><h3>FR-1 磁状态机</h3><p><code>flux_state_id</code>、脉冲能量、观测可信度、fallback state、不可逆退磁风险。</p></div>
+        <div class="task"><h3>FR-2 扁线绕组输入</h3><p>绕组类型、槽满率、导体截面、端部长度、AC/DC 铜耗和制造风险。</p></div>
+        <div class="task"><h3>FR-3 油冷热边界</h3><p>油温、流量、压力、定子/转子/磁钢温度、demag curve 来源。</p></div>
+        <div class="task"><h3>FR-4 多合一 BOM/EDA</h3><p>gate driver、sensing、DC-link、oil pump、fault latch、HV/LV connector 页面。</p></div>
+        <div class="task"><h3>FR-5 系统损耗 Pareto</h3><p>铜耗、铁耗、逆变器、机械、油泵、冷却惩罚、复杂度和成熟度评分。</p></div>
+      </div>
+    </section>
+
+    <section id="gates" class="card">
+      <h2>4. 阶段门更新</h2>
+      <table>
+        <thead><tr><th>阶段门</th><th>V2 新增要求</th></tr></thead>
+        <tbody>
+          <tr><td>G0-G1</td><td>目标车型、冷却架构、是否允许磁状态切换、安全目标和故障回退。</td></tr>
+          <tr><td>G2</td><td>机械调磁 vs 电磁调磁、扁线 vs 圆线、水套 vs 油冷、多合一接口 trade study。</td></tr>
+          <tr><td>G3</td><td>FEA/实测到 LUT、油冷热边界、系统损耗、磁状态机、控制 LUT 统一表达。</td></tr>
+          <tr><td>G4</td><td>页级 BOM/EDA、油泵/压力/温度 sensing、gate-disable、DFMEA。</td></tr>
+          <tr><td>G5-G6</td><td>油冷覆盖率、热循环、NVH/EMC、重复切换寿命、故障注入。</td></tr>
+          <tr><td>G7</td><td>PV/PPAP/release/change-control 证据，不得由数值仿真替代。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="priority">
+      <h2>5. 下一步优先级</h2>
+      <div class="grid">
+        <div class="card"><span class="badge risk">P0</span><h3>立即补入主线</h3><p>模型来源、安全边界来源、不可行原因、热/退磁边界、阶段门硬证据声明。</p></div>
+        <div class="card"><span class="badge warn">P1</span><h3>实现前置需求</h3><p>FEA/实测 LUT 输入规范、候选 scorecard、系统损耗 Pareto、页级 BOM/EDA。</p></div>
+        <div class="card"><span class="badge">P2</span><h3>研究池规范</h3><p>Memory Motor 状态机、磁化/去磁脉冲、状态观测、未知状态回退、调磁 trade-off。</p></div>
+      </div>
+    </section>
+
+    <section id="rules" class="card">
+      <h2>6. 维护规则</h2>
+      <ol>
+        <li>V2 PRD 是完整需求源，Wiki 是知识库索引版，HTML 是评审阅读版。</li>
+        <li>更新任一版本时，应同步更新 wiki、HTML、快照、manifest 和证据说明。</li>
+        <li>当前数值实验默认不得越过 <code>numeric_simulation</code> 成熟度。</li>
+      </ol>
+      <div class="callout riskbox"><strong>最终判断：</strong>v0.3 控制主线继续推进；可变磁通必须先变成状态机和安全问题；扁线、油冷、多合一必须进入系统工程阶段门。</div>
+    </section>
+  </main>
+  <footer>生成日期：2026-05-15；源文档：claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.md</footer>
+</body>
+</html>

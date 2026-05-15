@@ -7,7 +7,9 @@
 | 类型 | 活动源 | 冻结快照 |
 |---|---|---|
 | Wiki 研究计划 | `wiki/controllable_flux_motor_research_plan.md` | `claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md` |
+| V2 review-pr 工程差距 Wiki | `wiki/v2_review_pr_engineering_prd_wiki.md` | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` |
 | HTML 可视化知识库 | `controllable_flux_motor_kb.html` | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` |
+| V2 review-pr 工程差距 HTML | `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.html` | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` |
 
 快照用于上下文恢复和证据留痕。活动源发生变更时，应重新复制到 `snapshots/` 并更新 `evidence_manifest.md`。
 
@@ -52,7 +54,18 @@
 - 最高分组合为 `psi_f100% + Ld80% + Lq160% + Vdc115% + Imax115%`；
 - 低 `psi_f70%` 只有配合高凸极比、较高 `Vdc/Imax` 才进入候选。
 
-## 4. 使用方式
+## 4. V2 review-pr 知识库补充
+
+`wiki/v2_review_pr_engineering_prd_wiki.md` 和 `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.html` 用于承载 review-pr 外部资料对真实工程落地差距的 V2 对齐结果。
+
+关键结论：
+
+- v0.3 控制主线继续保留：弱磁、MTPA/FW/MTPV、非线性磁链 LUT、热/退磁安全保护。
+- 可变磁通 / Memory Motor 不能只用 `psi_f` 档位缩放证明，必须补磁状态机、脉冲能量、状态观测、未知状态回退。
+- 扁线、油冷、多合一不是算法实验，而是 G2-G6 的系统工程阶段门约束。
+- 当前数值实验默认不得替代 FEA、台架、DFMEA、DVP&R、PV/PPAP 等硬证据。
+
+## 5. 使用方式
 
 1. 面向工程继续开发时，以活动源为准。
 2. 面向上下文交接或审计时，使用 `claude-docs/snapshots/` 中的冻结快照。
