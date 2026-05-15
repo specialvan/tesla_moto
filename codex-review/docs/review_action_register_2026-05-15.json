@@ -1,0 +1,140 @@
+{
+  "version": "2026-05-15-v0",
+  "review_package": "codex-review/docs",
+  "review_subject": "Claude-developed process docs, wiki, HTML, git history, simulation code, tests, artifacts, and engineering reports",
+  "baselines": {
+    "current_workspace": "G:\\tesla_moto-codex",
+    "current_branch": "codex-review-line",
+    "current_head": "4e0c489 feat: 增加PyFluent高保真工作流入口",
+    "comparison_branch": "claude-mainline",
+    "comparison_head": "391ce20 feat(exp011): 新增铁损模型和Bertotti三相铁损速度扫描实验"
+  },
+  "findings": [
+    {
+      "id": "CDR-2026-05-15-001",
+      "severity": "P0",
+      "status": "open",
+      "title": "codex-review-line and claude-mainline have diverged and need an explicit integration strategy",
+      "evidence": [
+        "git diff --stat codex-review-line..claude-mainline",
+        "sim/pyfluent_workflow.py",
+        "sim/iron_loss.py",
+        "sim/run_control_lut_generator.py"
+      ],
+      "recommended_action": "Choose whether to migrate this review package and PyFluent workflow to claude-mainline, merge claude-mainline back, or keep branches isolated with explicit factual boundaries."
+    },
+    {
+      "id": "CDR-2026-05-15-002",
+      "severity": "P0",
+      "status": "open",
+      "title": "Tests and runners write tracked artifacts with absolute paths or timestamps",
+      "evidence": [
+        "experiments/exp_001_linear_dq/summary.json",
+        "models/control_lut.json",
+        "tests/test_control_lut_generator.py",
+        "tests/test_iron_loss.py"
+      ],
+      "recommended_action": "Make ordinary tests write to tmp_path or explicit output paths; keep tracked artifact regeneration behind dedicated update commands; store summary paths as repository-relative paths."
+    },
+    {
+      "id": "CDR-2026-05-15-003",
+      "severity": "P1",
+      "status": "open",
+      "title": "combined_losses returns iron-loss fraction while documenting efficiency_percent",
+      "evidence": [
+        "sim/iron_loss.py",
+        "tests/test_iron_loss.py"
+      ],
+      "recommended_action": "Rename the return value to iron_loss_fraction or compute real efficiency from mechanical output power; update tests to assert the corrected semantics."
+    },
+    {
+      "id": "CDR-2026-05-15-004",
+      "severity": "P1",
+      "status": "open",
+      "title": "Bertotti freq_max_hz is declared but not enforced",
+      "evidence": [
+        "sim/iron_loss.py",
+        "sim/run_iron_loss_experiment.py",
+        "experiments/exp_011_iron_loss/summary.json"
+      ],
+      "recommended_action": "Flag, reject, or summarize points where freq_hz exceeds coeffs.freq_max_hz; keep high-speed EXP-011 results clearly marked as outside coefficient validity."
+    },
+    {
+      "id": "CDR-2026-05-15-005",
+      "severity": "P2",
+      "status": "open",
+      "title": "EXP-011 iron_loss_vs_copper_loss_ratio mixes average iron loss with first-point copper loss",
+      "evidence": [
+        "sim/run_iron_loss_experiment.py"
+      ],
+      "recommended_action": "Compute ratio using matching statistics, such as avg_iron_loss_target divided by avg_copper_loss_target, or report per-point ratio aggregates."
+    },
+    {
+      "id": "CDR-2026-05-15-006",
+      "severity": "P1",
+      "status": "open",
+      "title": "Flux LUT search does not validate consistency with MotorParams",
+      "evidence": [
+        "sim/search.py",
+        "sim/nonlinear_flux_lut.py"
+      ],
+      "recommended_action": "Validate params.pole_pairs against flux_lut.pole_pairs and add source, motor id, temperature, and coordinate convention fields to LUT metadata."
+    },
+    {
+      "id": "CDR-2026-05-15-007",
+      "severity": "P1",
+      "status": "open",
+      "title": "Human-facing Claude docs need to catch up with control LUT and EXP-011",
+      "evidence": [
+        "claude-docs/README.md",
+        "claude-docs/handoff_context.md",
+        "models/scheme_simulation_coverage.json",
+        "experiments/exp_011_iron_loss/summary.json"
+      ],
+      "recommended_action": "Update README, handoff, evidence manifest, simulation traceability, wiki, HTML, and snapshots to include control LUT and EXP-011 while preserving proxy-model limitations."
+    },
+    {
+      "id": "CDR-2026-05-15-008",
+      "severity": "P1",
+      "status": "open",
+      "title": "Wiki and HTML matrices can still propagate stale experiment numbering",
+      "evidence": [
+        "wiki/controllable_flux_motor_research_plan.md",
+        "controllable_flux_motor_kb.html",
+        "claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md",
+        "claude-docs/snapshots/html/controllable_flux_motor_kb.html"
+      ],
+      "recommended_action": "Regenerate or manually update active wiki and HTML to EXP-001 through EXP-011, then refresh snapshots and manifest hashes."
+    },
+    {
+      "id": "CDR-2026-05-15-009",
+      "severity": "P2",
+      "status": "open",
+      "title": ".claude local agent directory and worktrees need isolation",
+      "evidence": [
+        "git -C G:\\tesla_moto status --short --branch",
+        "git branch -a -vv"
+      ],
+      "recommended_action": "Ignore .claude/ by default or extract only intentional long-lived workflow files; exclude .claude/worktrees from routine review searches."
+    },
+    {
+      "id": "CDR-2026-05-15-010",
+      "severity": "P2",
+      "status": "open",
+      "title": "PyFluent workflow exists only on codex-review-line and needs a mainline decision",
+      "evidence": [
+        "sim/pyfluent_workflow.py",
+        "sim/run_pyfluent_workflow.py",
+        "tests/test_pyfluent_workflow.py",
+        "tests/test_run_pyfluent_workflow.py"
+      ],
+      "recommended_action": "Review and cherry-pick PyFluent workflow into claude-mainline, or explicitly document it as a codex-review-line candidate outside current Claude mainline facts."
+    }
+  ],
+  "next_steps": [
+    "Add automated checks so ordinary pytest does not leave tracked summary, CSV, or control LUT diffs.",
+    "Fix iron loss API semantics and Bertotti frequency validity handling before relying on EXP-011 for ranking.",
+    "Synchronize Claude docs, wiki, HTML, snapshots, and manifests to control LUT and EXP-011.",
+    "Decide the branch integration path for PyFluent and the 2026-05-15 review package."
+  ]
+}
