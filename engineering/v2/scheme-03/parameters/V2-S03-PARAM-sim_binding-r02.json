@@ -1,0 +1,48 @@
+{
+  "schema_version": "2026-05-18-r02",
+  "scheme_id": "svpwm_overmodulation_voltage_utilization",
+  "scheme_short": "S03",
+  "binding_purpose": "r02 binding for S03 SVPWM / overmodulation. Drives sim.run_modulation_factor_experiment.run.",
+  "engineering_validated": false,
+  "entry": "sim.run_modulation_factor_experiment",
+  "function": "run",
+  "kwargs": {},
+  "expect": {
+    "experiment.equals": "exp_005_modulation_factor",
+    "engineering_validated.equals": false,
+    "model_scope.equals": "linear_dq_with_explicit_voltage_utilization_axis",
+    "sweep_axes.k_mod_values.count_min": 3,
+    "scoring.loss_speed_penalty.present": true,
+    "scoring.harmonic_speed_penalty.present": true,
+    "row_count.min": 3,
+    "best_tradeoff.present": true,
+    "csv_path.present": true
+  },
+  "soft_checks": ["best_tradeoff.present"],
+  "strong_checks": [
+    "experiment.equals",
+    "engineering_validated.equals",
+    "model_scope.equals",
+    "sweep_axes.k_mod_values.count_min",
+    "scoring.loss_speed_penalty.present",
+    "scoring.harmonic_speed_penalty.present",
+    "row_count.min",
+    "csv_path.present"
+  ],
+  "dvp_mapping": {
+    "S03-DV-001": "row_count + sweep_axes.k_mod_values (THD coverage)",
+    "S03-DV-002": "(HIL) EMC compliance",
+    "S03-DV-003": "(HIL) NVH torque ripple",
+    "S03-DV-004": "best_tradeoff (inverter loss vs modulation)",
+    "S03-DV-005": "(bench) thermal stress at six-step"
+  },
+  "open_items": [
+    "Replace parametric harmonic / loss curves with measured inverter loss maps.",
+    "Add PWM-reconstructed THD instead of parametric penalty.",
+    "Lock DVP IDs once test plan markdown is drafted."
+  ],
+  "related_artifacts": {
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-03-r01.md",
+    "pytest_entry": "tests/test_scheme_experiment_acceptance.py"
+  }
+}

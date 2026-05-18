@@ -1,0 +1,46 @@
+{
+  "schema_version": "2026-05-18-r02",
+  "scheme_id": "weighted_efficiency_pareto_selection",
+  "scheme_short": "S12",
+  "binding_purpose": "r02 binding for S12 weighted efficiency pareto. Drives sim.run_weighted_efficiency_pareto_experiment.run.",
+  "engineering_validated": false,
+  "entry": "sim.run_weighted_efficiency_pareto_experiment",
+  "function": "run",
+  "kwargs": {},
+  "expect": {
+    "experiment.equals": "exp_010_weighted_efficiency_pareto",
+    "engineering_validated.equals": false,
+    "cycles.count_min": 1,
+    "candidates.count_min": 1,
+    "cycle_winners.present": true,
+    "pareto_front.present": true,
+    "row_count.min": 1,
+    "csv_path.present": true
+  },
+  "soft_checks": [],
+  "strong_checks": [
+    "experiment.equals",
+    "engineering_validated.equals",
+    "cycles.count_min",
+    "candidates.count_min",
+    "cycle_winners.present",
+    "pareto_front.present",
+    "row_count.min",
+    "csv_path.present"
+  ],
+  "dvp_mapping": {
+    "S12-DV-001": "drive cycle audit (cycle versioned)",
+    "S12-DV-002": "system loss audit (per-candidate)",
+    "S12-DV-003": "sensitivity sweep ±20 %",
+    "S12-DV-004": "evidence-path audit"
+  },
+  "open_items": [
+    "Replace copper-loss-only scoring with combined copper + iron + mechanical + inverter loss.",
+    "Add transient acceleration / regen energy weighting.",
+    "Bind drive cycles to versioned source (WLTP / CLTC datasets)."
+  ],
+  "related_artifacts": {
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-12-r01.md",
+    "pytest_entry": "tests/test_scheme_experiment_acceptance.py"
+  }
+}

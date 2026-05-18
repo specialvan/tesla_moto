@@ -1,0 +1,41 @@
+{
+  "schema_version": "2026-05-18-r02",
+  "scheme_id": "magnetic_saturation_codesign",
+  "scheme_short": "S05",
+  "binding_purpose": "r02 binding for S05 magnetic saturation co-design. Drives sim.run_param_sweep_experiment.run (shared with S06 PMaSynRM).",
+  "engineering_validated": false,
+  "entry": "sim.run_param_sweep_experiment",
+  "function": "run",
+  "kwargs": {},
+  "expect": {
+    "experiment.equals": "exp_003_param_sweep",
+    "engineering_validated.equals": false,
+    "variant_count.min": 1,
+    "top_candidates.count_min": 1,
+    "csv_path.present": true
+  },
+  "soft_checks": [],
+  "strong_checks": [
+    "experiment.equals",
+    "engineering_validated.equals",
+    "variant_count.min",
+    "top_candidates.count_min",
+    "csv_path.present"
+  ],
+  "dvp_mapping": {
+    "S05-DV-001": "(FEA) lambda LUT correlation",
+    "S05-DV-002": "(bench) rotor mechanical stress < 600 MPa",
+    "S05-DV-003": "iron loss budget audit",
+    "S05-DV-004": "demag id_min audit (cross-binds S11)",
+    "S05-DV-005": "(bench) NVH torque ripple"
+  },
+  "open_items": [
+    "Replace scaled Ld/Lq proxy with FEA-derived lambda_d/lambda_q maps.",
+    "Add torque ripple and stress fields to scorecard.",
+    "Lock DVP IDs once test plan markdown is drafted."
+  ],
+  "related_artifacts": {
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-05-r01.md",
+    "pytest_entry": "tests/test_scheme_experiment_acceptance.py"
+  }
+}

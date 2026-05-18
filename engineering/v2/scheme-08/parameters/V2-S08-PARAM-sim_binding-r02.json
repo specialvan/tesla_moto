@@ -1,0 +1,38 @@
+{
+  "schema_version": "2026-05-18-r02",
+  "scheme_id": "hybrid_excitation",
+  "scheme_short": "S08",
+  "binding_purpose": "r02 binding for S08 hybrid excitation (research pool). Drives sim.run_hybrid_excitation_experiment.run.",
+  "engineering_validated": false,
+  "entry": "sim.run_hybrid_excitation_experiment",
+  "function": "run",
+  "kwargs": {},
+  "expect": {
+    "experiment.equals": "exp_007_hybrid_excitation",
+    "engineering_validated.equals": false,
+    "row_count.min": 1,
+    "csv_path.present": true
+  },
+  "soft_checks": [],
+  "strong_checks": [
+    "experiment.equals",
+    "engineering_validated.equals",
+    "row_count.min",
+    "csv_path.present"
+  ],
+  "dvp_mapping": {
+    "S08-DV-001": "field thermal stress",
+    "S08-DV-002": "loss-of-field detection",
+    "S08-DV-003": "three-variable optimization",
+    "S08-DV-004": "bench correlation"
+  },
+  "open_items": [
+    "Replace psi_eff = psi_pm + kf * if proxy with field winding inductance + exciter loss model.",
+    "Add rotor leakage and thermal coupling.",
+    "Research pool: do NOT interpret as production candidate."
+  ],
+  "related_artifacts": {
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-08-r01.md",
+    "pytest_entry": "tests/test_scheme_experiment_acceptance.py"
+  }
+}

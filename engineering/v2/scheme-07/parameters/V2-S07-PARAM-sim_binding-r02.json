@@ -1,0 +1,44 @@
+{
+  "schema_version": "2026-05-18-r02",
+  "scheme_id": "variable_magnetization_memory_motor",
+  "scheme_short": "S07",
+  "binding_purpose": "r02 binding for S07 memory motor (research pool). Drives sim.run_variable_flux_experiment.run.",
+  "engineering_validated": false,
+  "entry": "sim.run_variable_flux_experiment",
+  "function": "run",
+  "kwargs": {},
+  "expect": {
+    "experiment.equals": "exp_002_variable_flux",
+    "engineering_validated.equals": false,
+    "flux_states.count_min": 2,
+    "torque_targets_nm.count_min": 1,
+    "state_summaries_by_torque.count_min": 1,
+    "csv_path.present": true
+  },
+  "soft_checks": [],
+  "strong_checks": [
+    "experiment.equals",
+    "engineering_validated.equals",
+    "flux_states.count_min",
+    "torque_targets_nm.count_min",
+    "state_summaries_by_torque.count_min",
+    "csv_path.present"
+  ],
+  "dvp_mapping": {
+    "S07-DV-001": "magnetization pulse parameters (research pool)",
+    "S07-DV-002": "state retention",
+    "S07-DV-003": "temperature drift",
+    "S07-DV-004": "unknown-state fallback",
+    "S07-DV-005": "lifetime cycling"
+  },
+  "open_items": [
+    "Replace psi_f sweep with pulse energy + magnetization circuit model.",
+    "Add lifetime cycle counter modelling.",
+    "Lock DVP IDs once test plan markdown is drafted.",
+    "Research pool: do NOT interpret as production candidate."
+  ],
+  "related_artifacts": {
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-07-r01.md",
+    "pytest_entry": "tests/test_scheme_experiment_acceptance.py"
+  }
+}

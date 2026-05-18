@@ -1,0 +1,41 @@
+{
+  "schema_version": "2026-05-18-r02",
+  "scheme_id": "pmasynrm_high_saliency_low_pm",
+  "scheme_short": "S06",
+  "binding_purpose": "r02 binding for S06 PMaSynRM high-saliency low-PM. Shares sim.run_param_sweep_experiment.run with S05.",
+  "engineering_validated": false,
+  "entry": "sim.run_param_sweep_experiment",
+  "function": "run",
+  "kwargs": {},
+  "expect": {
+    "experiment.equals": "exp_003_param_sweep",
+    "engineering_validated.equals": false,
+    "variant_count.min": 1,
+    "top_candidates.count_min": 1,
+    "csv_path.present": true
+  },
+  "soft_checks": [],
+  "strong_checks": [
+    "experiment.equals",
+    "engineering_validated.equals",
+    "variant_count.min",
+    "top_candidates.count_min",
+    "csv_path.present"
+  ],
+  "dvp_mapping": {
+    "S06-DV-001": "torque ripple <= 3 % (FEA / bench)",
+    "S06-DV-002": "rotor stress < 700 MPa (FEA)",
+    "S06-DV-003": "demag id_min low-PM audit",
+    "S06-DV-004": "thermal / cooling audit",
+    "S06-DV-005": "NVH"
+  },
+  "open_items": [
+    "Add PM fraction and torque ripple to candidate scorecard.",
+    "Replace psi/Ld/Lq scaling with FEA-derived maps.",
+    "Lock DVP IDs once test plan markdown is drafted."
+  ],
+  "related_artifacts": {
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-06-r01.md",
+    "pytest_entry": "tests/test_scheme_experiment_acceptance.py"
+  }
+}
