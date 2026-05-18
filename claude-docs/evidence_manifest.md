@@ -38,6 +38,8 @@
 | V2 真实生产图纸交付物 Wiki | `wiki/v2_true_production_drawing_deliverables_wiki.md` | v0.5 五档口径的知识库索引 |
 | Codex 图档生产化打回评审 | `codex-review/docs/claude_image_to_production_deep_review_2026-05-19.md` | Codex 对生图、提示词、参数化与真实生产图纸缺口的打回意见源 |
 | Codex 图档生产化行动登记 | `codex-review/docs/image_to_production_action_register_2026-05-19.json` | 图档生产化打回项的机器可读行动登记 |
+| V2 Claude Code 自动化说明 | `claude-review/docs/2026-05-19/v2_claude_code_automation_notes.md` | 跳过 Hook 后落地项目技能、子代理和后续自动化优先级的说明 |
+| V2 自动化 handoff | `claude-review/docs/2026-05-19/v2_automation_handoff.md` | 后续 agent 接续成熟度闭环、证据同步和自动化优化的交接入口 |
 | V2 分方案物理工程交付物 Wiki | `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | V2 物理工程交付物矩阵的知识库索引活动源 |
 | V2 分方案物理工程交付物 HTML | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的页面化活动源 |
 | V2 工程图纸包索引 | `engineering/v2/README.md` | 12 个方案 PCB、3D/CAD、控制器、BOM/EDA、DVP&R 仓库落点的 README 审计索引 |
