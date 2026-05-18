@@ -1,0 +1,63 @@
+{
+  "schema_version": "2026-05-18-r02",
+  "scheme_id": "nonlinear_flux_lut",
+  "scheme_short": "S04",
+  "binding_purpose": "r02 binding for S04 nonlinear flux LUT. Drives sim.run_control_lut_generator.run with model_type=nonlinear_flux_lut against the synthetic sample LUT.",
+  "engineering_validated": false,
+  "entry": "sim.run_control_lut_generator",
+  "function": "run",
+  "kwargs": {
+    "model_type": "nonlinear_flux_lut",
+    "lut_path": "models/flux_lut_sample.json",
+    "torque_axis_nm": [50.0, 80.0],
+    "torque_step_nm": 30.0
+  },
+  "expect": {
+    "metadata.generator_version.regex": "^\\d{4}-\\d{2}-\\d{2}-\\w+$",
+    "model_source.model_type.enum": ["nonlinear_flux_lut"],
+    "model_source.flux_lut_ref_present": true,
+    "grid_definition.speed_axis_rpm.count_min": 60,
+    "grid_definition.torque_axis_nm.count_min": 2,
+    "feasibility_map.feasible_points_min": 1,
+    "feasibility_map.infeasible_reasons.search_not_converged_max": 200,
+    "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds_max": 200,
+    "validation.torque_discontinuity_at_transitions_nm_max": 5.0
+  },
+  "soft_checks": [
+    "feasibility_map.infeasible_reasons.search_not_converged_max",
+    "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds_max"
+  ],
+  "strong_checks": [
+    "metadata.generator_version.regex",
+    "model_source.model_type.enum",
+    "model_source.flux_lut_ref_present",
+    "grid_definition.speed_axis_rpm.count_min",
+    "grid_definition.torque_axis_nm.count_min",
+    "feasibility_map.feasible_points_min",
+    "validation.torque_discontinuity_at_transitions_nm_max"
+  ],
+  "dvp_mapping": {
+    "S04-DV-001": "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds",
+    "S04-DV-002": "bilinear interpolation verified by sim/tests/test_nonlinear_flux_lut.py",
+    "S04-DV-003": "model_source.flux_lut_ref binds to flux_lut_sample.json (synthetic, not FEA)",
+    "S04-DV-004": "bench correlation (r03 / bench, not numeric)",
+    "S04-DV-005": "residual fallback (r03 bench)"
+  },
+  "open_items": [
+    "Replace flux_lut_sample.json (3x3 synthetic) with FEA-derived 30x30 LUT.",
+    "Introduce temperature slices (>=5 T points).",
+    "Wire EXP-006 nonlinear flux LUT phase-3 into the control LUT generator."
+  ],
+  "related_artifacts": {
+    "concept_images": [
+      "gpt-image-2/outputs/S04/V2-S04-ILL-T01-driver_block-r00.png",
+      "gpt-image-2/outputs/S04/V2-S04-ILL-T03-state_machine-r00.png"
+    ],
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-04-r01.md",
+    "drawio_source": "engineering/v2/scheme-04/controller/V2-S04-CTRL-flux_lut_interpolation-r00.drawio",
+    "acceptance_sheet": "engineering/v2/scheme-04/parameters/V2-S04-PARAM-acceptance-r02.md",
+    "dvpr_draft": "engineering/v2/scheme-04/test_dvpr/V2-S04-TEST-flux_lut_correlation-r00.md",
+    "flux_lut": "models/flux_lut_sample.json",
+    "pytest_entry": "tests/test_scheme_p0_lut_acceptance.py"
+  }
+}

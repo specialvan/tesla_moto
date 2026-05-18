@@ -10,7 +10,8 @@
 | 3D/CAD | `cad/V2-S01-CAD-sensor_busbar_layout-r00.md` | draft | 已落地三相母排、传感器安装、LV/HV 分区和线束封装边界草案 |
 | Controller | `controller/V2-S01-CTRL-field_weakening_state_machine-r00.drawio` | draft | 已落地弱磁、`id_min(T,fault)`、降额和 fault fallback 状态机草图 |
 | BOM/EDA | `bom_eda/V2-S01-BOM-sensing_fault_components-r00.md` | draft | 已落地采样链、温度输入、gate-disable latch 和 fault feedback 器件族风险草案 |
-| Test/DVP | `test_dvpr/V2-S01-DVP-fw_fault_injection-r00.md` | missing | 定义高温、低压、高速、传感器故障注入 |
+| Test/DVP | `test_dvpr/V2-S01-DVP-fw_fault_injection-r00.md` | draft | 已落地弱磁进入/退出、`id_min(T,fault)`、采样故障和 gate-disable fault injection 计划草案 |
+| Parameters/r02 | `parameters/V2-S01-PARAM-acceptance-r02.md`、`parameters/V2-S01-PARAM-sim_binding-r02.json` | r02 接入 | 生产参数 + 仿真绑定（demag 限制专攻），由 `tests/test_scheme_p0_lut_acceptance.py` 自动校验 |
 | Simulation | `simulation/V2-S01-SIM-fw_boundary_trace-r00.md` | missing | 关联控制 LUT、电压/电流/退磁边界仿真证据 |
 
 ## 现有证据

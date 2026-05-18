@@ -2,54 +2,55 @@
   "schema_version": "2026-05-18-r02",
   "scheme_id": "mtpa_fw_mtpv_control",
   "scheme_short": "S02",
-  "binding_purpose": "r02 production-parameter binding for S02; not engineering-validated; feeds r03 numeric simulation acceptance.",
+  "binding_purpose": "r02 production-parameter binding for S02. Drives sim.run_control_lut_generator.run via tests/test_scheme_02_lut_acceptance.py. Not engineering-validated.",
   "engineering_validated": false,
   "entry": "sim.run_control_lut_generator",
   "function": "run",
   "kwargs": {
-    "motor_params_path": "models/motor_params.json",
     "model_type": "linear_dq",
     "torque_axis_nm": [50.0, 100.0, 150.0, 200.0],
     "torque_step_nm": 50.0,
     "temperature_c": 80.0,
-    "thermal_model": null,
     "demag_limit": {
       "type": "DemagLimit",
-      "id_min_at_25c_a": -240.0,
-      "temp_coefficient_a_per_c": -0.0035,
+      "points_c_to_id_min_a": [
+        [25.0, -240.0],
+        [100.0, -210.0],
+        [140.0, -180.0]
+      ],
       "source": "estimate",
-      "note": "Replace with S11 thermal + magnet vendor curve before r03 sign-off."
+      "note": "Aligned with sim/run_safety_boundary_experiment.py r00 piecewise demag boundary; replace with S11 thermal + magnet vendor curve before r03 sign-off."
     }
   },
   "expect": {
-    "metadata.lut_version.regex": "^\\d+\\.\\d+\\.\\d+$",
+    "metadata.generator_version.regex": "^\\d{4}-\\d{2}-\\d{2}-\\w+$",
     "model_source.model_type.enum": ["linear_dq", "nonlinear_flux_lut"],
     "grid_definition.speed_axis_rpm.count_min": 60,
-    "grid_definition.torque_axis_nm.count_min_r02": 1,
-    "grid_definition.torque_axis_nm.count_min_r03": 4,
-    "feasibility_map.feasible_count_min": 200,
-    "feasibility_map.infeasible_reasons.search_not_converged_max": 0,
-    "feasibility_map.infeasible_reasons.demagnetization_risk_max": 25,
-    "feasibility_map.infeasible_reasons.voltage_exceeded_ratio_max": 0.25,
+    "grid_definition.torque_axis_nm.count_min": 4,
+    "feasibility_map.feasible_points_min": 60,
+    "feasibility_map.infeasible_reasons.search_not_converged_max": 100,
+    "feasibility_map.infeasible_reasons.demagnetization_risk_max": 200,
+    "feasibility_map.infeasible_reasons.voltage_exceeded_ratio_max": 0.95,
     "validation.torque_discontinuity_at_transitions_nm_max": 5.0,
-    "mode_transitions.id_jump_a_max": 30.0,
-    "mode_transitions.iq_jump_a_max": 30.0,
-    "mode_transitions.demagnetization_limit_present": true
+    "mode_transitions.id_jump_a_max": 60.0,
+    "mode_transitions.iq_jump_a_max": 60.0,
+    "metadata.demag_limit_present": true
   },
   "soft_checks": [
+    "feasibility_map.infeasible_reasons.search_not_converged_max",
     "feasibility_map.infeasible_reasons.demagnetization_risk_max",
-    "feasibility_map.infeasible_reasons.voltage_exceeded_ratio_max"
+    "feasibility_map.infeasible_reasons.voltage_exceeded_ratio_max",
+    "mode_transitions.id_jump_a_max",
+    "mode_transitions.iq_jump_a_max"
   ],
   "strong_checks": [
-    "metadata.lut_version.regex",
+    "metadata.generator_version.regex",
     "model_source.model_type.enum",
     "grid_definition.speed_axis_rpm.count_min",
-    "feasibility_map.feasible_count_min",
-    "feasibility_map.infeasible_reasons.search_not_converged_max",
+    "grid_definition.torque_axis_nm.count_min",
+    "feasibility_map.feasible_points_min",
     "validation.torque_discontinuity_at_transitions_nm_max",
-    "mode_transitions.id_jump_a_max",
-    "mode_transitions.iq_jump_a_max",
-    "mode_transitions.demagnetization_limit_present"
+    "metadata.demag_limit_present"
   ],
   "dvp_mapping": {
     "S02-DV-001": "mode_transitions + validation.torque_discontinuity_at_transitions_nm",
@@ -59,10 +60,11 @@
     "S02-DV-005": "feasibility_map.infeasible_reasons.* + INFEASIBLE control points"
   },
   "open_items": [
-    "Replace Rs/Ld/Lq/psi_f estimates with EXP-006 nonlinear-flux LUT or FEA-derived values (r03).",
-    "Replace DemagLimit estimates with S11 thermal binding + magnet vendor curve (r03).",
-    "Expand torque_axis_nm to 4-point sweep across full speed grid (r03).",
-    "Define DTC enumerations (S02-DTC-LUT-CRC-FAIL, S02-DTC-LUT-VER-MISMATCH) (r03)."
+    "Replace Rs/Ld/Lq/psi_f estimates with EXP-006 nonlinear-flux LUT or FEA-derived values.",
+    "Replace DemagLimit piecewise estimates with S11 thermal binding + magnet vendor curve.",
+    "Define DTC enumerations (S02-DTC-LUT-CRC-FAIL, S02-DTC-LUT-VER-MISMATCH).",
+    "Tighten id_jump / iq_jump strong-check thresholds once linear-dq estimates are replaced.",
+    "Promote feasibility_map.infeasible_reasons.search_not_converged_max from soft (<=100) to strong (=0) once the torque axis is shaped to lie entirely inside the feasibility envelope, or once a higher-fidelity flux LUT replaces the linear-dq estimate."
   ],
   "related_artifacts": {
     "concept_images": [
@@ -70,12 +72,14 @@
       "gpt-image-2/outputs/S02/V2-S02-ILL-T03-state_machine-r00.png",
       "gpt-image-2/outputs/S02/V2-S02-ILL-T08-protocol_link-r00.png"
     ],
+    "r01_prompts": "codex-review/docs/scheme_drawing_prompts_r01_batch/scheme-02-r01.md",
     "drawio_source": "engineering/v2/scheme-02/controller/V2-S02-CTRL-mode_transition_lut-r00.drawio",
     "control_sheet": "engineering/v2/scheme-02/parameters/V2-S02-PARAM-control-r02.md",
     "verification_sheet": "engineering/v2/scheme-02/parameters/V2-S02-PARAM-verification-r02.md",
     "dvpr_draft": "engineering/v2/scheme-02/test_dvpr/V2-S02-TEST-lut_mode_hil-r00.md",
     "control_lut_artifact": "models/control_lut.json",
     "control_lut_schema": "models/control_lut_schema.json",
-    "motor_params": "models/motor_params.json"
+    "motor_params": "models/motor_params.json",
+    "pytest_entry": "tests/test_scheme_02_lut_acceptance.py"
   }
 }

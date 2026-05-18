@@ -1,6 +1,9 @@
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+markers = [
+    "integration: integration tests that exercise sim + r02 sim_binding wiring",
+]
 
 [tool.black]
 line-length = 88

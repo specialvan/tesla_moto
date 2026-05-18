@@ -10,7 +10,8 @@
 | 3D/CAD | `cad/V2-S11-CAD-thermal_sensor_cooling-r00.md` | draft | 已落地磁钢/绕组/油温传感、冷却路径、控制器散热和维修边界草案 |
 | Controller | `controller/V2-S11-CTRL-safety_fault_state_machine-r00.drawio` | draft | 已落地热/退磁 warning、derating、unknown sensor fallback 和 gate-disable 状态机草图 |
 | BOM/EDA | `bom_eda/V2-S11-BOM-safety_chain-r00.md` | draft | 已落地温度传感、安全锁存、gate-disable、隔离和故障回读器件族风险草案 |
-| Test/DVP | `test_dvpr/V2-S11-DVP-safety_fault_injection-r00.md` | missing | 定义高温、退磁、传感器开短路、gate-disable fault injection |
+| Test/DVP | `test_dvpr/V2-S11-DVP-safety_fault_injection-r00.md` | draft | 已落地温度/退磁、传感器开短路、unknown fallback、gate-disable 和 fault latch 计划草案 |
+| Parameters/r02 | `parameters/V2-S11-PARAM-acceptance-r02.md`、`parameters/V2-S11-PARAM-sim_binding-r02.json` | r02 接入 | 生产参数 + 仿真绑定（120 °C 高温退磁场景），由 `tests/test_scheme_p0_lut_acceptance.py` 自动校验 |
 | Simulation | `simulation/V2-S11-SIM-thermal_demag_fault_trace-r00.md` | missing | 关联温度、退磁、传感器开短路和 gate-disable 故障注入证据 |
 
 ## 现有证据
