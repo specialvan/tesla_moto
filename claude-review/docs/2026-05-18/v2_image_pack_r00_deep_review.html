@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>V2 方案生图包 r00 深度评审</title>
+  <style>
+    :root{--bg:#07111f;--panel:#101d33;--text:#e8f1ff;--muted:#9bb0ca;--accent:#7dd3fc;--ok:#22c55e;--warn:#facc15;--risk:#fb7185;--gold:#D8A638;--line:rgba(255,255,255,.13)}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top right,#1e3a5f,var(--bg) 52%);color:var(--text);line-height:1.68}
+    header{padding:48px 6vw 34px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(125,211,252,.14),rgba(216,166,56,.10))}
+    h1{margin:0 0 12px;font-size:clamp(28px,4.4vw,46px);line-height:1.1}
+    h2{margin:24px 0 14px;font-size:24px;color:var(--accent)}
+    h3{margin:16px 0 8px;color:var(--gold)}
+    p{margin:8px 0}
+    .subtitle{max-width:1120px;color:var(--muted);font-size:17px}
+    main{padding:28px 6vw 64px;max-width:1280px;margin:0 auto}
+    nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:28px}
+    nav a{border:1px solid var(--line);background:rgba(16,29,51,.84);border-radius:14px;color:var(--text);text-decoration:none;padding:12px 14px;font-size:14px}
+    nav a:hover{background:rgba(125,211,252,.14)}
+    .card{border:1px solid var(--line);background:rgba(16,29,51,.84);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 16px 42px rgba(0,0,0,.22)}
+    .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;color:#06131d;background:var(--accent);font-weight:700}
+    .ok{background:var(--ok)}.warn{background:var(--warn);color:#1a1300}.risk{background:var(--risk);color:#24040b}.blk{background:#dc2626;color:#fff}.gold{background:var(--gold);color:#1a1100}
+    table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;margin:12px 0;font-size:14px}
+    th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+    th{background:rgba(125,211,252,.12);text-align:left;font-weight:600}
+    tr:nth-child(even)td{background:rgba(255,255,255,.035)}
+    code{color:#c4b5fd;background:rgba(196,181,253,.08);padding:1px 5px;border-radius:4px;font-size:13px}
+    .callout{border-left:5px solid var(--accent);background:rgba(20,36,62,.82);padding:16px 18px;border-radius:14px;margin:12px 0}
+    .callout.warn{border-left-color:var(--warn);background:rgba(60,40,10,.5)}
+    .callout.risk{border-left-color:var(--risk);background:rgba(60,15,25,.5)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+    footer{padding:24px 6vw;color:var(--muted);border-top:1px solid var(--line);font-size:14px}
+    ul{padding-left:1.4em}
+    li{margin:4px 0}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>V2 方案生图包 r00 深度评审</h1>
+    <p class="subtitle">12 方案 × 8 模板 = 96 张 PNG 的工程语义、风格基线与不可破坏边界审查。该评审仅服务于 r01 提示词收敛，不会把 <code>engineering_validated</code> 改成 <code>true</code>。</p>
+    <p class="subtitle">日期：2026-05-18 · 评审目录：<code>gpt-image-2/outputs/S01..S12/</code> · 完整内容以同目录 Markdown 为准</p>
+  </header>
+  <main>
+    <nav>
+      <a href="#overall">总体结论</a>
+      <a href="#common">共性问题</a>
+      <a href="#scheme">方案逐张评审</a>
+      <a href="#decision">r01 推进决策</a>
+      <a href="#caveat">禁止误读</a>
+    </nav>
+
+    <section id="overall" class="card">
+      <h2>1. 总体结论</h2>
+      <div class="grid">
+        <div class="card"><span class="badge ok">70%</span><h3>可用度</h3><p>T01 / T03 主线可直接作为评审 PPT 锚点；T04 / T05 需要 r01 重做。</p></div>
+        <div class="card"><span class="badge warn">65%</span><h3>风格一致度</h3><p>夜色 + 金线基线达成；T05 写实化超标，需扩展负向 prompt。</p></div>
+        <div class="card"><span class="badge risk">8 / 96</span><h3>BLOCKER 违规</h3><p>多在 T05 出现真实材料牌号与写实 3D 渲染，违反不可破坏边界。</p></div>
+        <div class="card"><span class="badge warn">11+</span><h3>T03 语义缺陷</h3><p>缺转移、加状态、箭头反向，S08 状态机方向性错误。</p></div>
+        <div class="card"><span class="badge risk">3 张</span><h3>标题泄漏</h3><p>S05 / S06 / S12 T03 顶端出现 "MOTOR CONTROLLER SUBSYSTEM" 通用标题。</p></div>
+      </div>
+      <div class="callout warn">
+        <strong>r01 必修 8 张：</strong>S01/S02/S03/S04 T03、S05/S06/S12 T03 标题、S04 T04、S04/S07/S08 T05。
+      </div>
+    </section>
+
+    <section id="common" class="card">
+      <h2>2. 共性问题（12 项）</h2>
+      <table>
+        <tr><th>ID</th><th>问题</th><th>严重度</th><th>r01 对策</th></tr>
+        <tr><td>GEN-01</td><td>通用标题泄漏（"MOTOR CONTROLLER SUBSYSTEM"）</td><td><span class="badge risk">HIGH</span></td><td>每条 prompt 强制 <code>Title bar text MUST be: &lt;SCHEME_TITLE&gt;</code></td></tr>
+        <tr><td>GEN-02</td><td>16:9 / 4:3 长宽比被默认 1024×1024 吞</td><td><span class="badge warn">MED</span></td><td>在 <code>schemes.json</code> 单条覆盖 size</td></tr>
+        <tr><td>GEN-03</td><td>T05 出现 M270-35A / NdFeB / SmCo / ADC12 等真实牌号</td><td><span class="badge blk">BLOCKER</span></td><td>负向 prompt 扩展：禁止 specific steel / magnet grades</td></tr>
+        <tr><td>GEN-04</td><td>T05 写实 3D motor render（S07/S08 尤甚）</td><td><span class="badge blk">BLOCKER</span></td><td>强制 <code>flat isometric line illustration, no shading</code></td></tr>
+        <tr><td>GEN-05</td><td>T03 状态机与差分 token 不完全对应</td><td><span class="badge risk">HIGH</span></td><td>r01 显式枚举 STATES 与 EDGES，禁止追加</td></tr>
+        <tr><td>GEN-06</td><td>节点填充未达 pale blue，部分为深灰 / 黄棕</td><td><span class="badge warn">MED</span></td><td>固化 hex：<code>#B6C7E0 / #D8A638 / #0B1A33</code></td></tr>
+        <tr><td>GEN-07</td><td>故障 / 安全状态未做视觉区分</td><td><span class="badge warn">MED</span></td><td>红色描边 hex <code>#C0392B</code></td></tr>
+        <tr><td>GEN-08</td><td>T08 bus label 出现 "Internal Bus" 占位</td><td><span class="badge gold">LOW</span></td><td>禁止占位，要求显式 CAN / SPI / FlexRay / XCP</td></tr>
+        <tr><td>GEN-09</td><td>BOM 树 risk pill 与 BOM markdown 不一致</td><td><span class="badge gold">LOW</span></td><td>r01 在差分 token 固化 per-leaf risk</td></tr>
+        <tr><td>GEN-10</td><td>T02 时序图密度过高、活动条不显</td><td><span class="badge warn">MED</span></td><td>横向 16:9 + 更粗活动条</td></tr>
+        <tr><td>GEN-11</td><td>T07 TST 编号与 DVP 文档 ID 不一致</td><td><span class="badge gold">LOW</span></td><td>r01 锁死 S11-DV-001..005 等真实 ID</td></tr>
+        <tr><td>GEN-12</td><td>T04 信号密度过高、缺 CONCEPT 提示</td><td><span class="badge warn">MED</span></td><td>限制 <= 18 短标签 + 强制 CONCEPT watermark</td></tr>
+      </table>
+    </section>
+
+    <section id="scheme" class="card">
+      <h2>3. 12 方案逐张评审摘要</h2>
+      <table>
+        <tr><th>方案</th><th>P0 必修</th><th>主要问题</th></tr>
+        <tr><td>S01 负 d 轴弱磁</td><td>T03 缺 V margin&lt;limit 转移</td><td>整体最完整；T05 写实化偏强</td></tr>
+        <tr><td>S02 MTPA/FW/MTPV</td><td>T03 mode reset 指向错误</td><td>T08 "Internal Bus" 占位</td></tr>
+        <tr><td>S03 SVPWM/过调制</td><td>T03 重复 voltage utilization 标签</td><td>状态机转移逻辑混乱</td></tr>
+        <tr><td>S04 非线性磁链 LUT</td><td>T04 密度过高；T05 真实牌号</td><td>T01 质量最高；T05 BLOCKER</td></tr>
+        <tr><td>S05 磁路饱和协同</td><td>T03 通用标题 + 缺转移</td><td>不是 motor controller</td></tr>
+        <tr><td>S06 PMaSynRM</td><td>T03 通用标题 + 加状态</td><td>额外 Fault Fallback 不在 catalog</td></tr>
+        <tr><td>S07 Memory Motor</td><td>T05 BLOCKER 真实材料</td><td>T03 safe retreat 自循环重复</td></tr>
+        <tr><td>S08 混合励磁</td><td>T03 箭头方向错；T05 BLOCKER</td><td>状态机逻辑反向</td></tr>
+        <tr><td>S09 绕组重构</td><td>—</td><td>T03 / T05 偏写实，但 P1 可补</td></tr>
+        <tr><td>S10 多相 / 相组</td><td>—</td><td>T03 "fault cleared" 越级回 Healthy</td></tr>
+        <tr><td>S11 温度 / 退磁 / 安全</td><td>—</td><td>T04 节点偏灰；T07 TST IDs 与 DVP 不一致</td></tr>
+        <tr><td>S12 工况加权 Pareto</td><td>T03 通用标题</td><td>不是 motor controller；trophy 装饰</td></tr>
+      </table>
+      <p>详细的 T01..T08 评级与 r01 优先级见同目录 <code>v2_image_pack_r00_deep_review.md</code> §4。</p>
+    </section>
+
+    <section id="decision" class="card">
+      <h2>4. r01 推进决策</h2>
+      <div class="grid">
+        <div class="card"><h3>D-01 P0 必修 8 张</h3><p>覆盖 4 个 T03 状态机语义错、3 个 T05 BLOCKER、1 个 T04 密度过高。</p></div>
+        <div class="card"><h3>D-02 P1 建议修 40 张</h3><p>主要修 T02 sequence 和 T05 写实化弱化。</p></div>
+        <div class="card"><h3>D-03 P2 可保留 48 张</h3><p>已具备评审锚点能力，不需要立即重生。</p></div>
+        <div class="card"><h3>D-04 / D-05 提示词升级</h3><p>扩展全局正向（hex 颜色 + 标题强制）与负向（材料牌号 + 写实化禁用）。</p></div>
+        <div class="card"><h3>D-06 显式枚举</h3><p>T03 / T07 prompt 列出 STATES / EDGES / DVP IDs，禁止追加。</p></div>
+        <div class="card"><h3>D-07 尺寸覆盖</h3><p><code>schemes.json</code> 落实 T01 1792×1024、T04 1024×1280、T05 1280×1024 等。</p></div>
+      </div>
+      <div class="callout">
+        r01 prompt 全文落在 <code>codex-review/docs/scheme_drawing_prompt_catalog_2026-05-18_r01.md</code>，含模板级与方案级双层。
+      </div>
+    </section>
+
+    <section id="caveat" class="card">
+      <h2>5. 禁止误读</h2>
+      <ul>
+        <li>本评审判定的是 <strong>生图与提示词的对齐度</strong>，不是图与真实工程交付物的等价。</li>
+        <li>r00 / r01 PNG 都 <strong>不替代</strong> PCB / EDA / CAD / FEA / HIL 任何文件。</li>
+        <li>r01 重生后若仍出现真实牌号或写实 render，必须立即拒收。</li>
+        <li>任何方案语义改动必须先回到 <code>engineering/v2/scheme-XX/</code> 的 <code>.drawio</code> / mermaid / markdown 源。</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    Markdown 源：<code>claude-review/docs/2026-05-18/v2_image_pack_r00_deep_review.md</code> · r01 提示词目录：<code>codex-review/docs/scheme_drawing_prompt_catalog_2026-05-18_r01.md</code>
+  </footer>
+</body>
+</html>

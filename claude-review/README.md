@@ -24,12 +24,16 @@
 | `docs/2026-05-15/stage_gate_execution_checklist.md` | 把阶段门定义落成可执行检查清单，并标注已有证据与缺失项 |
 | `docs/2026-05-15/v0.3_implementation_taskboard.md` | 将 v0.3 主干收敛目标拆成文件级实施任务、测试矩阵与建议执行顺序 |
 | `docs/2026-05-15/v0.3_t2_t3_code_landing_plan.md` | T2 不可行原因统一与 T3 安全边界接入 control LUT 主干的代码级落地蓝图 |
+| `docs/2026-05-15/v0.3_control_lut_mainline_closure.md` | 记录 v0.3 T1-T5 control LUT 主线代码落地、验证证据、schema 变化与剩余风险 |
+| `docs/2026-05-15/v0.3_control_lut_mainline_closure.html` | v0.3 control LUT 主线闭环记录的 HTML 阅读版 |
 | `docs/2026-05-15/v2_review_pr_engineering_prd.md` | 基于 review-pr 两篇外部资料逐条对齐真实工程落地差距的 V2 PRD |
 | `docs/2026-05-15/v2_review_pr_engineering_prd.html` | V2 PRD 的 HTML 阅读版，便于评审、汇报和离线浏览 |
 | `docs/2026-05-15/v2_scheme_engineering_playbook.md` | V2 每个方案深度推进工程落地的分方案 playbook |
 | `docs/2026-05-15/v2_scheme_engineering_playbook.html` | V2 分方案工程落地 playbook 的 HTML 阅读版 |
 | `docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md` | V2 每个方案 PCB、3D/CAD、控制器、BOM/EDA 与 gate 图纸包交付矩阵 |
 | `docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的 HTML 阅读版 |
+| `docs/2026-05-18/v2_image_pack_r00_deep_review.md` | 12 方案 × 8 模板 = 96 张 r00 生图的深度评审、共性问题与 r01 推进决策 |
+| `docs/2026-05-18/v2_image_pack_r00_deep_review.html` | r00 生图深度评审的 HTML 阅读版 |
 | `../engineering/v2/README.md` | V2 12 个方案图纸包仓库落点和 README 审计索引 |
 
 ## 3. 当前核验结论
