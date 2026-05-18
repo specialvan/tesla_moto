@@ -153,41 +153,41 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
-| PCB | 磁化脉冲驱动、储能、电流检测、隔离、互锁、失效关断页 | `V2-S07-PCB-magnetization_pulse_driver-r00.pdf` | G4 | 脉冲能量、电压、电流和互锁路径可审计 | `missing` |
-| 3D/CAD | 记忆磁体、磁化线圈/路径、转子磁路、热路径 CAD | `V2-S07-CAD-memory_motor_magnetic_path-r00.step` | G3 | 磁状态保持、热、机械强度和装配空间成立 | `missing` |
-| Controller | 磁状态机、状态观测、未知状态回退、重复切换寿命计数 | `V2-S07-CTRL-flux_state_machine-r00.drawio` | G3 | 不能用 `psi_f` 缩放代替真实磁状态 | `indexed` |
-| BOM/EDA | 脉冲功率级、储能器件、磁体材料、观测传感 BOM | `V2-S07-BOM-memory_motor_pulse_chain-r00.xlsx` | G4 | 脉冲器件 SOA、寿命和安全失效字段完整 | `missing` |
-| Test | 磁化/去磁脉冲、状态保持、温漂、未知状态回退 DVP&R | `V2-S07-DVP-magnetization_state-r00.md` | G5 | 证明状态可控、可观测、可回退 | `missing` |
+| PCB | 磁化脉冲驱动、储能、电流检测、隔离、互锁、失效关断页 | `V2-S07-PCB-magnetization_pulse_driver-r00.md` | G4 | 脉冲能量、电压、电流和互锁路径可审计 | `draft` |
+| 3D/CAD | 记忆磁体、磁化线圈/路径、转子磁路、热路径 CAD | `V2-S07-CAD-memory_motor_magnetic_path-r00.md` | G3 | 磁状态保持、热、机械强度和装配空间成立 | `draft` |
+| Controller | 磁状态机、状态观测、未知状态回退、重复切换寿命计数 | `V2-S07-CTRL-flux_state_machine-r00.md` | G3 | 不能用 `psi_f` 缩放代替真实磁状态 | `draft` |
+| BOM/EDA | 脉冲功率级、储能器件、磁体材料、观测传感 BOM | `V2-S07-BOM-memory_motor_pulse_chain-r00.md` | G4 | 脉冲器件 SOA、寿命和安全失效字段完整 | `draft` |
+| Test | 磁化/去磁脉冲、状态保持、温漂、未知状态回退 DVP&R | `V2-S07-DVP-magnetization_state-r00.md` | G5 | 证明状态可控、可观测、可回退 | `draft` |
 
 ### 4.8 S08 混合励磁（`hybrid_excitation`）
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
-| PCB | 励磁 DC/DC、field current sensing、loss-of-field、隔离和保护页 | `V2-S08-PCB-field_excitation_converter-r00.pdf` | G4 | 励磁功率级和主逆变器故障隔离明确 | `missing` |
-| 3D/CAD | 励磁绕组、滑环/无刷励磁、冷却、绝缘和封装 CAD | `V2-S08-CAD-field_winding_package-r00.step` | G3 | 励磁热、绝缘、装配和维修边界可评审 | `missing` |
-| Controller | `id/iq/if` 三变量控制图、loss-of-field fallback | `V2-S08-CTRL-three_variable_control-r00.drawio` | G3 | 励磁损耗和故障进入可行性判断 | `indexed` |
-| BOM/EDA | 励磁功率器件、绕组、绝缘、连接器、传感器 BOM | `V2-S08-BOM-field_excitation_hardware-r00.xlsx` | G4 | field converter 损耗和热边界可追溯 | `missing` |
-| Test | 励磁热、loss-of-field、三变量优化、台架 DVP&R | `V2-S08-DVP-hybrid_excitation-r00.md` | G5 | 不能只看 `psi_eff = psi_pm + kf*if` | `missing` |
+| PCB | 励磁 DC/DC、field current sensing、loss-of-field、隔离和保护页 | `V2-S08-PCB-field_excitation_converter-r00.md` | G4 | 励磁功率级和主逆变器故障隔离明确 | `draft` |
+| 3D/CAD | 励磁绕组、滑环/无刷励磁、冷却、绝缘和封装 CAD | `V2-S08-CAD-field_winding_package-r00.md` | G3 | 励磁热、绝缘、装配和维修边界可评审 | `draft` |
+| Controller | `id/iq/if` 三变量控制图、loss-of-field fallback | `V2-S08-CTRL-three_variable_control-r00.md` | G3 | 励磁损耗和故障进入可行性判断 | `draft` |
+| BOM/EDA | 励磁功率器件、绕组、绝缘、连接器、传感器 BOM | `V2-S08-BOM-field_excitation_hardware-r00.md` | G4 | field converter 损耗和热边界可追溯 | `draft` |
+| Test | 励磁热、loss-of-field、三变量优化、台架 DVP&R | `V2-S08-DVP-hybrid_excitation-r00.md` | G5 | 不能只看 `psi_eff = psi_pm + kf*if` | `draft` |
 
 ### 4.9 S09 绕组重构（`winding_reconfiguration`）
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
-| PCB | 高压接触器/固态开关、互锁、arc suppression、状态反馈页 | `V2-S09-PCB-winding_switch_matrix-r00.pdf` | G4 | 非法状态、开短路、粘连和互锁路径明确 | `missing` |
-| 3D/CAD | 绕组端部、重构开关布置、绝缘、热路径和线束 CAD | `V2-S09-CAD-reconfigurable_winding_layout-r00.step` | G3 | 端部空间、绝缘距离、热和维修可达性成立 | `missing` |
-| Controller | 切换状态机、零转矩窗口、非法状态回退、环流检测 | `V2-S09-CTRL-winding_reconfig_state_machine-r00.drawio` | G3 | 不能只用静态 Ke/Kt 缩放 | `indexed` |
-| BOM/EDA | 开关、驱动、互锁、线束、绝缘件 BOM | `V2-S09-BOM-switching_winding-r00.xlsx` | G4 | 额定电压/电流、寿命、故障模式字段完整 | `missing` |
-| Test | 切换瞬态、环流、arc、open/short/stuck fault DVP&R | `V2-S09-DVP-switching_transient-r00.md` | G5 | 切换不引入不可控扭矩或电弧风险 | `missing` |
+| PCB | 高压接触器/固态开关、互锁、arc suppression、状态反馈页 | `V2-S09-PCB-winding_switch_matrix-r00.md` | G4 | 非法状态、开短路、粘连和互锁路径明确 | `draft` |
+| 3D/CAD | 绕组端部、重构开关布置、绝缘、热路径和线束 CAD | `V2-S09-CAD-reconfigurable_winding_layout-r00.md` | G3 | 端部空间、绝缘距离、热和维修可达性成立 | `draft` |
+| Controller | 切换状态机、零转矩窗口、非法状态回退、环流检测 | `V2-S09-CTRL-winding_reconfig_state_machine-r00.md` | G3 | 不能只用静态 Ke/Kt 缩放 | `draft` |
+| BOM/EDA | 开关、驱动、互锁、线束、绝缘件 BOM | `V2-S09-BOM-switching_winding-r00.md` | G4 | 额定电压/电流、寿命、故障模式字段完整 | `draft` |
+| Test | 切换瞬态、环流、arc、open/short/stuck fault DVP&R | `V2-S09-DVP-switching_transient-r00.md` | G5 | 切换不引入不可控扭矩或电弧风险 | `draft` |
 
 ### 4.10 S10 多相 / 相组控制（`multiphase_phase_group_control`）
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
-| PCB | 多相逆变器、相组电流采样、隔离、故障切除、连接器页 | `V2-S10-PCB-multiphase_inverter-r00.pdf` | G4 | 单相/相组故障隔离和诊断路径明确 | `missing` |
-| 3D/CAD | 多相端子、线束、相组布置、热路径、封装 CAD | `V2-S10-CAD-phase_group_packaging-r00.step` | G3 | 线束、热、维修和相间绝缘可评审 | `missing` |
-| Controller | fault torque allocator、谐波子空间、相组降额状态机 | `V2-S10-CTRL-fault_torque_allocator-r00.drawio` | G3 | 不能只用可用电流降额代理 | `indexed` |
-| BOM/EDA | 多相功率模块、采样链、连接器、线束 BOM | `V2-S10-BOM-multiphase_powertrain-r00.xlsx` | G4 | 资源预算和容错需求有系统级依据 | `missing` |
-| Test | 单相故障、相组故障、谐波、热、NVH DVP&R | `V2-S10-DVP-multiphase_fault_tolerance-r00.md` | G5 | 容错收益大于硬件复杂度和损耗 | `missing` |
+| PCB | 多相逆变器、相组电流采样、隔离、故障切除、连接器页 | `V2-S10-PCB-multiphase_inverter-r00.md` | G4 | 单相/相组故障隔离和诊断路径明确 | `draft` |
+| 3D/CAD | 多相端子、线束、相组布置、热路径、封装 CAD | `V2-S10-CAD-phase_group_packaging-r00.md` | G3 | 线束、热、维修和相间绝缘可评审 | `draft` |
+| Controller | fault torque allocator、谐波子空间、相组降额状态机 | `V2-S10-CTRL-fault_torque_allocator-r00.md` | G3 | 不能只用可用电流降额代理 | `draft` |
+| BOM/EDA | 多相功率模块、采样链、连接器、线束 BOM | `V2-S10-BOM-multiphase_powertrain-r00.md` | G4 | 资源预算和容错需求有系统级依据 | `draft` |
+| Test | 单相故障、相组故障、谐波、热、NVH DVP&R | `V2-S10-DVP-multiphase_fault_tolerance-r00.md` | G5 | 容错收益大于硬件复杂度和损耗 | `draft` |
 
 ### 4.11 S11 温度 / 退磁 / 安全保护（`thermal_demag_safety_protection`）
 
@@ -232,7 +232,7 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 |---|---|---|
 | P0 主线控制与安全 | 控制器图已有草案思路，但 PCB/传感/故障锁存和 CAD 安装图未落地 | 先补 S01/S02/S04/S11 的 `CTRL` 图和 `PCB sensing/fault` 页级草案 |
 | P1 候选拓扑 | S03/S05/S06/S12 已有 r00 Markdown 页级草案和 r03 生图提示词，但仍缺正式 CAD/FEA/EDA/BOM 和台架验证 | 将 r00 草案转成真实 EDA/CAD/FEA/BOM 文件，并按 DVP 执行验证 |
-| P2 研究池 | 关键硬件拓扑和安全互锁图纸几乎全缺 | 先补 S07/S08/S09/S10 的禁止误判图、互锁/故障路径和停止条件 |
+| P2 研究池 | S07/S08/S09/S10 已有 r00 Markdown 页级草案和 r03 生图提示词，但仍缺正式硬件设计、FEA/HIL/台架验证 | 将研究池 r00 草案转成真实 EDA/CAD/FEA/HIL 输入，并优先验证互锁/故障路径和停止条件 |
 
 ---
 

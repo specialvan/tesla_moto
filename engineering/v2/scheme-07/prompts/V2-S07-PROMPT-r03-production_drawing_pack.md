@@ -1,0 +1,26 @@
+# V2-S07 r03 生产参数化生图提示词包
+
+目标：把 S07 从“可变磁链代理”升级为可审查的磁化脉冲硬件、磁路、控制状态机和证据追溯工程图。
+
+## 通用负面约束
+
+- 不要画营销海报、科幻电机、抽象磁场光效。
+- 不要生成虚构品牌、真实供应商 Logo 或不可读小字。
+- 不要把 `psi_f` 代理仿真画成已验证量产结论。
+- 所有图必须保留英文工程标签、状态门槛和 safety interlock 标识。
+
+## 图 1：Magnetization pulse driver PCB
+
+Prompt: Generate a white-background engineering schematic titled “S07 Memory Motor Magnetization Pulse Driver PCB”. Include 800V energy storage, precharge, discharge, pulse switch, isolated gate driver, DESAT, UVLO, magnetization coil terminals, pulse current sensing, coil voltage sensing, traction inverter hardware interlock, HVIL, gate-disable latch, and S11 safety request. Mark 1000A peak pulse, 50us pulse width, 100J energy limit, and interlock latency below 1ms.
+
+## 图 2：Variable magnetization CAD cutaway
+
+Prompt: Generate an isometric CAD cutaway titled “S07 Memory Motor Variable Magnetization Magnetic Path”. Show reversible magnet segments, rotor bridges, magnetization coil path, eight flux-state arrows, thermal path, temperature sensors, mechanical retention, and unknown-state observer reference marks. Use readable English labels and realistic CAD technical drawing style.
+
+## 图 3：Flux state machine
+
+Prompt: Generate a controller state-machine diagram titled “S07 Memory Motor Flux State Machine”. Nodes: Flux Known, Magnetize Request, Pulse Armed, Pulse Fire, Verify State, Unknown-State Fallback, Fault Shutdown. Transitions labeled by flux confidence, magnet temperature, pulse current, coil voltage, traction gate disabled, HVIL, life counter, and S11 safety request. Red arrows for safety fallback, blue arrows for normal flow.
+
+## 图 4：Evidence traceability
+
+Prompt: Generate a traceability flow diagram titled “S07 Evidence Chain: Proxy Flux Scaling to Magnetization Hardware Gate”. Flow: EXP-002 proxy -> magnetic FEA -> pulse circuit stress -> thermal retention -> HIL state observer -> DVP life cycling -> gate review. Include warning callout “proxy flux scaling is not validation”.
