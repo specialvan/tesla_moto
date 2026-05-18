@@ -33,6 +33,11 @@
 | V2 分方案工程落地 Wiki | `wiki/v2_scheme_engineering_playbook_wiki.md` | V2 分方案 playbook 的知识库索引活动源 |
 | V2 分方案工程落地 HTML | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.html` | V2 分方案 playbook 的页面化活动源 |
 | V2 分方案物理工程交付物矩阵 | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.md` | 每个方案 PCB、3D/CAD、控制器设计、BOM/EDA、DVP&R/DFMEA 和 gate 图纸包的交付物要求源，不代表图纸本体已交付 |
+| V2 真实生产图纸交付物矩阵 | `claude-review/docs/2026-05-15/v0.5_true_production_drawing_deliverables_matrix.md` | Codex 打回后建立的 concept / parameter / source design / simulation input / manufacturing release 五档口径，防止把 Markdown 草案误称生产图纸 |
+| V2 真实生产图纸交付物 HTML | `claude-review/docs/2026-05-15/v0.5_true_production_drawing_deliverables_matrix.html` | v0.5 五档口径的页面化审计入口 |
+| V2 真实生产图纸交付物 Wiki | `wiki/v2_true_production_drawing_deliverables_wiki.md` | v0.5 五档口径的知识库索引 |
+| Codex 图档生产化打回评审 | `codex-review/docs/claude_image_to_production_deep_review_2026-05-19.md` | Codex 对生图、提示词、参数化与真实生产图纸缺口的打回意见源 |
+| Codex 图档生产化行动登记 | `codex-review/docs/image_to_production_action_register_2026-05-19.json` | 图档生产化打回项的机器可读行动登记 |
 | V2 分方案物理工程交付物 Wiki | `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | V2 物理工程交付物矩阵的知识库索引活动源 |
 | V2 分方案物理工程交付物 HTML | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的页面化活动源 |
 | V2 工程图纸包索引 | `engineering/v2/README.md` | 12 个方案 PCB、3D/CAD、控制器、BOM/EDA、DVP&R 仓库落点的 README 审计索引 |
@@ -52,6 +57,10 @@
 | S02 CAD 边界草案 | `engineering/v2/scheme-02/cad/V2-S02-CAD-controller_packaging-r00.md` | 控制器壳体、接插件、线束出口、散热路径和 EMI 分区边界草案 |
 | S04 CAD/FEA 边界草案 | `engineering/v2/scheme-04/cad/V2-S04-CAD-fea_geometry_source-r00.md` | FEA 几何源、dq 坐标、材料表、网格边界和 LUT 版本绑定草案 |
 | S11 CAD 热边界草案 | `engineering/v2/scheme-11/cad/V2-S11-CAD-thermal_sensor_cooling-r00.md` | 磁钢/绕组/油温传感、冷却路径、控制器散热和维修边界草案 |
+| S01 DVP&R 测试草案 | `engineering/v2/scheme-01/test_dvpr/V2-S01-DVP-fw_fault_injection-r00.md` | 弱磁进入/退出、`id_min(T,fault)`、采样故障和 gate-disable fault injection 计划草案 |
+| S02 DVP&R 测试草案 | `engineering/v2/scheme-02/test_dvpr/V2-S02-TEST-lut_mode_hil-r00.md` | MTPA/FW/MTPV 模式 HIL、LUT CRC、版本控制和断电恢复计划草案 |
+| S04 DVP&R 测试草案 | `engineering/v2/scheme-04/test_dvpr/V2-S04-TEST-flux_lut_correlation-r00.md` | LUT 边界、插值一致性、FEA 版本绑定、台架相关性和 fallback 计划草案 |
+| S11 DVP&R 测试草案 | `engineering/v2/scheme-11/test_dvpr/V2-S11-DVP-safety_fault_injection-r00.md` | 温度/退磁、传感器开短路、unknown fallback、gate-disable 和 fault latch 计划草案 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
 
 ## 3. 仿真实验证据

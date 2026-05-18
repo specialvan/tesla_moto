@@ -25,8 +25,8 @@ domain：verification（仿真与 DVP&R 接口 / pass-fail 阈值）
 | S02-SIM-007 | `feasibility_map.infeasible_reasons.demagnetization_risk` | ≤ 25 | 软阈值 | r03 warn（不 fail） |
 | S02-SIM-008 | `feasibility_map.infeasible_reasons.voltage_exceeded` | ≤ feasible_count × 25 % | 软阈值 | r03 warn |
 | S02-SIM-009 | `validation.torque_discontinuity_at_transitions_nm` | ≤ 5.0 | 强制 | r03 fail |
-| S02-SIM-010 | `mode_transitions[*].id_jump_a` | ≤ 30 | 强制 | r03 fail |
-| S02-SIM-011 | `mode_transitions[*].iq_jump_a` | ≤ 30 | 强制 | r03 fail |
+| S02-SIM-010 | `mode_transitions[*].id_jump_a` | r02 proxy soft gate ≤ 60；r03 target ≤ 30 | 软阈值（r02）/ 强制（r03） | r02 warn / r03 fail |
+| S02-SIM-011 | `mode_transitions[*].iq_jump_a` | r02 proxy soft gate ≤ 60；r03 target ≤ 30 | 软阈值（r02）/ 强制（r03） | r02 warn / r03 fail |
 | S02-SIM-012 | `mode_transitions[*].demagnetization_limit` 字段存在性 | true | 强制 | r03 fail |
 
 > 阈值"软/强"区分：strong 失败立即翻 fail，soft 仅记录 warning 但允许 r03 通过；用户在 r03 报告中可看到 warning，不会被静默吞掉。
@@ -44,8 +44,8 @@ domain：verification（仿真与 DVP&R 接口 / pass-fail 阈值）
 | 转速扫描点 | 0..18000，步 250 | rpm | `motor_params.json:base_speed_scan_step_rpm` |
 | 转矩切片 | [50, 100, 150, 200] | N·m | r02 工程窗 |
 | 期望模式数（每切片） | 仅 MTPA / FW / MTPV，不含 INFEASIBLE 集中段 | — | §1 |
-| 模式跳变 `id_jump_a` | ≤ 30 | A | S02-SIM-010 |
-| 模式跳变 `iq_jump_a` | ≤ 30 | A | S02-SIM-011 |
+| 模式跳变 `id_jump_a` | r02 ≤ 60 soft；r03 ≤ 30 strong | A | S02-SIM-010 |
+| 模式跳变 `iq_jump_a` | r02 ≤ 60 soft；r03 ≤ 30 strong | A | S02-SIM-011 |
 | 转矩跳变 | ≤ 5.0 | N·m | S02-SIM-009 |
 
 ### 2.2 S02-DV-002 LUT CRC 失败
@@ -84,12 +84,13 @@ domain：verification（仿真与 DVP&R 接口 / pass-fail 阈值）
 
 ---
 
-## 3. r03 pytest 接口预约
+## 3. 当前 pytest 接口事实
 
-下一档（r03）落地时建议增加：
+当前仓库已经存在并执行以下门禁，不再视为“下一档计划增加”：
 
 ```text
 tests/test_scheme_02_lut_acceptance.py
+tests/test_scheme_p0_lut_acceptance.py
 ```
 
 伪代码（用户许可后实施）：
@@ -113,7 +114,7 @@ def test_s02_r02_r03_acceptance():
         print("WARN: demagnetization_risk exceeded soft threshold")
 ```
 
-> 该 pytest 必须在 r03 落地时编写并通过；当前 r02 不引入新代码。
+> 上述 pytest 已经落地并按 `sim_binding-r02.json` 执行；当前 r02 的 60 A jump 阈值是 proxy soft gate，r03 若要宣称生产验收必须收敛到 30 A strong gate。
 
 ---
 

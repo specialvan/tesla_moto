@@ -66,12 +66,12 @@
           "description": "模型类型：linear_dq（线性 dq 模型）、nonlinear_flux_lut（非线性磁链表）、mixed（混合模式）。"
         },
         "linear_dq_ref": {
-          "type": "string",
-          "description": "当 model_type 为 linear_dq 或 mixed 时，引用 motor_params.json 的路径。"
+          "type": ["string", "null"],
+          "description": "当 model_type 为 linear_dq 或 mixed 时，引用 motor_params.json 的路径；不适用时为 null。"
         },
         "flux_lut_ref": {
-          "type": "string",
-          "description": "当 model_type 为 nonlinear_flux_lut 或 mixed 时，引用 flux_lut JSON 文件的路径。"
+          "type": ["string", "null"],
+          "description": "当 model_type 为 nonlinear_flux_lut 或 mixed 时，引用 flux_lut JSON 文件的路径；不适用时为 null。"
         },
         "experiment_ref": {
           "type": "string",
@@ -169,8 +169,8 @@
           "description": "速度网格步长（RPM），用于网格密度信息。"
         },
         "torque_step_nm": {
-          "type": "number",
-          "description": "转矩网格步长（Nm），用于网格密度信息。"
+          "type": ["number", "null"],
+          "description": "转矩网格步长（Nm）。非均匀转矩轴时为 null。"
         },
         "interpolation_method": {
           "type": "string",
@@ -363,19 +363,23 @@
           "type": ["number", "null"],
           "description": "q 轴电流命令（A，phase-peak）。null 表示该工作点不可行或未定义。"
         },
+        "actual_torque_nm": {
+          "type": ["number", "null"],
+          "description": "搜索得到的实际电磁转矩（Nm）。不可行或未定义时为 null。"
+        },
         "control_mode": {
-          "type": "string",
+          "type": ["string", "null"],
           "enum": ["MTPA", "FW", "MTPV", "INFEASIBLE", "IDLE", null],
-          "description": "控制模式：MTPA（最大转矩电流比）、FW（弱磁）、MTPV（最大转矩电压限制）、INFEASIBLE（不可行）、IDLE（空闲/零转矩）、null（未定义）���"
+          "description": "控制模式：MTPA（最大转矩电流比）、FW（弱磁）、MTPV（最大转矩电压限制）、INFEASIBLE（不可行）、IDLE（空闲/零转矩）、null（未定义）。"
         },
         "feasible": {
           "type": "boolean",
           "description": "该工作点是否满足电压和电流约束。"
         },
         "infeasibility_reason": {
-          "type": "string",
+          "type": ["string", "null"],
           "enum": ["voltage_exceeded", "current_exceeded", "demagnetization_risk", "out_of_flux_lut_bounds", "search_not_converged", null],
-          "description": "当 feasible=false 时，标识不可行原因。"
+          "description": "当 feasible=false 时，标识不可行原因；可行点为 null。"
         },
         "current_a": {
           "type": ["number", "null"],
@@ -402,14 +406,14 @@
           "description": "估算效率（0.0 ~ 1.0）。当前版本可能为 null，待加入损耗模型后填充。"
         },
         "search_method": {
-          "type": "string",
+          "type": ["string", "null"],
           "enum": ["min_current", "max_torque", "mtpa_analytical", "interpolated", null],
-          "description": "该点的搜索方法：min_current（最小电流搜索）、max_torque（最大转矩搜索）、mtpa_analytical（MTPA 解析计算）、interpolated（从相邻点插值）。"
+          "description": "该点的搜索方法：min_current（最小电流搜索）、max_torque（最大转矩搜索）、mtpa_analytical（MTPA 解析计算）、interpolated（从相邻点插值）；未定义时为 null。"
         },
         "confidence": {
-          "type": "string",
+          "type": ["string", "null"],
           "enum": ["high", "medium", "low", null],
-          "description": "该点数据的置信度：high（网格收敛点）、medium（插值点）、low（外推点）。"
+          "description": "该点数据的置信度：high（网格收敛点）、medium（插值点）、low（外推点）；未定义时为 null。"
         }
       },
       "additionalProperties": false

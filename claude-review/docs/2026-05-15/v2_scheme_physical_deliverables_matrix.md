@@ -97,7 +97,7 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 3D/CAD | 逆变器到电机三相连接、母排、电流传感器安装、温度传感器布置 CAD 边界草案 | `V2-S01-CAD-sensor_busbar_layout-r00.md` | G3 | 间隙、爬电、装配空间和热路径待在真实 CAD 中闭合 | `draft` |
 | Controller | 弱磁状态机、`id_min(T,fault)` 限幅、低压/高温 derating、fallback | `V2-S01-CTRL-field_weakening_state_machine-r00.drawio` | G3 | control LUT 不可行原因和降额动作闭合 | `draft` |
 | BOM/EDA | 传感器、隔离采样、栅极关断、诊断输入 BOM/EDA 风险登记草案 | `V2-S01-BOM-sensing_fault_components-r00.md` | G4 | 关键器件精度、温漂、诊断覆盖字段待在真实 BOM/EDA 中闭合 | `draft` |
-| Test | 高速低压、高温、传感器故障注入 DVP&R | `V2-S01-DVP-fw_fault_injection-r00.md` | G5 | 台架能复现电压/电流/退磁边界 | `missing` |
+| Test | 高速低压、高温、传感器故障注入 DVP&R 计划草案 | `V2-S01-DVP-fw_fault_injection-r00.md` | G5 | 台架复现证据待执行验证后闭合 | `draft` |
 
 ### 4.2 S02 MTPA / FW / MTPV 连续控制（`mtpa_fw_mtpv_control`）
 
@@ -107,17 +107,17 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 3D/CAD | 控制器壳体、接插件、散热路径、线束出口 CAD 边界草案 | `V2-S02-CAD-controller_packaging-r00.md` | G3 | 接插件方向、线束半径和热界面待在真实 CAD 中闭合 | `draft` |
 | Controller | MTPA/FW/MTPV 模式图、二维速度-转矩 LUT、切换连续性图 | `V2-S02-CTRL-mode_transition_lut-r00.drawio` | G3 | `id_jump/iq_jump/torque_jump` 有限且有回归测试 | `draft` |
 | BOM/EDA | MCU、NVM、resolver interface、通讯与标定接口 BOM/EDA 风险登记草案 | `V2-S02-EDA-controller_core_bom-r00.md` | G4 | 容量、时序、ASIL/诊断字段待在真实 BOM/EDA 中闭合 | `draft` |
-| Test | HIL 模式切换、LUT CRC、断电恢复、标定一致性 | `V2-S02-TEST-lut_mode_hil-r00.md` | G5 | HIL 覆盖全部模式和不可行区 | `missing` |
+| Test | HIL 模式切换、LUT CRC、断电恢复、标定一致性计划草案 | `V2-S02-TEST-lut_mode_hil-r00.md` | G5 | HIL 覆盖证据待执行验证后闭合 | `draft` |
 
 ### 4.3 S03 SVPWM / 过调制（`svpwm_overmodulation_voltage_utilization`）
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
-| PCB | 栅极驱动、死区、母线电容、相电流采样、EMI/EMC 滤波页 | `V2-S03-PCB-gate_pwm_emc-r00.pdf` | G4 | 开关边沿、隔离、电流环采样窗口可评审 | `missing` |
-| 3D/CAD | 逆变器功率模块、DC-link、母排、散热器与屏蔽结构 | `V2-S03-CAD-inverter_power_stage-r00.step` | G3 | 杂散电感、冷却接触和 EMC 屏蔽边界明确 | `missing` |
-| Controller | SVPWM/六步/过调制状态机、进入/退出窗口、THD/NVH 限制 | `V2-S03-CTRL-overmodulation_state_machine-r00.drawio` | G3 | 退出条件、故障回退和调制因子限制可测试 | `indexed` |
-| BOM/EDA | Gate driver、功率模块、电容、母排、EMI 元件 BOM | `V2-S03-BOM-inverter_overmodulation-r00.xlsx` | G4 | 器件电压/电流/热裕度满足高速区需求 | `missing` |
-| Test | THD、EMC、NVH、逆变器损耗、热冲击测试计划 | `V2-S03-DVP-thd_emc_nvh-r00.md` | G5 | 过调制收益大于损耗/噪声/EMC 风险 | `missing` |
+| PCB | 栅极驱动、死区、母线电容、相电流采样、EMI/EMC 滤波页 | `V2-S03-PCB-gate_pwm_emc-r00.md` | G4 | 开关边沿、隔离、电流环采样窗口可评审；后续转正式 EDA/PDF | `draft` |
+| 3D/CAD | 逆变器功率模块、DC-link、母排、散热器与屏蔽结构 | `V2-S03-CAD-inverter_power_stage-r00.md` | G3 | 杂散电感、冷却接触和 EMC 屏蔽边界明确；后续转 STEP/CAD | `draft` |
+| Controller | SVPWM/六步/过调制状态机、进入/退出窗口、THD/NVH 限制 | `V2-S03-CTRL-overmodulation_state_machine-r00.md` | G3 | 退出条件、故障回退和调制因子限制可测试；后续转 drawio/Simulink | `draft` |
+| BOM/EDA | Gate driver、功率模块、电容、母排、EMI 元件 BOM | `V2-S03-BOM-inverter_overmodulation-r00.md` | G4 | 器件电压/电流/热裕度满足高速区需求；后续转正式 BOM/EDA | `draft` |
+| Test | THD、EMC、NVH、逆变器损耗、热冲击测试计划 | `V2-S03-DVP-thd_emc_nvh-r00.md` | G5 | 过调制收益大于损耗/噪声/EMC 风险 | `draft` |
 
 ### 4.4 S04 非线性磁链 LUT（`nonlinear_flux_lut`）
 
@@ -127,27 +127,27 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 3D/CAD | Maxwell/Motor-CAD 几何源、dq 坐标定义、FEA 网格边界草案 | `V2-S04-CAD-fea_geometry_source-r00.md` | G3 | 几何版本、坐标、单位、材料与 LUT 版本待在真实 CAD/FEA 中闭合 | `draft` |
 | Controller | LUT 插值框图、边界 clamp/拒绝策略、误差监控 | `V2-S04-CTRL-flux_lut_interpolation-r00.drawio` | G3 | 越界原因、插值误差和 fallback 有测试 | `draft` |
 | BOM/EDA | 位置/温度/电流传感器精度与采样链 BOM/EDA 风险登记草案 | `V2-S04-BOM-lut_sensor_chain-r00.md` | G4 | 传感器误差待在真实 BOM/EDA 与 LUT 误差预算中闭合 | `draft` |
-| Test | FEA 回灌、台架反标定、LUT 误差报告 | `V2-S04-TEST-flux_lut_correlation-r00.md` | G5 | FEA/实测与控制 LUT 误差闭合 | `missing` |
+| Test | FEA 回灌、台架反标定、LUT 误差报告计划草案 | `V2-S04-TEST-flux_lut_correlation-r00.md` | G5 | FEA/实测与控制 LUT 误差待执行验证后闭合 | `draft` |
 
 ### 4.5 S05 磁路饱和协同设计（`magnetic_saturation_codesign`）
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
 | PCB | 不新增控制器主拓扑；需传感器与热保护接口页 | `V2-S05-PCB-saturation_sensor_inputs-r00.pdf` | G4 | 饱和相关观测输入可进入控制器 | `missing` |
-| 3D/CAD | barrier、bridge、磁桥、转子应力、定转子叠片 CAD | `V2-S05-CAD-rotor_barrier_bridge-r00.step` | G3 | 结构应力、退磁、铁耗和制造约束同版评审 | `missing` |
-| Controller | 饱和 LUT 回灌、候选几何 scorecard、控制轨迹对比图 | `V2-S05-CTRL-saturation_scorecard-r00.drawio` | G3 | FEA LUT 回灌后收益仍成立 | `indexed` |
-| BOM/EDA | 硅钢、磁钢、转子工艺、传感器接口 BOM | `V2-S05-BOM-magnetic_stack-r00.xlsx` | G4 | 材料牌号、供应和制造风险字段完整 | `missing` |
-| Test | FEA、转子应力、铁耗、退磁、NVH 组合 DVP&R | `V2-S05-DVP-saturation_codesign-r00.md` | G5 | 不能只用参数缩放晋级 | `missing` |
+| 3D/CAD | barrier、bridge、磁桥、转子应力、定转子叠片 CAD | `V2-S05-CAD-rotor_barrier_bridge-r00.md` | G3 | 结构应力、退磁、铁耗和制造约束同版评审；后续转正式 STEP/FEA | `draft` |
+| Controller | 饱和 LUT 回灌、候选几何 scorecard、控制轨迹对比图 | `V2-S05-CTRL-saturation_scorecard-r00.md` | G3 | FEA LUT 回灌后收益仍成立；后续转 drawio/Simulink | `draft` |
+| BOM/EDA | 硅钢、磁钢、转子工艺、传感器接口 BOM | `V2-S05-BOM-magnetic_stack-r00.md` | G4 | 材料牌号、供应和制造风险字段完整；后续转正式 BOM | `draft` |
+| Test | FEA、转子应力、铁耗、退磁、NVH 组合 DVP&R | `V2-S05-DVP-saturation_codesign-r00.md` | G5 | 不能只用参数缩放晋级 | `draft` |
 
 ### 4.6 S06 PMaSynRM / 高凸极低永磁占比（`pmasynrm_high_saliency_low_pm`）
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
 | PCB | 控制器采样、温度、位置、退磁保护接口页 | `V2-S06-PCB-pmasynrm_control_inputs-r00.pdf` | G4 | 支持高凸极控制和退磁诊断 | `missing` |
-| 3D/CAD | PM fraction、rotor barrier、bridge、stress relief、扁线槽型 CAD | `V2-S06-CAD-pmasynrm_rotor_stator-r00.step` | G3 | 峰值转矩、ripple、stress、demag 同步评审 | `missing` |
-| Controller | 高凸极 MTPA/MTPV 控制图、低 PM 退磁边界图 | `V2-S06-CTRL-saliency_control_map-r00.drawio` | G3 | 主工况效率和峰值转矩不被牺牲 | `indexed` |
-| BOM/EDA | 低 PM 磁钢、叠片、扁线、冷却传感 BOM | `V2-S06-BOM-low_pm_topology-r00.xlsx` | G4 | 成本收益与供应风险可量化 | `missing` |
-| Test | FEA torque ripple、应力、退磁、热、NVH DVP&R | `V2-S06-DVP-pmasynrm_validation-r00.md` | G5 | scorecard 超过基线且风险可控 | `missing` |
+| 3D/CAD | PM fraction、rotor barrier、bridge、stress relief、扁线槽型 CAD | `V2-S06-CAD-pmasynrm_rotor_stator-r00.md` | G3 | 峰值转矩、ripple、stress、demag 同步评审；后续转正式 STEP/FEA | `draft` |
+| Controller | 高凸极 MTPA/MTPV 控制图、低 PM 退磁边界图 | `V2-S06-CTRL-saliency_control_map-r00.md` | G3 | 主工况效率和峰值转矩不被牺牲；后续转 drawio/Simulink | `draft` |
+| BOM/EDA | 低 PM 磁钢、叠片、扁线、冷却传感 BOM | `V2-S06-BOM-low_pm_topology-r00.md` | G4 | 成本收益与供应风险可量化；后续转正式 BOM | `draft` |
+| Test | FEA torque ripple、应力、退磁、热、NVH DVP&R | `V2-S06-DVP-pmasynrm_validation-r00.md` | G5 | scorecard 超过基线且风险可控 | `draft` |
 
 ### 4.7 S07 可变磁化状态 / Memory Motor（`variable_magnetization_memory_motor`）
 
@@ -197,17 +197,17 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 3D/CAD | 温度传感器安装、油路、磁钢热路径、控制器散热 CAD 边界草案 | `V2-S11-CAD-thermal_sensor_cooling-r00.md` | G3 | 传感位置与热模型映射待在真实 CAD/热模型中闭合 | `draft` |
 | Controller | fault state machine、derating、unknown sensor fallback、gate-disable 映射 | `V2-S11-CTRL-safety_fault_state_machine-r00.drawio` | G3 | 所有方案进入硬件门前必须复用 | `draft` |
 | BOM/EDA | 传感器、隔离、诊断、关断、锁存器件 BOM/EDA 风险登记草案 | `V2-S11-BOM-safety_chain-r00.md` | G4 | ASIL/诊断覆盖、温漂和失效模式字段待在真实 BOM/EDA 中闭合 | `draft` |
-| Test | 高温、退磁、传感器开短路、gate-disable fault injection DVP&R | `V2-S11-DVP-safety_fault_injection-r00.md` | G5 | 不能证明故障安全则禁止进硬件门 | `missing` |
+| Test | 高温、退磁、传感器开短路、gate-disable fault injection DVP&R 计划草案 | `V2-S11-DVP-safety_fault_injection-r00.md` | G5 | 故障安全证据待执行验证后闭合 | `draft` |
 
 ### 4.12 S12 工况加权效率 / Pareto 选择（`weighted_efficiency_pareto_selection`）
 
 | 类别 | 必需交付物 | 命名模板 | Gate | 验收条件 | 当前状态 |
 |---|---|---|---|---|---|
-| PCB | 不新增硬件；必须索引候选方案 PCB/BOM/EDA 版本 | `V2-S12-PCB-candidate_index-r00.md` | G4 | Pareto 输入引用真实硬件版本 | `indexed` |
-| 3D/CAD | 候选拓扑 CAD 版本索引、质量、封装、冷却边界 | `V2-S12-CAD-candidate_package_index-r00.md` | G3 | 每个候选有可比较 CAD/质量/尺寸来源 | `indexed` |
-| Controller | 决策 scorecard、drive cycle、系统损耗、成熟度权重图 | `V2-S12-CTRL-pareto_scorecard-r00.drawio` | G3 | 区分 research rank 与 engineering recommendation | `indexed` |
-| BOM/EDA | 候选 BOM 成本、制造风险、供应风险、控制器差异索引 | `V2-S12-BOM-pareto_cost_risk-r00.xlsx` | G4 | 权重扰动下结论稳定 | `missing` |
-| Test | drive cycle、系统损耗、敏感性分析、证据路径审计 | `V2-S12-DVP-pareto_traceability-r00.md` | G5 | 没有图纸/BOM/测试证据的候选不得推荐 | `missing` |
+| PCB | 不新增硬件；必须索引候选方案 PCB/BOM/EDA 版本 | `V2-S12-PCB-candidate_index-r00.md` | G4 | Pareto 输入引用真实硬件版本 | `draft` |
+| 3D/CAD | 候选拓扑 CAD 版本索引、质量、封装、冷却边界 | `V2-S12-CAD-candidate_package_index-r00.md` | G3 | 每个候选有可比较 CAD/质量/尺寸来源 | `draft` |
+| Controller | 决策 scorecard、drive cycle、系统损耗、成熟度权重图 | `V2-S12-CTRL-pareto_scorecard-r00.md` | G3 | 区分 research rank 与 engineering recommendation | `draft` |
+| BOM/EDA | 候选 BOM 成本、制造风险、供应风险、控制器差异索引 | `V2-S12-BOM-pareto_cost_risk-r00.md` | G4 | 权重扰动下结论稳定 | `draft` |
+| Test | drive cycle、系统损耗、敏感性分析、证据路径审计 | `V2-S12-DVP-pareto_traceability-r00.md` | G5 | 没有图纸/BOM/测试证据的候选不得推荐 | `draft` |
 
 ---
 
@@ -231,7 +231,7 @@ V2-S<scheme_id>-<domain>-<artifact_name>-r<rev>.<extension>
 | 方案组 | 当前主要缺口 | 下一步最小动作 |
 |---|---|---|
 | P0 主线控制与安全 | 控制器图已有草案思路，但 PCB/传感/故障锁存和 CAD 安装图未落地 | 先补 S01/S02/S04/S11 的 `CTRL` 图和 `PCB sensing/fault` 页级草案 |
-| P1 候选拓扑 | FEA/CAD 几何、BOM、NVH/热/制造风险证据缺失 | 先补 S03/S05/S06/S12 的 CAD/FEA/BOM scorecard 模板 |
+| P1 候选拓扑 | S03/S05/S06/S12 已有 r00 Markdown 页级草案和 r03 生图提示词，但仍缺正式 CAD/FEA/EDA/BOM 和台架验证 | 将 r00 草案转成真实 EDA/CAD/FEA/BOM 文件，并按 DVP 执行验证 |
 | P2 研究池 | 关键硬件拓扑和安全互锁图纸几乎全缺 | 先补 S07/S08/S09/S10 的禁止误判图、互锁/故障路径和停止条件 |
 
 ---

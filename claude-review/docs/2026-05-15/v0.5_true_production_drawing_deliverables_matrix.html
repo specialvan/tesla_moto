@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>V2 真实生产图纸交付物矩阵</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; line-height: 1.6; margin: 2rem; color: #1f2937; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #d1d5db; padding: 0.5rem; vertical-align: top; }
+    th { background: #f3f4f6; }
+    code, pre { background: #f9fafb; padding: 0.15rem 0.3rem; }
+    .stop { color: #b91c1c; font-weight: 700; }
+    .warn { color: #92400e; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>V2 真实生产图纸交付物矩阵</h1>
+  <p>源文档：<code>claude-review/docs/2026-05-15/v0.5_true_production_drawing_deliverables_matrix.md</code></p>
+  <p>Codex 打回后，本页固化五档口径：<code>concept_drawing</code>、<code>parameter_sheet</code>、<code>source_design_file</code>、<code>simulation_input</code>、<code>manufacturing_release</code>。</p>
+  <h2>全局判定</h2>
+  <pre>{
+  "production_drawing_ready": false,
+  "manufacturing_release_ready": false,
+  "engineering_validated": false
+}</pre>
+  <h2>关键边界</h2>
+  <ul>
+    <li class="stop">PNG、prompt、Markdown 草案不是 EDA/CAD/FEA/制造发布文件。</li>
+    <li class="warn">S02 60 A jump 阈值只是 r02 proxy soft gate，r03 生产目标仍是 30 A。</li>
+    <li class="warn">S04 3×3 flux LUT 是 synthetic smoke fixture，不是 FEA-derived LUT。</li>
+    <li>所有方案必须保留 <code>engineering_validated=false</code>，直到 FEA + HIL + bench + manufacturing evidence 齐备。</li>
+  </ul>
+  <h2>当前档位摘要</h2>
+  <table>
+    <thead><tr><th>方案组</th><th>当前档位</th><th>下一步</th></tr></thead>
+    <tbody>
+      <tr><td>S01/S02/S11 P0</td><td>parameterized_proxy</td><td>替换 estimate 参数，补 HIL/bench/EDA/CAD 源文件</td></tr>
+      <tr><td>S03/S05/S06 P1</td><td>concept_parameterized_proxy</td><td>把 r00 Markdown 草案转为真实 EDA/CAD/FEA/BOM</td></tr>
+      <tr><td>S04</td><td>binding_smoke_only</td><td>引入 FEA-derived 30×30×T LUT 与残差报告</td></tr>
+      <tr><td>S07/S08/S09/S10</td><td>research_pool_smoke</td><td>补真实硬件拓扑、互锁、安全与瞬态模型</td></tr>
+      <tr><td>S12</td><td>evidence_index_only</td><td>绑定 reviewed/released 候选证据后才能推荐</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

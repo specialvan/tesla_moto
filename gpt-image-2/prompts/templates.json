@@ -1,0 +1,54 @@
+{
+  "version": "2026-05-18-v0",
+  "source_of_truth": "codex-review/docs/scheme_drawing_prompt_catalog_2026-05-18.md",
+  "templates": {
+    "T01_driver": {
+      "title": "驱动设计图 / System driver block diagram",
+      "aspect_ratio_hint": "16:9",
+      "placeholders": ["SCHEME_BLOCK"],
+      "prompt_template": "Flat technical block diagram of an automotive traction inverter and motor control chain. Layout left-to-right: Battery / DC link -> Precharge + main contactor -> 3-phase inverter -> IPMSM motor. On top, MCU running FOC connected to inverter gate drivers, encoder / resolver, phase current sensors, Vdc sensor, and a specialized control block {SCHEME_BLOCK}. Use rectangular nodes with rounded corners, gold strokes on dark navy background, clean orthogonal connectors with arrowheads, short English labels. Aspect ratio 16:9, single image, no people, no marketing copy."
+    },
+    "T02_sequence": {
+      "title": "上电时序图 / Power-on sequence diagram",
+      "aspect_ratio_hint": "16:9",
+      "placeholders": ["SCHEME_TABLE"],
+      "prompt_template": "UML-style sequence diagram for an EV traction inverter power-on procedure. Vertical lifelines for VCU, MCU, Inverter, Motor, and optional NVM. Arrows top-to-bottom represent: wake with torque disabled, sensor self-test, precharge enable, Vdc stable check, gate-driver enable, rotor alignment, load {SCHEME_TABLE}, torque enable. Thin gold horizontal arrows on dark navy background, monospace short labels, no decoration, no human figures, no color gradients beyond two accent colors."
+    },
+    "T03_state_machine": {
+      "title": "控制器状态机 / Controller state machine",
+      "aspect_ratio_hint": "1:1",
+      "placeholders": ["SCHEME_STATES", "SCHEME_TRANSITIONS"],
+      "prompt_template": "Finite-state-machine diagram for a motor controller subsystem. States are rounded rectangles arranged in a 2x3 or 3x2 grid, exact labels: {SCHEME_STATES}. Directed edges with English transition labels show exactly: {SCHEME_TRANSITIONS}. Flat infographic style, dark navy background, pale blue node fills, gold stroke and labels, orthogonal connectors, no shadows, no people, single-image composition."
+    },
+    "T04_pcb_concept": {
+      "title": "PCB 页面草案 / PCB sheet outline concept",
+      "aspect_ratio_hint": "4:3",
+      "placeholders": ["SCHEME_PCB_BLOCKS"],
+      "prompt_template": "Conceptual PCB schematic sheet outline showing labeled blocks (not real symbols) for: {SCHEME_PCB_BLOCKS}. Arrange blocks left-to-right in functional groups (sensing, isolation, control, gate drive, safety latch). Annotate signal names in English next to thin gold connectors. Dark navy background, light grid, no real component footprints, no part numbers, no marketing copy. Make it clearly a page-level concept, not a manufacturable layout."
+    },
+    "T05_cad_concept": {
+      "title": "3D/CAD 封装边界 / Packaging concept",
+      "aspect_ratio_hint": "4:3",
+      "placeholders": ["SCHEME_CAD_ELEMENTS"],
+      "prompt_template": "Isometric concept illustration of an EV inverter and motor mechanical packaging boundary. Show: {SCHEME_CAD_ELEMENTS}. Flat vector style, dark navy background, soft cyan and gold accents, English labels with leader lines, LV / HV keep-out zones marked, sensor mounting points marked. No photorealism, no human figures, no manufacturer branding."
+    },
+    "T06_bom_tree": {
+      "title": "BOM / EDA 风险树 / Component family risk tree",
+      "aspect_ratio_hint": "4:3",
+      "placeholders": ["SCHEME_NAME", "SCHEME_BOM_GROUPS"],
+      "prompt_template": "Infographic-style component family tree for an EV motor control subsystem. Root node: {SCHEME_NAME}. Branches: {SCHEME_BOM_GROUPS}. Each leaf shows a 2-3 word component family label and a risk badge (LOW / MED / HIGH) drawn as small pills. Dark navy background, gold trunk strokes, color-coded risk pills (green / amber / red), English labels, no real manufacturer logos."
+    },
+    "T07_test_tree": {
+      "title": "DVP&R / Test 计划树 / Test plan tree",
+      "aspect_ratio_hint": "16:9",
+      "placeholders": ["SCHEME_NAME", "SCHEME_TEST_AXES"],
+      "prompt_template": "Left-to-right tree diagram of a verification plan. Root: {SCHEME_NAME} verification. Level 1 branches: {SCHEME_TEST_AXES}. Level 2 leaves show short acceptance hooks in English. Clean vector style, dark navy background, gold and pale blue accents, monospace labels for test IDs. No people, no labs, no marketing photos."
+    },
+    "T08_protocol": {
+      "title": "协议链路 / Protocol and diagnostics link",
+      "aspect_ratio_hint": "16:9",
+      "placeholders": ["SCHEME_PROTOCOL_BLOCK"],
+      "prompt_template": "Network-style block diagram of communication links for an EV traction controller. Nodes: VCU CAN / CAN-FD, MCU command parser, {SCHEME_PROTOCOL_BLOCK}, FOC controller, SVPWM, UDS / XCP diagnostic interface, calibration tool. Arrows show direction, each link labeled with its bus type. Dark navy background, gold accents, English labels, no people, no extra decoration."
+    }
+  }
+}

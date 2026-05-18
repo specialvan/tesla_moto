@@ -15,7 +15,7 @@
 
 1. 每条 prompt 已嵌入对应方案的生产参数（来自草案 / motor_params.json / control_lut.json）。
 2. 全局正向 / 负向 prompt 已在 `_globals.md` 沉淀；每条 prompt 末尾 `<r01 GLOBAL POSITIVE>` 占位符替换为 `_globals.md §1.1`，`<r01 GLOBAL NEGATIVE>` 替换为 `_globals.md §1.2`。
-3. 批量执行入口：用户在生图工具内按 §3 顺序粘贴 prompt，输出落到 `gpt-image-2/outputs/SXX/V2-SXX-ILL-TYY-...-r01.png`，prompt.txt 落到同目录同名 `-r01-prompt.txt`。
+3. 批量执行入口：用户在脱敏并确认工具获准后，才可在生图工具内按 §3 顺序粘贴 prompt；输出落到 `gpt-image-2/outputs/SXX/V2-SXX-ILL-TYY-...-r01.png`，prompt.txt 落到同目录同名 `-r01-prompt.txt`。
 4. 每方案分册：`scheme-01-r01.md` ... `scheme-12-r01.md`。
 5. 改图模式：以同方案 r00 PNG 作为参考图，使用各分册 §3 「改图微调」段。
 6. 完整批量：96 条；建议一次跑 12 方案 × 2 模板（24 条）为一批，便于检查与回滚。

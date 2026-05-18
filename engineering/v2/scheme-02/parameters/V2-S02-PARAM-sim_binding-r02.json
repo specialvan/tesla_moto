@@ -2,21 +2,35 @@
   "schema_version": "2026-05-18-r02",
   "scheme_id": "mtpa_fw_mtpv_control",
   "scheme_short": "S02",
-  "binding_purpose": "r02 production-parameter binding for S02. Drives sim.run_control_lut_generator.run via tests/test_scheme_02_lut_acceptance.py. Not engineering-validated.",
+  "binding_purpose": "r02 production-parameter binding for S02. Drives sim.run_control_lut_generator.run via tests/test_scheme_02_lut_acceptance.py. Not engineering-validated. Current id/iq jump checks are r02 proxy soft gates, not r03 production acceptance.",
   "engineering_validated": false,
   "entry": "sim.run_control_lut_generator",
   "function": "run",
   "kwargs": {
     "model_type": "linear_dq",
-    "torque_axis_nm": [50.0, 100.0, 150.0, 200.0],
+    "torque_axis_nm": [
+      50.0,
+      100.0,
+      150.0,
+      200.0
+    ],
     "torque_step_nm": 50.0,
     "temperature_c": 80.0,
     "demag_limit": {
       "type": "DemagLimit",
       "points_c_to_id_min_a": [
-        [25.0, -240.0],
-        [100.0, -210.0],
-        [140.0, -180.0]
+        [
+          25.0,
+          -240.0
+        ],
+        [
+          100.0,
+          -210.0
+        ],
+        [
+          140.0,
+          -180.0
+        ]
       ],
       "source": "estimate",
       "note": "Aligned with sim/run_safety_boundary_experiment.py r00 piecewise demag boundary; replace with S11 thermal + magnet vendor curve before r03 sign-off."
@@ -24,7 +38,10 @@
   },
   "expect": {
     "metadata.generator_version.regex": "^\\d{4}-\\d{2}-\\d{2}-\\w+$",
-    "model_source.model_type.enum": ["linear_dq", "nonlinear_flux_lut"],
+    "model_source.model_type.enum": [
+      "linear_dq",
+      "nonlinear_flux_lut"
+    ],
     "grid_definition.speed_axis_rpm.count_min": 60,
     "grid_definition.torque_axis_nm.count_min": 4,
     "feasibility_map.feasible_points_min": 60,
@@ -81,5 +98,17 @@
     "control_lut_schema": "models/control_lut_schema.json",
     "motor_params": "models/motor_params.json",
     "pytest_entry": "tests/test_scheme_02_lut_acceptance.py"
+  },
+  "threshold_maturity": {
+    "mode_transitions.id_jump_a_max": {
+      "r02_proxy_soft_gate_a": 60.0,
+      "r03_production_target_a": 30.0,
+      "engineering_validated": false
+    },
+    "mode_transitions.iq_jump_a_max": {
+      "r02_proxy_soft_gate_a": 60.0,
+      "r03_production_target_a": 30.0,
+      "engineering_validated": false
+    }
   }
 }

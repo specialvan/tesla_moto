@@ -29,21 +29,21 @@ scheme-XX/
 
 | ID | 方案 | 目录 | 当前图纸包状态 |
 |---|---|---|---|
-| S01 | 负 d 轴弱磁 | `scheme-01/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
-| S02 | MTPA/FW/MTPV 连续控制 | `scheme-02/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
-| S03 | SVPWM/过调制 | `scheme-03/` | README 索引已建，图纸未落地 |
-| S04 | 非线性磁链 LUT | `scheme-04/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
-| S05 | 磁路饱和协同设计 | `scheme-05/` | README 索引已建，图纸未落地 |
-| S06 | PMaSynRM / 高凸极低永磁占比 | `scheme-06/` | README 索引已建，图纸未落地 |
+| S01 | 负 d 轴弱磁 | `scheme-01/` | PCB、控制器、BOM/EDA、CAD 和 DVP&R 草案已落地，未执行验证 |
+| S02 | MTPA/FW/MTPV 连续控制 | `scheme-02/` | PCB、控制器、BOM/EDA、CAD 和 DVP&R 草案已落地，未执行验证 |
+| S03 | SVPWM/过调制 | `scheme-03/` | PCB、CAD、控制器、BOM/EDA、仿真追溯和 r03 生图提示词草案已落地，未执行验证 |
+| S04 | 非线性磁链 LUT | `scheme-04/` | PCB、控制器、BOM/EDA、CAD 和 DVP&R 草案已落地，未执行验证 |
+| S05 | 磁路饱和协同设计 | `scheme-05/` | CAD/FEA、控制 scorecard、BOM/材料、仿真追溯和 r03 生图提示词草案已落地，未执行验证 |
+| S06 | PMaSynRM / 高凸极低永磁占比 | `scheme-06/` | CAD 拓扑、控制图、BOM/材料、仿真追溯和 r03 生图提示词草案已落地，未执行验证 |
 | S07 | 可变磁化状态 / Memory Motor | `scheme-07/` | README 索引已建，图纸未落地 |
 | S08 | 混合励磁 | `scheme-08/` | README 索引已建，图纸未落地 |
 | S09 | 绕组重构 | `scheme-09/` | README 索引已建，图纸未落地 |
 | S10 | 多相 / 相组控制 | `scheme-10/` | README 索引已建，图纸未落地 |
-| S11 | 温度 / 退磁 / 安全保护 | `scheme-11/` | PCB、控制器、BOM/EDA 风险和 CAD 边界草案已落地，DVP 仍缺失 |
-| S12 | 工况加权效率 / Pareto 选择 | `scheme-12/` | README 索引已建，图纸未落地 |
+| S11 | 温度 / 退磁 / 安全保护 | `scheme-11/` | PCB、控制器、BOM/EDA、CAD 和 DVP&R 草案已落地，未执行验证 |
+| S12 | 工况加权效率 / Pareto 选择 | `scheme-12/` | PCB/CAD 候选索引、控制 scorecard、BOM 风险、仿真追溯和 r03 生图提示词草案已落地，未执行验证 |
 
 ## 3. 当前结论
 
-本目录目前证明的是：V2 已经有了每个方案图纸包的仓库落点和审计索引。
+本目录目前证明的是：V2 已经有了每个方案图纸包的仓库落点和审计索引；P0 主线与 P1 候选组中的 S03/S05/S06/S12 已补充可审查的 r00 Markdown 页级图纸草案、生产参数字段和 r03 生图提示词。
 
-本目录目前尚未证明：任何方案已有正式 PCB、3D/CAD、控制器图、BOM/EDA、DVP&R、DFMEA 或制造发布文件。
+本目录目前尚未证明：任何方案已有正式 PCB、3D/CAD、控制器图、BOM/EDA、DVP&R、DFMEA 或制造发布文件；Markdown 草案只能作为真实 EDA/CAD/FEA/台架工作的输入，不得冒充 released 图纸。

@@ -51,13 +51,13 @@ chinese calligraphy stroke, emoji, watermark, logo
 
 ## 2. 共享图纸模板
 
-12 个方案的图纸大部分落在 8 类模板中。每类模板给出一段可直接复用的提示词，方案级章节只写差分。
+12 个方案的图纸大部分落在 8 类模板中。每类模板给出一段可复用的提示词，方案级章节只写差分；复制到外部工具前必须完成脱敏和工具审批。
 
 ### T01 驱动设计图（System Driver Block Diagram）
 
 事实源参考：`reports/scheme_driver_power_protocol_diagrams.md`「驱动设计图」mermaid 块。
 
-**生图提示词（中英混合，可直接粘贴）**：
+**生图提示词（中英混合；仅在脱敏并确认工具获准后粘贴）**：
 
 ```text
 Generate a flat technical block diagram of an automotive traction inverter and motor control chain.

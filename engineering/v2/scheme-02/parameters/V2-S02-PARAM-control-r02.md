@@ -139,8 +139,8 @@ output = run(
 | `feasibility_map.infeasible_reasons.demagnetization_risk` | ≤ 25 | 单 sheet 限定 |
 | `feasibility_map.infeasible_reasons.search_not_converged` | = 0 | 强制 |
 | `validation.torque_discontinuity_at_transitions_nm` | ≤ 5.0 N·m | r03 强制 |
-| `mode_transitions[*].id_jump_a` | ≤ 30 A | r03 强制 |
-| `mode_transitions[*].iq_jump_a` | ≤ 30 A | r03 强制 |
+| `mode_transitions[*].id_jump_a` | r02 proxy soft gate ≤ 60 A；r03 收敛目标 ≤ 30 A | r02 warn / r03 强制 |
+| `mode_transitions[*].iq_jump_a` | r02 proxy soft gate ≤ 60 A；r03 收敛目标 ≤ 30 A | r02 warn / r03 强制 |
 
 ---
 
@@ -163,7 +163,8 @@ DVP&R 文档：`engineering/v2/scheme-02/test_dvpr/V2-S02-TEST-lut_mode_hil-r00.
 1. **torque 轴扩展**：当前 LUT 仍是单 torque；r03 必须扩展为 4 点扫描，并落实 §2.3 工程窗。
 2. **R_s / L_d / L_q / ψ_f 估值替换**：当前 4 个核心参数为 estimate；r03 必须由 EXP-006 nonlinear flux LUT 或 FEA 标定后替换。
 3. **demag limit 估值替换**：当前 `id_min_at_25c_a = -240.0` 与 `temp_coefficient = -0.0035` 为粗估；r03 必须由 S11 thermal 与磁钢供应商曲线替换。
-4. **NVM 预算实测**：当前 256 K + 10 K 写入预算为估值；r03 必须由 MCU NVM 数据表和 LUT 发布频率重新核算。
+4. **切换跳变收敛**：当前机器绑定使用 60 A 作为 r02 proxy soft gate，文档中的 30 A 保留为 r03 强制目标；不得把 60 A 通过写成生产验收通过。
+5. **NVM 预算实测**：当前 256 K + 10 K 写入预算为估值；r03 必须由 MCU NVM 数据表和 LUT 发布频率重新核算。
 5. **r01 视觉更新**：T03 状态机 r01 重生后，本 sheet 顶部"概念图"路径要更新为 `-r01.png`。
 
 ---

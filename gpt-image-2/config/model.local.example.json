@@ -1,0 +1,4 @@
+{
+  "base_url": "https://approved-image-endpoint.example.com",
+  "api_key": "set-real-key-only-in-untracked-model.local.json"
+}

@@ -1,34 +1,98 @@
 {
   "version": "2026-05-14-v1",
-  "purpose": "Trace each controllable-flux scheme to reproducible simulation, architecture verification, or the next numeric model required. Passing tests prove the coverage record is complete, not that every scheme has reached final engineering validation.",
+  "purpose": "Trace each controllable-flux scheme to reproducible binding smoke tests, numeric proxy simulations, or next physics/engineering evidence required. Passing tests prove machine-readable bindings and proxy coverage only; engineering_validated remains false until FEA/HIL/bench/EDA/CAD/manufacturing evidence exists.",
   "schemes": [
     {
       "id": "negative_d_axis_field_weakening",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_dq_model.py", "tests/test_param_sweep.py", "tests/test_scheme_p0_lut_acceptance.py"],
-      "result_artifacts": ["experiments/exp_001_linear_dq/summary.json", "experiments/exp_001_linear_dq/scan_results.csv", "engineering/v2/scheme-01/parameters/V2-S01-PARAM-acceptance-r02.md", "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json"],
+      "simulation_status": "numeric_proxy_passed",
+      "pytest_tests": [
+        "tests/test_dq_model.py",
+        "tests/test_param_sweep.py",
+        "tests/test_scheme_p0_lut_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_001_linear_dq/summary.json",
+        "experiments/exp_001_linear_dq/scan_results.csv",
+        "engineering/v2/scheme-01/parameters/V2-S01-PARAM-acceptance-r02.md",
+        "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-001 sweeps negative id operating points under voltage/current constraints. r02 sim_binding now drives the control LUT generator with DemagLimit [(25,-240),(100,-210),(140,-180)] at T=100 °C and asserts feasibility / mode transition / demag presence via tests/test_scheme_p0_lut_acceptance.py.",
-      "next_simulation_step": "Replace Rs/Ld/Lq/psi_f estimates with nonlinear-flux LUT / FEA values; lock gate-disable < 100 μs latency via r03 bench."
+      "next_simulation_step": "Replace Rs/Ld/Lq/psi_f estimates with nonlinear-flux LUT / FEA values; lock gate-disable < 100 μs latency via r03 bench.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": true,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "parameterized_linear_model"
     },
     {
       "id": "mtpa_fw_mtpv_control",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_exp_001_runner.py", "tests/test_dq_model.py", "tests/test_control_lut_generator.py", "tests/test_scheme_02_lut_acceptance.py", "tests/test_scheme_p0_lut_acceptance.py"],
-      "result_artifacts": ["experiments/exp_001_linear_dq/summary.json", "experiments/exp_001_linear_dq/scan_results.csv", "models/control_lut_schema.json", "models/control_lut.json", "engineering/v2/scheme-02/parameters/V2-S02-PARAM-control-r02.md", "engineering/v2/scheme-02/parameters/V2-S02-PARAM-verification-r02.md", "engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json"],
+      "simulation_status": "numeric_proxy_passed",
+      "pytest_tests": [
+        "tests/test_exp_001_runner.py",
+        "tests/test_dq_model.py",
+        "tests/test_control_lut_generator.py",
+        "tests/test_scheme_02_lut_acceptance.py",
+        "tests/test_scheme_p0_lut_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_001_linear_dq/summary.json",
+        "experiments/exp_001_linear_dq/scan_results.csv",
+        "models/control_lut_schema.json",
+        "models/control_lut.json",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-control-r02.md",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-verification-r02.md",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-001 + control LUT generator. r02 sim_binding drives torque_axis=[50,100,150,200] N·m at T=80 °C with the shared piecewise DemagLimit; r03 pytest asserts feasibility / mode transitions / demag metadata and S02-DV-001..005 mapping completeness.",
-      "next_simulation_step": "Replace estimate parameters with FEA / bench; tighten id_jump / iq_jump strong-check thresholds; define DTC enums."
+      "next_simulation_step": "Replace estimate parameters with FEA / bench; tighten id_jump / iq_jump strong-check thresholds; define DTC enums.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": true,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "parameterized_linear_model"
     },
     {
       "id": "svpwm_overmodulation_voltage_utilization",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_modulation.py", "tests/test_modulation_factor_experiment.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_005_modulation_factor/summary.json", "experiments/exp_005_modulation_factor/modulation_sweep_results.csv", "engineering/v2/scheme-03/parameters/V2-S03-PARAM-sim_binding-r02.json"],
+      "simulation_status": "numeric_proxy_passed",
+      "pytest_tests": [
+        "tests/test_modulation.py",
+        "tests/test_modulation_factor_experiment.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_005_modulation_factor/summary.json",
+        "experiments/exp_005_modulation_factor/modulation_sweep_results.csv",
+        "engineering/v2/scheme-03/parameters/V2-S03-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-005 sweeps an explicit k_mod axis. r02 sim_binding asserts experiment ID, model_scope, k_mod sweep cardinality, scoring fields, and CSV output via tests/test_scheme_experiment_acceptance.py.",
-      "next_simulation_step": "Replace parametric harmonic / loss curves with measured inverter loss maps and PWM-reconstructed THD."
+      "next_simulation_step": "Replace parametric harmonic / loss curves with measured inverter loss maps and PWM-reconstructed THD.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": true,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "proxy_model"
     },
     {
       "id": "nonlinear_flux_lut",
-      "simulation_status": "passed_numeric_simulation",
+      "simulation_status": "binding_smoke_passed",
       "pytest_tests": [
         "tests/test_nonlinear_flux_lut.py",
         "tests/test_nonlinear_flux_lut_search.py",
@@ -46,72 +110,237 @@
         "engineering/v2/scheme-04/parameters/V2-S04-PARAM-acceptance-r02.md",
         "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json"
       ],
-      "coverage_note": "EXP-006 covers synthetic lambda_d/lambda_q LUT validation. r02 sim_binding routes run_control_lut_generator with model_type=nonlinear_flux_lut against flux_lut_sample.json and asserts flux_lut_ref present + bounds behaviour via tests/test_scheme_p0_lut_acceptance.py.",
-      "next_simulation_step": "Replace synthetic 3x3 LUT with FEA-derived 30x30 (with temperature slices); wire EXP-006 phase-3 into control LUT generator."
+      "coverage_note": "EXP-006 covers synthetic lambda_d/lambda_q LUT smoke validation only. r02 sim_binding routes run_control_lut_generator with model_type=nonlinear_flux_lut against flux_lut_sample.json and asserts flux_lut_ref present + bounds behaviour via tests/test_scheme_p0_lut_acceptance.py.",
+      "next_simulation_step": "Replace synthetic 3x3 LUT with FEA-derived 30x30 (with temperature slices); wire EXP-006 phase-3 into control LUT generator.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": false,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "synthetic_fixture"
     },
     {
       "id": "magnetic_saturation_codesign",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_param_sweep.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_003_param_sweep/summary.json", "experiments/exp_003_param_sweep/param_sweep_results.csv", "engineering/v2/scheme-05/parameters/V2-S05-PARAM-sim_binding-r02.json"],
+      "simulation_status": "numeric_proxy_passed",
+      "pytest_tests": [
+        "tests/test_param_sweep.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_003_param_sweep/summary.json",
+        "experiments/exp_003_param_sweep/param_sweep_results.csv",
+        "engineering/v2/scheme-05/parameters/V2-S05-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-003 scales Ld/Lq/saliency. r02 sim_binding asserts variant_count and top_candidates via tests/test_scheme_experiment_acceptance.py.",
-      "next_simulation_step": "Replace scaled Ld/Lq proxy with FEA-derived lambda_d/lambda_q candidate maps."
+      "next_simulation_step": "Replace scaled Ld/Lq proxy with FEA-derived lambda_d/lambda_q candidate maps.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": true,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "proxy_model"
     },
     {
       "id": "pmasynrm_high_saliency_low_pm",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_param_sweep.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_003_param_sweep/summary.json", "experiments/exp_003_param_sweep/param_sweep_results.csv", "engineering/v2/scheme-06/parameters/V2-S06-PARAM-sim_binding-r02.json"],
+      "simulation_status": "numeric_proxy_passed",
+      "pytest_tests": [
+        "tests/test_param_sweep.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_003_param_sweep/summary.json",
+        "experiments/exp_003_param_sweep/param_sweep_results.csv",
+        "engineering/v2/scheme-06/parameters/V2-S06-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-003 covers lower psi_f and higher saliency variants approximating PMaSynRM. r02 sim_binding shares the param_sweep runner with S05 and validates variant_count + top_candidates.",
-      "next_simulation_step": "Add PM fraction and torque ripple screening fields instead of only psi/Ld/Lq scaling."
+      "next_simulation_step": "Add PM fraction and torque ripple screening fields instead of only psi/Ld/Lq scaling.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": true,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "proxy_model"
     },
     {
       "id": "variable_magnetization_memory_motor",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_variable_flux.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_002_variable_flux/summary.json", "experiments/exp_002_variable_flux/variable_flux_scan.csv", "engineering/v2/scheme-07/parameters/V2-S07-PARAM-sim_binding-r02.json"],
+      "simulation_status": "binding_smoke_passed",
+      "pytest_tests": [
+        "tests/test_variable_flux.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_002_variable_flux/summary.json",
+        "experiments/exp_002_variable_flux/variable_flux_scan.csv",
+        "engineering/v2/scheme-07/parameters/V2-S07-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-002 sweeps virtual psi_f states. r02 sim_binding (research pool) asserts flux_states count and state_summaries_by_torque structure.",
-      "next_simulation_step": "Add state transition energy, state confidence, and unknown-state derating to the variable flux experiment."
+      "next_simulation_step": "Add state transition energy, state confidence, and unknown-state derating to the variable flux experiment.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": false,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "research_pool_proxy"
     },
     {
       "id": "hybrid_excitation",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_hybrid_excitation.py", "tests/test_hybrid_excitation_experiment.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_007_hybrid_excitation/summary.json", "experiments/exp_007_hybrid_excitation/hybrid_excitation_results.csv", "engineering/v2/scheme-08/parameters/V2-S08-PARAM-sim_binding-r02.json"],
+      "simulation_status": "binding_smoke_passed",
+      "pytest_tests": [
+        "tests/test_hybrid_excitation.py",
+        "tests/test_hybrid_excitation_experiment.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_007_hybrid_excitation/summary.json",
+        "experiments/exp_007_hybrid_excitation/hybrid_excitation_results.csv",
+        "engineering/v2/scheme-08/parameters/V2-S08-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-007 implements psi_eff = psi_pm + kf * if. r02 sim_binding (research pool) asserts row_count and CSV output.",
-      "next_simulation_step": "Add field-winding inductance, exciter loss, and rotor leakage; couple thermally to the field circuit."
+      "next_simulation_step": "Add field-winding inductance, exciter loss, and rotor leakage; couple thermally to the field circuit.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": false,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "research_pool_proxy"
     },
     {
       "id": "winding_reconfiguration",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_winding_reconfiguration.py", "tests/test_winding_reconfiguration_experiment.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_008_winding_reconfiguration/summary.json", "experiments/exp_008_winding_reconfiguration/winding_reconfiguration_results.csv", "engineering/v2/scheme-09/parameters/V2-S09-PARAM-sim_binding-r02.json"],
+      "simulation_status": "binding_smoke_passed",
+      "pytest_tests": [
+        "tests/test_winding_reconfiguration.py",
+        "tests/test_winding_reconfiguration_experiment.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_008_winding_reconfiguration/summary.json",
+        "experiments/exp_008_winding_reconfiguration/winding_reconfiguration_results.csv",
+        "engineering/v2/scheme-09/parameters/V2-S09-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-008 sweeps configurations whose Ke/L/Rs/Imax are scaled from turns_scale. r02 sim_binding (research pool) asserts configs count, transitions count, recommended_config, and row_count.",
-      "next_simulation_step": "Model contactor switching transients, circulating currents, and parallel-path thermal sharing."
+      "next_simulation_step": "Model contactor switching transients, circulating currents, and parallel-path thermal sharing.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": false,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "research_pool_proxy"
     },
     {
       "id": "multiphase_phase_group_control",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_multiphase_phase_group.py", "tests/test_multiphase_phase_group_experiment.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_009_multiphase_phase_group/summary.json", "experiments/exp_009_multiphase_phase_group/multiphase_phase_group_results.csv", "engineering/v2/scheme-10/parameters/V2-S10-PARAM-sim_binding-r02.json"],
+      "simulation_status": "binding_smoke_passed",
+      "pytest_tests": [
+        "tests/test_multiphase_phase_group.py",
+        "tests/test_multiphase_phase_group_experiment.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_009_multiphase_phase_group/summary.json",
+        "experiments/exp_009_multiphase_phase_group/multiphase_phase_group_results.csv",
+        "engineering/v2/scheme-10/parameters/V2-S10-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-009 derates available phase current per case. r02 sim_binding (research pool) asserts cases, case_count, and worst_case presence.",
-      "next_simulation_step": "Add harmonic subspace decoupling, neutral-shift voltage vectors, and per-phase thermal RC for fault transients."
+      "next_simulation_step": "Add harmonic subspace decoupling, neutral-shift voltage vectors, and per-phase thermal RC for fault transients.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": false,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "research_pool_proxy"
     },
     {
       "id": "thermal_demag_safety_protection",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_safety_limits.py", "tests/test_safety_boundary_experiment.py", "tests/test_scheme_p0_lut_acceptance.py"],
-      "result_artifacts": ["experiments/exp_004_safety_boundaries/summary.json", "experiments/exp_004_safety_boundaries/safety_boundary_results.csv", "engineering/v2/scheme-11/parameters/V2-S11-PARAM-acceptance-r02.md", "engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json"],
+      "simulation_status": "numeric_proxy_passed",
+      "pytest_tests": [
+        "tests/test_safety_limits.py",
+        "tests/test_safety_boundary_experiment.py",
+        "tests/test_scheme_p0_lut_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_004_safety_boundaries/summary.json",
+        "experiments/exp_004_safety_boundaries/safety_boundary_results.csv",
+        "engineering/v2/scheme-11/parameters/V2-S11-PARAM-acceptance-r02.md",
+        "engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-004 applies Rs(T), psi_f(T), Vdc derating, and simplified id_min(T) demag limits. r02 sim_binding exercises 120 °C scenario via run_control_lut_generator with shared piecewise demag, asserts operating_limits.temperature_c=120 and demag metadata.",
-      "next_simulation_step": "Replace simplified demag line with FEA / magnet vendor curve; lock pm/winding/oil thresholds with bench; start FMEDA + ASIL allocation."
+      "next_simulation_step": "Replace simplified demag line with FEA / magnet vendor curve; lock pm/winding/oil thresholds with bench; start FMEDA + ASIL allocation.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": true,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "parameterized_linear_model"
     },
     {
       "id": "weighted_efficiency_pareto_selection",
-      "simulation_status": "passed_numeric_simulation",
-      "pytest_tests": ["tests/test_drive_cycle.py", "tests/test_weighted_efficiency_pareto_experiment.py", "tests/test_iron_loss.py", "tests/test_scheme_experiment_acceptance.py"],
-      "result_artifacts": ["experiments/exp_010_weighted_efficiency_pareto/summary.json", "experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv", "experiments/exp_011_iron_loss/summary.json", "experiments/exp_011_iron_loss/iron_loss_sweep_results.csv", "sim/iron_loss.py", "engineering/v2/scheme-12/parameters/V2-S12-PARAM-sim_binding-r02.json"],
+      "simulation_status": "numeric_proxy_passed",
+      "pytest_tests": [
+        "tests/test_drive_cycle.py",
+        "tests/test_weighted_efficiency_pareto_experiment.py",
+        "tests/test_iron_loss.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "result_artifacts": [
+        "experiments/exp_010_weighted_efficiency_pareto/summary.json",
+        "experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv",
+        "experiments/exp_011_iron_loss/summary.json",
+        "experiments/exp_011_iron_loss/iron_loss_sweep_results.csv",
+        "sim/iron_loss.py",
+        "engineering/v2/scheme-12/parameters/V2-S12-PARAM-sim_binding-r02.json"
+      ],
       "coverage_note": "EXP-010 + EXP-011 score candidates across drive cycles. r02 sim_binding asserts cycles count, candidates count, cycle_winners + pareto_front presence, and row_count.",
-      "next_simulation_step": "Replace iron loss coefficients with FEA-derived material data; add mechanical loss, inverter loss, and temperature coupling."
+      "next_simulation_step": "Replace iron loss coefficients with FEA-derived material data; add mechanical loss, inverter loss, and temperature coupling.",
+      "engineering_validated": false,
+      "production_drawing_ready": false,
+      "manufacturing_release_ready": false,
+      "drawing_maturity": "concept_drawing_or_parameter_sheet",
+      "maturity_flags": {
+        "binding_smoke_passed": true,
+        "numeric_proxy_passed": true,
+        "physics_model_validated": false,
+        "engineering_validated": false
+      },
+      "model_maturity": "proxy_model"
     }
   ]
 }

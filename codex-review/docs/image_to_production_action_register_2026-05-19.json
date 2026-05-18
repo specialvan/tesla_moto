@@ -1,0 +1,137 @@
+{
+  "version": "2026-05-19-v0",
+  "review_package": "codex-review/docs",
+  "review_subject": "Claude V2 scheme image pack, r01 prompts, r02 production-parameter sheets, simulation bindings, and claimed production drawing upgrade",
+  "overall_assessment": "Claude completed concept-image review, r01 prompt landing, and partial r02 simulation binding, but did not upgrade image artifacts into production-ready PCB/CAD/controller drawings with manufacturing parameters.",
+  "decision": "return_to_claude_for_rework",
+  "engineering_boundary": {
+    "concept_images_are_validation_artifacts": false,
+    "r01_prompts_are_production_drawings": false,
+    "r02_parameter_sheets_are_manufacturing_release": false,
+    "sim_binding_pass_means_engineering_validated": false,
+    "engineering_validated_required_evidence": [
+      "FEA-derived model inputs",
+      "HIL results",
+      "bench results",
+      "EDA/CAD source files",
+      "manufacturing release files",
+      "thermal/EMC/safety evidence"
+    ]
+  },
+  "completion_matrix": [
+    {
+      "request": "深度推进方案落地",
+      "status": "partial",
+      "evidence": [
+        "engineering/v2/scheme-*",
+        "engineering/v2/scheme-*/parameters/*sim_binding-r02.json",
+        "tests/test_scheme_p0_lut_acceptance.py",
+        "tests/test_scheme_experiment_acceptance.py"
+      ],
+      "gap": "Most schemes remain estimate, synthetic, proxy, or research-pool models."
+    },
+    {
+      "request": "深度评审生图",
+      "status": "done",
+      "evidence": [
+        "claude-review/docs/2026-05-18/v2_image_pack_r00_deep_review.md"
+      ],
+      "gap": "Review covers image/prompt alignment, not production drawing validity."
+    },
+    {
+      "request": "落下版提示词",
+      "status": "done",
+      "evidence": [
+        "codex-review/docs/scheme_drawing_prompts_r01_batch/"
+      ],
+      "gap": "Prompts constrain concept-image generation only."
+    },
+    {
+      "request": "把图档升级为带生产参数的真实图纸",
+      "status": "not_done",
+      "evidence": [
+        "engineering/v2/scheme-02/cad/V2-S02-CAD-controller_packaging-r00.md",
+        "engineering/v2/scheme-02/pcb/V2-S02-PCB-control_io_map-r00.md",
+        "codex-review/docs/scheme_drawing_prompts_r01_batch/production_parameters_digest.md"
+      ],
+      "gap": "No STEP, EDA schematic, Layout, Gerber, ODB++, FEA mesh, or manufacturing release source files are present."
+    }
+  ],
+  "findings": [
+    {
+      "id": "ITP-001",
+      "severity": "P1",
+      "title": "S02 machine-readable simulation thresholds are looser than markdown acceptance thresholds",
+      "evidence": [
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-control-r02.md",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-verification-r02.md"
+      ],
+      "required_action": "Unify id_jump/iq_jump thresholds across markdown, JSON, and pytest, or explicitly mark the looser JSON gate as r02 proxy only."
+    },
+    {
+      "id": "ITP-002",
+      "severity": "P1",
+      "title": "passed_numeric_simulation overstates current maturity",
+      "evidence": ["models/scheme_simulation_coverage.json"],
+      "required_action": "Split status into binding_smoke_passed, numeric_proxy_passed, physics_model_validated, and engineering_validated."
+    },
+    {
+      "id": "ITP-003",
+      "severity": "P1",
+      "title": "S04 nonlinear flux LUT acceptance is only a smoke test",
+      "evidence": [
+        "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json",
+        "models/flux_lut_sample.json"
+      ],
+      "required_action": "Mark synthetic LUT as smoke fixture; require FEA-derived LUT and stricter bounds/residual/fallback checks before claiming LUT validation."
+    },
+    {
+      "id": "ITP-004",
+      "severity": "P2",
+      "title": "PCB/CAD artifacts are page-level drafts, not production drawings",
+      "evidence": [
+        "engineering/v2/scheme-02/cad/V2-S02-CAD-controller_packaging-r00.md",
+        "engineering/v2/scheme-02/pcb/V2-S02-PCB-control_io_map-r00.md"
+      ],
+      "required_action": "Classify current docs as concept_drawing or parameter_sheet and create a separate matrix for real EDA/CAD/manufacturing source files."
+    },
+    {
+      "id": "ITP-005",
+      "severity": "P2",
+      "title": "r02/r03 documentation does not reflect existing pytest harnesses",
+      "evidence": [
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-verification-r02.md",
+        "tests/test_scheme_02_lut_acceptance.py",
+        "tests/test_scheme_p0_lut_acceptance.py"
+      ],
+      "required_action": "Update stage definitions and register existing pytest harnesses as current facts."
+    }
+  ],
+  "required_rework_before_acceptance": [
+    "Add machine-readable maturity fields to every scheme.",
+    "Align every sim_binding threshold with its markdown acceptance sheet.",
+    "Downgrade synthetic/proxy/research-pool schemes from passed_numeric_simulation where appropriate.",
+    "Create a true production-drawing deliverables matrix for PCB, controller, CAD, FEA, BOM/EDA, and DVP&R.",
+    "Keep all images and prompts marked concept-only.",
+    "Keep engineering_validated=false until FEA, HIL, bench, EDA/CAD, thermal, EMC, safety, and manufacturing evidence exist."
+  ],
+  "verification_performed_by_codex": [
+    {
+      "command": "pytest -vv tests/test_scheme_02_lut_acceptance.py",
+      "result": "3 passed"
+    },
+    {
+      "command": "pytest -vv tests/test_scheme_p0_lut_acceptance.py",
+      "result": "12 passed"
+    },
+    {
+      "command": "pytest -vv tests/test_scheme_experiment_acceptance.py",
+      "result": "24 passed"
+    },
+    {
+      "command": "pytest -q",
+      "result": "timed out after about 124 seconds and hit Windows gbk stdout flush issue"
+    }
+  ]
+}

@@ -24,6 +24,7 @@ REQUIRED_LUT_FIELDS = {
     "iq_axis_a",
     "lambda_d_wb",
     "lambda_q_wb",
+    "maturity",
 }
 
 

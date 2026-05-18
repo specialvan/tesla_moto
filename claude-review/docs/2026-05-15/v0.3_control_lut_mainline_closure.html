@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>v0.3 Control LUT 主线闭环记录</title>
+  <style>
+    :root{--bg:#07111f;--panel:#101d33;--text:#e8f1ff;--muted:#9bb0ca;--accent:#7dd3fc;--ok:#22c55e;--warn:#facc15;--risk:#fb7185;--line:rgba(255,255,255,.13)}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top right,#1e3a5f,var(--bg) 52%);color:var(--text);line-height:1.68}header{padding:48px 6vw 34px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(125,211,252,.14),rgba(34,197,94,.08))}h1{margin:0 0 12px;font-size:clamp(30px,5vw,52px);line-height:1.08}h2{margin:0 0 18px;font-size:28px}h3{margin:18px 0 10px;color:var(--accent)}p{margin:8px 0}.subtitle{max-width:1120px;color:var(--muted);font-size:18px}main{padding:28px 6vw 64px}nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:28px}nav a,.card{border:1px solid var(--line);background:rgba(16,29,51,.84);border-radius:16px;box-shadow:0 16px 42px rgba(0,0,0,.22)}nav a{color:var(--text);text-decoration:none;padding:14px 16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.card{padding:20px;margin:14px 0}.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;color:#06131d;background:var(--accent);font-weight:700}.ok{background:var(--ok)}.warn{background:var(--warn)}.risk{background:var(--risk);color:#24040b}table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;margin:12px 0}th,td{border:1px solid var(--line);padding:10px 12px;vertical-align:top}th{background:rgba(125,211,252,.12);text-align:left}tr:nth-child(even)td{background:rgba(255,255,255,.035)}code{color:#c4b5fd}.callout{border-left:5px solid var(--accent);background:rgba(20,36,62,.82);padding:16px 18px;border-radius:14px}pre{overflow:auto;background:#050b14;border:1px solid var(--line);border-radius:14px;padding:14px}footer{padding:24px 6vw;color:var(--muted);border-top:1px solid var(--line)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>v0.3 Control LUT 主线闭环记录</h1>
+    <p class="subtitle">T1-T5 代码落地后的工程闭环阅读版：二维速度-转矩 LUT、不可行原因、安全边界、nonlinear flux LUT 与模式连续性验证。完整内容以同目录 Markdown 为准。</p>
+  </header>
+  <main>
+    <nav>
+      <a href="#summary">闭环结论</a><a href="#tasks">T1-T5 总览</a><a href="#validation">验证证据</a><a href="#limits">已知限制</a><a href="#next">v0.4 入口</a>
+    </nav>
+
+    <section id="summary" class="card">
+      <h2>1. 闭环结论</h2>
+      <p>v0.3 control LUT 主线已从单目标转矩输出，收敛为可承载 G3 模型 / 仿真 / 控制证据的统一控制查表链路。</p>
+      <div class="callout"><strong>边界声明：</strong>该闭环仍属于参数化仿真主线，不等同于工程实测验证；所有输出仍应保留 v0 模型限制语义。</div>
+      <div class="grid">
+        <div class="card"><span class="badge ok">T1</span><h3>二维 LUT</h3><p>支持速度 × 转矩网格，control points 与笛卡尔积闭合。</p></div>
+        <div class="card"><span class="badge ok">T2</span><h3>不可行原因</h3><p>统一 5 类不可行原因，并与 feasibility map 统计闭合。</p></div>
+        <div class="card"><span class="badge ok">T3</span><h3>安全边界</h3><p>温度修正和退磁限制可选接入主线搜索。</p></div>
+        <div class="card"><span class="badge ok">T4</span><h3>Nonlinear LUT</h3><p>nonlinear flux LUT 成为 control LUT 主线输入源。</p></div>
+        <div class="card"><span class="badge ok">T5</span><h3>连续性验证</h3><p>按 torque 切片计算 transition、斜率和转矩跳变。</p></div>
+      </div>
+    </section>
+
+    <section id="tasks" class="card">
+      <h2>2. T1-T5 落地总览</h2>
+      <table>
+        <thead><tr><th>任务</th><th>已落地能力</th><th>关键输出/约束</th><th>主要测试</th></tr></thead>
+        <tbody>
+          <tr><td>T1 二维速度-转矩 LUT</td><td><code>run()</code> 支持 <code>torque_axis_nm</code> 和 <code>torque_step_nm</code></td><td>默认单 torque；显式 torque axis 生成完整二维网格；非均匀轴 <code>torque_step_nm=null</code></td><td>数量闭合、笛卡尔积覆盖、非有限输入拒绝</td></tr>
+          <tr><td>T2 不可行原因统一</td><td>统一 voltage/current/demag/LUT bounds/search not converged</td><td><code>feasibility_map.infeasible_reasons</code> 与不可行 control points 闭合</td><td>原因枚举、统计闭合、current/voltage 区分</td></tr>
+          <tr><td>T3 温度 / 退磁安全边界</td><td><code>temperature_c</code>、<code>thermal_model</code>、<code>demag_limit</code> 可选输入</td><td><code>metadata.demag_limit</code>、<code>demagnetization_risk</code>、demag transition</td><td>强退磁限制下可行点不越界</td></tr>
+          <tr><td>T4 nonlinear flux LUT</td><td><code>model_type="nonlinear_flux_lut"</code> 输出同构 control LUT</td><td>仓库内 <code>lut_path</code> 策略；<code>flux_lut_ref</code> 可追溯</td><td>model_source、reason 闭合、路径边界</td></tr>
+          <tr><td>T5 模式切换与连续性</td><td>transition 补齐 id/iq/torque jump，validation 聚合实际跳变</td><td>多 torque 时按固定 <code>torque_nm</code> 沿速度轴切片计算</td><td>跳变量、fallback、连续性失败、多 torque 切片</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="validation" class="card">
+      <h2>3. 验证证据</h2>
+      <p>最终验证命令：</p>
+      <pre><code>black sim/run_control_lut_generator.py tests/test_control_lut_generator.py && \
+pytest -q tests/test_control_lut_generator.py tests/test_safety_boundary_experiment.py tests/test_nonlinear_flux_lut_search.py tests/test_scheme_simulation_coverage.py && \
+ruff check sim/run_control_lut_generator.py tests/test_control_lut_generator.py && \
+mypy sim/run_control_lut_generator.py tests/test_control_lut_generator.py && \
+python -m sim.run_control_lut_generator &gt; /dev/null</code></pre>
+      <table>
+        <thead><tr><th>项目</th><th>结果</th></tr></thead>
+        <tbody>
+          <tr><td>pytest</td><td><span class="badge ok">39 passed</span></td></tr>
+          <tr><td>ruff</td><td><span class="badge ok">passed</span></td></tr>
+          <tr><td>mypy</td><td><span class="badge ok">passed</span></td></tr>
+          <tr><td>black</td><td><span class="badge ok">passed</span></td></tr>
+          <tr><td>code-reviewer</td><td><span class="badge ok">无剩余 CRITICAL/HIGH/MEDIUM</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="limits" class="card">
+      <h2>4. 当前已知限制</h2>
+      <ol>
+        <li>默认输出仍是单 torque axis，完整 torque sweep 需要实验配置显式传入。</li>
+        <li><code>tests/test_control_lut_generator.py</code> 仍偏集成，完整运行时间较高。</li>
+        <li>模式分类仍基于 voltage margin 阈值，属于 v0 控制策略近似。</li>
+        <li>nonlinear flux LUT 当前使用样例 LUT，不能代表真实磁饱和地图。</li>
+        <li>退磁限制仍是简化 <code>id_min(T)</code> 模型，不是最终硬件安全边界。</li>
+        <li>schema 尚未引入 requirement trace / boundary source 字段。</li>
+      </ol>
+    </section>
+
+    <section id="next" class="card">
+      <h2>5. v0.4 建议入口</h2>
+      <ol>
+        <li>拆分 control LUT generator 的轴解析、搜索和 transition validation。</li>
+        <li>引入 <code>SearchResult</code> 或等价结果对象。</li>
+        <li>用实验配置文件驱动 torque axis / safety boundary。</li>
+        <li>增加 schema validation 测试。</li>
+        <li>把 nonlinear flux LUT 从 sample 扩展到 FEA-derived LUT 输入链路。</li>
+      </ol>
+    </section>
+  </main>
+  <footer>v0.3 Control LUT mainline closure · generated for engineering review packet</footer>
+</body>
+</html>

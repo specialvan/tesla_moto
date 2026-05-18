@@ -25,6 +25,9 @@
 | `scheme_landing_roadmap_2026-05-14.md` | 12 个方案的分层落地路线图、阶段门和下一步工作包 |
 | `scheme_landing_work_packages_2026-05-14.json` | 机器可读的方案落地工作包登记 |
 | `working_tree_delta_note_2026-05-14.md` | 首轮评审落盘后观察到的额外工作树变化补充记录 |
+| `claude_image_to_production_deep_review_2026-05-19.md` | Claude 图档生产化深度评审与打回意见，核对生图评审、r01 提示词、r02 参数化和真实图纸缺口 |
+| `image_to_production_action_register_2026-05-19.json` | 图档生产化打回项的机器可读行动登记 |
+| `../../claude-review/docs/2026-05-15/v0.5_true_production_drawing_deliverables_matrix.md` | Claude 按打回意见补充的真实生产图纸五档交付物矩阵 |
 
 ## 3. 首轮评审结论摘要
 

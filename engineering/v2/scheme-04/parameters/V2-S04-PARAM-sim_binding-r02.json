@@ -2,19 +2,24 @@
   "schema_version": "2026-05-18-r02",
   "scheme_id": "nonlinear_flux_lut",
   "scheme_short": "S04",
-  "binding_purpose": "r02 binding for S04 nonlinear flux LUT. Drives sim.run_control_lut_generator.run with model_type=nonlinear_flux_lut against the synthetic sample LUT.",
+  "binding_purpose": "r02 smoke binding for S04 nonlinear flux LUT. Drives sim.run_control_lut_generator.run with model_type=nonlinear_flux_lut against the synthetic sample LUT; proves code-path and schema compatibility only, not LUT physics validation.",
   "engineering_validated": false,
   "entry": "sim.run_control_lut_generator",
   "function": "run",
   "kwargs": {
     "model_type": "nonlinear_flux_lut",
     "lut_path": "models/flux_lut_sample.json",
-    "torque_axis_nm": [50.0, 80.0],
+    "torque_axis_nm": [
+      50.0,
+      80.0
+    ],
     "torque_step_nm": 30.0
   },
   "expect": {
     "metadata.generator_version.regex": "^\\d{4}-\\d{2}-\\d{2}-\\w+$",
-    "model_source.model_type.enum": ["nonlinear_flux_lut"],
+    "model_source.model_type.enum": [
+      "nonlinear_flux_lut"
+    ],
     "model_source.flux_lut_ref_present": true,
     "grid_definition.speed_axis_rpm.count_min": 60,
     "grid_definition.torque_axis_nm.count_min": 2,
@@ -59,5 +64,23 @@
     "dvpr_draft": "engineering/v2/scheme-04/test_dvpr/V2-S04-TEST-flux_lut_correlation-r00.md",
     "flux_lut": "models/flux_lut_sample.json",
     "pytest_entry": "tests/test_scheme_p0_lut_acceptance.py"
+  },
+  "model_maturity": "synthetic_fixture",
+  "physics_model_validated": false,
+  "fixture_limits": {
+    "flux_lut_sample": "synthetic 3x3 smoke fixture",
+    "not_allowed_claims": [
+      "FEA-derived LUT validation",
+      "bench-correlated flux map",
+      "production control LUT release",
+      "engineering validation"
+    ],
+    "r03_required_before_validation": [
+      "FEA-derived >=30x30 id/iq LUT",
+      "temperature slices >=5",
+      "bounds coverage report",
+      "interpolation residual threshold",
+      "fallback trigger-rate threshold"
+    ]
   }
 }

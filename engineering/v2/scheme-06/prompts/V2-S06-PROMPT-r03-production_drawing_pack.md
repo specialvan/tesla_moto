@@ -1,0 +1,25 @@
+# V2-S06 r03 生产参数化生图提示词包
+
+目标：把 S06 PMaSynRM / 高凸极低 PM 路线升级为可审查拓扑、控制图、BOM 风险和证据链图。
+
+## 通用负面约束
+
+- 不要把低 PM 写成自动低成本，必须显示 demag、torque ripple、thermal、stress 风险。
+- 不要只画转子外观，必须标注 low PM pocket、flux barrier、hairpin slot、cooling path。
+- 不要输出工程推荐，除非图中保留 evidence/maturity gate。
+
+## 图 1：Low-PM PMaSynRM topology CAD
+
+Prompt: Generate a technical CAD/FEA drawing titled “S06 High-saliency Low-PM PMaSynRM Topology”. Include rotor low-PM magnet pockets, multi-layer flux barriers, bridge/rib stress map, stator hairpin slots, cooling path, demag hotspot overlay, saliency ratio, PM fraction, stress safety factor, demag margin. White background, four-view engineering layout, English labels.
+
+## 图 2：Control map
+
+Prompt: Generate a controller diagram titled “S06 High-saliency Low-PM Control Map”. Include FEA Flux LUT, MTPA, MTPV/high-speed, Demag Guard, Thermal Derating, Drive-cycle Scorecard, Engineering Gate Decision. Use red stop conditions and blue control data flow, white background.
+
+## 图 3：BOM cost-risk matrix
+
+Prompt: Generate a BOM and risk matrix titled “S06 Low-PM Topology BOM Risk”. Rows: low-PM magnet, electrical steel, hairpin winding, rotor retention, thermal sensors. Columns: cost impact, supply risk, demag curve, loss curve, DFM evidence, gate status. Engineering report style.
+
+## 图 4：Evidence traceability
+
+Prompt: Generate a traceability diagram titled “S06 Evidence Chain: Saliency Trend to Engineering Candidate”. Flow: EXP-003 saliency trend -> low-PM CAD topology -> FEA LUT -> MTPA/MTPV control map -> demag/thermal guard -> BOM cost risk -> DVP gate. Include “research rank until CAD/FEA/DVP evidence exists” callout.

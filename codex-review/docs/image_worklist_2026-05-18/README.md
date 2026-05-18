@@ -1,7 +1,7 @@
 # 12 方案图档生图工作清单
 
 更新日期：2026-05-18  
-工作流：**手动**逐张上传参考图 + 复制提示词 → 生图 → 下载 PNG → 汇总归档  
+工作流：**手动**逐张脱敏并审批参考图 / prompt → 仅上传到获准工具 → 生图 → 下载 PNG → 汇总归档  
 落点目录：`codex-review/docs/image_worklist_2026-05-18/`  
 配套文档：
 - `codex-review/docs/scheme_drawing_prompt_catalog_2026-05-18.md`（r00 模板与差分 token 详释）
@@ -14,6 +14,7 @@
 2. r01 提示词只迭代评审 P0/P1 级问题，P2 保留 r00。
 3. r01 出图按 `-r01.png` 命名，与 r00 共存于同目录，不覆盖 r00。
 4. r01 prompt 与改图工作流详见 `scheme_drawing_prompt_catalog_2026-05-18_r01.md` §2 / §3 / §4。
+5. 所有外部生图工具使用前必须完成脱敏和审批；未获准工具不得接收工程 prompt、方案参数、DVP/安全路径、drawio 或 Mermaid 导出图。
 
 ## 0. 不可破坏的边界
 
@@ -96,8 +97,8 @@ real component photos
 
 矩阵格说明：
 
-- `drawio`：可用 draw.io 桌面端把对应 `.drawio` 导出为 PNG，再上传给生图工具作"改图"输入。
-- `mmd`：可在 VS Code 用 Mermaid 预览插件，或本机 `mmdc` 渲染对应 mermaid 块为 PNG，再上传作"改图"输入。
+- `drawio`：可用 draw.io 桌面端把对应 `.drawio` 导出为 PNG；脱敏并确认工具获准后，才可作为"改图"输入。
+- `mmd`：可在 VS Code 用 Mermaid 预览插件，或本机 `mmdc` 渲染对应 mermaid 块为 PNG；脱敏并确认工具获准后，才可作为"改图"输入。
 - `无`：仓库无现成像素源，先用纯 prompt 走"生图"出 v0，再把 v0 作参考图迭代。
 
 ## 4. 推荐归档结构
@@ -217,10 +218,10 @@ V2-S{编号:02}-ILL-T{模板号}-{语义短名}-r{修订号:02}.png
    - `drawio` → 用 draw.io desktop 打开对应 `.drawio`，菜单 File → Export as → PNG（建议 2x scale），保存为本地参考图。
    - `mmd` → 在 VS Code 打开 `reports/scheme_driver_power_protocol_diagrams.md`，定位该方案的对应 mermaid 块，预览插件右键导出 PNG，或运行 `mmdc -i temp.mmd -o ref.png`。
    - `无` → 跳过参考图，走纯"生图"路径。
-3. 把 `[positive prompt]` 整段复制粘贴到生图工具左侧文本框。
-4. 如果工具支持负向 prompt，把第 1.2 节负向 prompt 复制进去。
+3. 对 `[positive prompt]` 做脱敏检查，并确认目标生图工具已获准接收该项目工程信息后，再复制粘贴到工具文本框。
+4. 如果工具支持负向 prompt，同样在脱敏与审批后复制第 1.2 节负向 prompt。
 5. 选 1024×1024、鲜明、PNG，1 张，生图。
-6. 不满意就在工具里切到「改图」，上传 v0 当参考图，再贴改图提示词（每个条目末尾有"改图微调建议"段）。
+6. 不满意就在获准工具里切到「改图」，上传已脱敏 v0 当参考图，再贴已脱敏改图提示词（每个条目末尾有"改图微调建议"段）。
 7. 满意后下载 PNG，按第 4 节命名规则改名，放到 `engineering/v2/scheme-XX/illustrations/`。
 8. 在同目录建 `<同名>-prompt.txt`，按第 4 节格式记录最终 prompt。
 9. 回到本 README 第 5 节勾掉对应复选框。

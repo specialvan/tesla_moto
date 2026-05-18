@@ -1,0 +1,1101 @@
+{
+  "version": "2026-05-18-v0",
+  "source_of_truth": "codex-review/docs/image_worklist_2026-05-18/",
+  "image_id_pattern": "IMG-S{nn}-T{n}",
+  "output_name_pattern": "V2-S{nn}-ILL-T{n}-{topic}-r00.png",
+  "schemes": {
+    "S01": {
+      "scheme_id": "negative_d_axis_field_weakening",
+      "name_for_root_node": "negative d-axis field weakening",
+      "engineering_dir": "engineering/v2/scheme-01/",
+      "draft_status": "drafts_landed",
+      "images": [
+        {
+          "image_id": "IMG-S01-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S01-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "negative_d_axis_field_weakening id_min(T,fault) limiter, with arrows from temperature sensor and Vdc sense feeding into it"
+          }
+        },
+        {
+          "image_id": "IMG-S01-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S01-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "id_min(T) and FW limits"
+          }
+        },
+        {
+          "image_id": "IMG-S01-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S01-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Power On + ADC self-test\", \"Normal Torque Control (MTPA request)\", \"Voltage Limited (enter field weakening)\", \"Apply id_min(T,fault) clamp\", \"Derate Torque\", \"Fault Fallback (gate disable)\"",
+            "SCHEME_TRANSITIONS": "\"sensors valid\", \"V margin < limit\", \"speed high\", \"demag / current risk\", \"margin recovered\", \"self-test fail\", \"sensor / fault latch\""
+          }
+        },
+        {
+          "image_id": "IMG-S01-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S01-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "Phase current sensing ia/ib/ic, Vdc sense divider, Motor & inverter temperature inputs, Gate-disable_n hardware path, Fault latch readback, MCU ADC front-end"
+          }
+        },
+        {
+          "image_id": "IMG-S01-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S01-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "three-phase busbar from inverter to motor, current sensor windows on busbar, motor-side and inverter-side temperature sensor mounts, LV / HV keep-out partition, service access for fault latch"
+          }
+        },
+        {
+          "image_id": "IMG-S01-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S01-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "negative d-axis field weakening",
+            "SCHEME_BOM_GROUPS": "Current sensors, Vdc divider network, Temperature sensors, Gate-disable latch, Fault feedback chain"
+          }
+        },
+        {
+          "image_id": "IMG-S01-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S01-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "negative d-axis field weakening",
+            "SCHEME_TEST_AXES": "Field weakening entry / exit, id_min(T,fault) clamp validation, Sensor fault injection, Gate-disable latch test"
+          }
+        },
+        {
+          "image_id": "IMG-S01-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S01-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "voltage / current / demag limiter"
+          }
+        }
+      ]
+    },
+    "S02": {
+      "scheme_id": "mtpa_fw_mtpv_control",
+      "name_for_root_node": "MTPA / FW / MTPV continuous control",
+      "engineering_dir": "engineering/v2/scheme-02/",
+      "draft_status": "drafts_landed",
+      "images": [
+        {
+          "image_id": "IMG-S02-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S02-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "MTPA / FW / MTPV LUT block taking torque request, feeding feasibility + derating, then current controller"
+          }
+        },
+        {
+          "image_id": "IMG-S02-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S02-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "control LUT and bounds"
+          }
+        },
+        {
+          "image_id": "IMG-S02-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S02-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"MTPA idle\", \"MTPA active\", \"Field Weakening\", \"MTPV\", \"Derate\", \"LUT CRC fault fallback\"",
+            "SCHEME_TRANSITIONS": "\"LUT CRC ok\", \"speed > base\", \"V margin < limit\", \"MTPV boundary reached\", \"LUT CRC fail\", \"mode reset\""
+          }
+        },
+        {
+          "image_id": "IMG-S02-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S02-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "MCU + NVM (control LUT storage), ADC front-end, Resolver / encoder interface, CAN / CAN-FD transceiver, LUT version diagnostic interface"
+          }
+        },
+        {
+          "image_id": "IMG-S02-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S02-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "controller enclosure outline, connector positions, harness exits, cooling path against power module, EMI partition between LV and HV"
+          }
+        },
+        {
+          "image_id": "IMG-S02-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S02-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "MTPA / FW / MTPV controller",
+            "SCHEME_BOM_GROUPS": "MCU + NVM, ADC, Position interface, Communication transceivers, LUT release infrastructure"
+          }
+        },
+        {
+          "image_id": "IMG-S02-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S02-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "MTPA / FW / MTPV control",
+            "SCHEME_TEST_AXES": "MTPA / FW / MTPV HIL, LUT CRC and version control, Power-off recovery, Mode continuity"
+          }
+        },
+        {
+          "image_id": "IMG-S02-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S02-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "mode selector (MTPA / FW / MTPV) and id/iq reference LUT"
+          }
+        }
+      ]
+    },
+    "S03": {
+      "scheme_id": "svpwm_overmodulation_voltage_utilization",
+      "name_for_root_node": "SVPWM / overmodulation voltage utilization",
+      "engineering_dir": "engineering/v2/scheme-03/",
+      "draft_status": "readme_only",
+      "images": [
+        {
+          "image_id": "IMG-S03-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S03-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "SVPWM / overmodulation / six-step selector block fed by FOC voltage command and Vdc sense, with THD / NVH monitor input"
+          }
+        },
+        {
+          "image_id": "IMG-S03-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S03-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "modulation limits"
+          }
+        },
+        {
+          "image_id": "IMG-S03-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S03-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Linear SVPWM\", \"Overmodulation Region 1\", \"Overmodulation Region 2\", \"Six-Step\", \"Derate on THD limit\", \"Fallback to linear\"",
+            "SCHEME_TRANSITIONS": "\"voltage utilization rising\", \"THD limit hit\", \"NVH limit hit\", \"Vdc recovered\", \"safety derate request\""
+          }
+        },
+        {
+          "image_id": "IMG-S03-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S03-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "Gate driver with dead-time control, EMC / EMI filter, Phase current sensing, DC-link capacitor bank, Bus bar interface"
+          }
+        },
+        {
+          "image_id": "IMG-S03-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S03-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "power module, DC-link capacitor, busbar layout, heatsink and cold plate interface, EMI shielding partitions"
+          }
+        },
+        {
+          "image_id": "IMG-S03-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S03-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "SVPWM / overmodulation power stage",
+            "SCHEME_BOM_GROUPS": "Gate driver, Power modules, DC-link capacitors, Busbar, EMI components"
+          }
+        },
+        {
+          "image_id": "IMG-S03-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S03-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "SVPWM / overmodulation",
+            "SCHEME_TEST_AXES": "THD measurement, EMC compliance, NVH (torque ripple), Inverter loss, Thermal stress"
+          }
+        },
+        {
+          "image_id": "IMG-S03-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S03-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "modulation mode telemetry + THD / NVH guard channel"
+          }
+        }
+      ]
+    },
+    "S04": {
+      "scheme_id": "nonlinear_flux_lut",
+      "name_for_root_node": "nonlinear flux LUT",
+      "engineering_dir": "engineering/v2/scheme-04/",
+      "draft_status": "drafts_landed",
+      "images": [
+        {
+          "image_id": "IMG-S04-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S04-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "nonlinear flux LUT observer block taking id, iq, omega, and temperature, outputting lambda_d / lambda_q to FOC"
+          }
+        },
+        {
+          "image_id": "IMG-S04-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S04-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "nonlinear flux LUT and bounds"
+          }
+        },
+        {
+          "image_id": "IMG-S04-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S04-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"LUT load + CRC check\", \"Bounds check passed\", \"Bilinear interpolation active\", \"Out-of-bounds clamp\", \"Error monitor warning\", \"Fallback to linear dq\"",
+            "SCHEME_TRANSITIONS": "\"LUT CRC ok\", \"query inside LUT bounds\", \"interpolation residual ok\", \"out-of-bounds detected\", \"monitor over threshold\", \"recover to LUT\""
+          }
+        },
+        {
+          "image_id": "IMG-S04-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S04-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "LUT observer inputs (id, iq, omega, T), bounds checker, fallback diagnostic line, error budget telemetry, MCU NVM for LUT"
+          }
+        },
+        {
+          "image_id": "IMG-S04-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S04-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "FEA geometry source reference frame, dq coordinate origin marked at rotor center, material stack callouts, mesh boundary illustration, sensor position bindings"
+          }
+        },
+        {
+          "image_id": "IMG-S04-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S04-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "nonlinear flux LUT subsystem",
+            "SCHEME_BOM_GROUPS": "Current sensors, Position sensors, Temperature sensors, Vdc sensing, Diagnostic NVM"
+          }
+        },
+        {
+          "image_id": "IMG-S04-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S04-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "nonlinear flux LUT",
+            "SCHEME_TEST_AXES": "LUT bounds enforcement, Interpolation consistency, FEA version binding, Bench correlation, Fallback behavior"
+          }
+        },
+        {
+          "image_id": "IMG-S04-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S04-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "LUT version + bounds telemetry"
+          }
+        }
+      ]
+    },
+    "S05": {
+      "scheme_id": "magnetic_saturation_codesign",
+      "name_for_root_node": "magnetic saturation codesign motor",
+      "engineering_dir": "engineering/v2/scheme-05/",
+      "draft_status": "readme_only",
+      "images": [
+        {
+          "image_id": "IMG-S05-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S05-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "candidate geometry generator -> FEA lambda LUT -> scorecard block feeding control LUT"
+          }
+        },
+        {
+          "image_id": "IMG-S05-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S05-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "saturation scorecard inputs"
+          }
+        },
+        {
+          "image_id": "IMG-S05-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S05-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Candidate geometry intake\", \"FEA LUT request\", \"Scorecard evaluation\", \"Down-select\", \"Stop-criteria triggered\", \"Retain for trade study\"",
+            "SCHEME_TRANSITIONS": "\"FEA result available\", \"score above threshold\", \"stress / demag risk too high\", \"pareto loser\", \"retain\""
+          }
+        },
+        {
+          "image_id": "IMG-S05-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S05-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "saturation observer sample inputs, flux estimation diagnostics, MCU compute headroom block, optional bench data ingestion port"
+          }
+        },
+        {
+          "image_id": "IMG-S05-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S05-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "rotor cross-section with multiple flux barriers, magnetic bridges between barriers, embedded magnet pockets, stator slot outline, lamination stack hint, mechanical stress callouts on bridges"
+          }
+        },
+        {
+          "image_id": "IMG-S05-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S05-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "magnetic saturation codesign motor",
+            "SCHEME_BOM_GROUPS": "Electrical steel, Permanent magnets, Rotor process tooling, Saturation observer sensors"
+          }
+        },
+        {
+          "image_id": "IMG-S05-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S05-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "saturation codesign",
+            "SCHEME_TEST_AXES": "FEA correlation, Mechanical stress, Iron loss, Demagnetization, NVH"
+          }
+        },
+        {
+          "image_id": "IMG-S05-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S05-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "candidate ID + score versioning channel"
+          }
+        }
+      ]
+    },
+    "S06": {
+      "scheme_id": "pmasynrm_high_saliency_low_pm",
+      "name_for_root_node": "PMaSynRM low-PM motor",
+      "engineering_dir": "engineering/v2/scheme-06/",
+      "draft_status": "readme_only",
+      "images": [
+        {
+          "image_id": "IMG-S06-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S06-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "high-saliency MTPA / MTPV control block with low-PM demag boundary monitor"
+          }
+        },
+        {
+          "image_id": "IMG-S06-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S06-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "PMaSynRM control table"
+          }
+        },
+        {
+          "image_id": "IMG-S06-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S06-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"MTPA active\", \"High-saliency FW\", \"MTPV\", \"Low-PM demag guard\", \"Derate\", \"Fault Fallback\"",
+            "SCHEME_TRANSITIONS": "\"MTPA boundary reached\", \"FW margin shrinking\", \"MTPV boundary\", \"demag risk rising\", \"recover\", \"fault latch\""
+          }
+        },
+        {
+          "image_id": "IMG-S06-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S06-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "high-saliency control inputs, demag diagnostic input, extended current sensing for low-PM range, high-resolution position sensor interface"
+          }
+        },
+        {
+          "image_id": "IMG-S06-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S06-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "rotor cross-section with low PM fraction, flux barrier pattern, magnetic bridges, stator with hairpin slot outline, cooling jacket interface"
+          }
+        },
+        {
+          "image_id": "IMG-S06-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S06-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "PMaSynRM low-PM motor",
+            "SCHEME_BOM_GROUPS": "Low-PM magnets, Laminations, Hairpin windings, Cooling / temperature sensing"
+          }
+        },
+        {
+          "image_id": "IMG-S06-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S06-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "PMaSynRM low-PM",
+            "SCHEME_TEST_AXES": "Torque ripple, Mechanical stress, Demagnetization, Thermal, NVH"
+          }
+        },
+        {
+          "image_id": "IMG-S06-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S06-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "saliency control telemetry + demag warning channel"
+          }
+        }
+      ]
+    },
+    "S07": {
+      "scheme_id": "variable_magnetization_memory_motor",
+      "name_for_root_node": "variable magnetization memory motor",
+      "engineering_dir": "engineering/v2/scheme-07/",
+      "draft_status": "readme_only",
+      "concept_caption": "research-pool concept, not engineering release",
+      "images": [
+        {
+          "image_id": "IMG-S07-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S07-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "magnetization pulse driver block with energy storage bank, isolated gate path, current monitor, and interlock to FOC; mark as research-pool concept"
+          }
+        },
+        {
+          "image_id": "IMG-S07-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S07-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "magnetization state schedule"
+          }
+        },
+        {
+          "image_id": "IMG-S07-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S07-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Magnetization idle\", \"Pre-charge energy bank\", \"Apply magnetization pulse\", \"Apply de-magnetization pulse\", \"Verify flux state\", \"Unknown-state fallback\", \"Lifetime cycle count update\", \"Safe retreat\"",
+            "SCHEME_TRANSITIONS": "\"bank ready\", \"pulse trigger\", \"state observed ok\", \"state unknown\", \"cycle limit reached\", \"safe retreat\""
+          }
+        },
+        {
+          "image_id": "IMG-S07-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S07-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "pulse capacitor bank, bi-directional pulse driver bridge, high-bandwidth pulse current sensing, isolation barrier between pulse stage and traction logic, hardware interlock with traction inverter enable"
+          }
+        },
+        {
+          "image_id": "IMG-S07-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S07-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "rotor cross-section with embedded memory magnets visually distinct from regular PM, magnetization path arrows (dashed) through rotor magnetic circuit, stator winding hint, thermal path callouts indicating temperature drift sensitivity"
+          }
+        },
+        {
+          "image_id": "IMG-S07-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S07-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "variable magnetization memory motor",
+            "SCHEME_BOM_GROUPS": "Pulse power stage, Energy storage, Magnet materials, Flux state observers, Safety isolation"
+          }
+        },
+        {
+          "image_id": "IMG-S07-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S07-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "memory motor magnetization",
+            "SCHEME_TEST_AXES": "Magnetization / demagnetization pulses, State retention, Temperature drift, Unknown-state fallback, Lifetime cycling"
+          }
+        },
+        {
+          "image_id": "IMG-S07-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S07-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "flux state + lifetime cycle counter telemetry, with a service-only gated magnetization session interface"
+          }
+        }
+      ]
+    },
+    "S08": {
+      "scheme_id": "hybrid_excitation",
+      "name_for_root_node": "hybrid excitation motor",
+      "engineering_dir": "engineering/v2/scheme-08/",
+      "draft_status": "readme_only",
+      "images": [
+        {
+          "image_id": "IMG-S08-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S08-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "field excitation DC/DC converter feeding field winding, with field current sense and loss-of-field detector wired into FOC"
+          }
+        },
+        {
+          "image_id": "IMG-S08-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S08-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "field excitation current schedule"
+          }
+        },
+        {
+          "image_id": "IMG-S08-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S08-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Field excitation idle\", \"Field excitation active\", \"Three-variable control (id, iq, if)\", \"Loss-of-field detected\", \"Fallback to PM-only operation\"",
+            "SCHEME_TRANSITIONS": "\"field DC/DC enable\", \"if reference set\", \"optimization step\", \"loss-of-field flag\", \"recover\""
+          }
+        },
+        {
+          "image_id": "IMG-S08-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S08-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "field DC/DC converter, field current sensing, loss-of-field detection, isolation between field and traction loops, over-excitation protection"
+          }
+        },
+        {
+          "image_id": "IMG-S08-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S08-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "field winding placement on rotor or stator, slip-ring or brushless exciter assembly, cooling interface for field winding, insulation barrier, excitation harness routing"
+          }
+        },
+        {
+          "image_id": "IMG-S08-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S08-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "hybrid excitation motor",
+            "SCHEME_BOM_GROUPS": "Field power devices, Field winding, Insulation system, Connectors, Excitation sensors"
+          }
+        },
+        {
+          "image_id": "IMG-S08-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S08-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "hybrid excitation",
+            "SCHEME_TEST_AXES": "Field thermal stress, Loss-of-field, Three-variable optimization, Bench validation"
+          }
+        },
+        {
+          "image_id": "IMG-S08-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S08-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "field current + loss-of-field telemetry"
+          }
+        }
+      ]
+    },
+    "S09": {
+      "scheme_id": "winding_reconfiguration",
+      "name_for_root_node": "winding reconfiguration motor",
+      "engineering_dir": "engineering/v2/scheme-09/",
+      "draft_status": "readme_only",
+      "images": [
+        {
+          "image_id": "IMG-S09-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S09-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "winding-switch matrix block between inverter outputs and motor terminals, with interlock, arc suppression, and state feedback"
+          }
+        },
+        {
+          "image_id": "IMG-S09-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S09-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "winding configuration map"
+          }
+        },
+        {
+          "image_id": "IMG-S09-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S09-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Configuration A\", \"Zero-torque window\", \"Switch in progress\", \"Configuration B\", \"Illegal-state fallback\", \"Circulating-current detected\"",
+            "SCHEME_TRANSITIONS": "\"switch request\", \"zero-torque verified\", \"switch complete\", \"illegal state detected\", \"current re-balanced\", \"arc suppression triggered\""
+          }
+        },
+        {
+          "image_id": "IMG-S09-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S09-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "high-voltage contactor or solid-state switch driver, interlock logic, arc suppression, state feedback to MCU, gate-disable backup path"
+          }
+        },
+        {
+          "image_id": "IMG-S09-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S09-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "motor winding end-turn arrangement, reconfiguration switch placement, insulation barriers, heat-path callouts, harness routing"
+          }
+        },
+        {
+          "image_id": "IMG-S09-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S09-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "winding reconfiguration motor",
+            "SCHEME_BOM_GROUPS": "Switches and drivers, Interlock electronics, Harness and insulation, Sensing for circulating current"
+          }
+        },
+        {
+          "image_id": "IMG-S09-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S09-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "winding reconfiguration",
+            "SCHEME_TEST_AXES": "Switching transient, Circulating current, Arc / insulation, Open / short / stuck fault behavior"
+          }
+        },
+        {
+          "image_id": "IMG-S09-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S09-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "winding configuration + switch state telemetry"
+          }
+        }
+      ]
+    },
+    "S10": {
+      "scheme_id": "multiphase_phase_group_control",
+      "name_for_root_node": "multiphase / phase-group controller",
+      "engineering_dir": "engineering/v2/scheme-10/",
+      "draft_status": "readme_only",
+      "images": [
+        {
+          "image_id": "IMG-S10-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S10-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "multiphase inverter with per-phase-group current sensing feeding a fault torque allocator and harmonic subspace controller"
+          }
+        },
+        {
+          "image_id": "IMG-S10-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S10-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "phase-group allocation table"
+          }
+        },
+        {
+          "image_id": "IMG-S10-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S10-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Healthy multiphase\", \"Single-phase fault\", \"Phase-group fault\", \"Derate via torque allocator\", \"Shut down\"",
+            "SCHEME_TRANSITIONS": "\"phase fault detected\", \"group fault detected\", \"derate request\", \"thermal limit\", \"fault cleared\""
+          }
+        },
+        {
+          "image_id": "IMG-S10-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S10-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "multiphase inverter stage, per-phase-group current sense, isolation barriers, phase-cutoff switches, connector interface"
+          }
+        },
+        {
+          "image_id": "IMG-S10-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S10-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "multiphase motor terminal layout, harness with per-phase routing, phase-group packaging boundary, thermal path per group"
+          }
+        },
+        {
+          "image_id": "IMG-S10-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S10-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "multiphase / phase-group powertrain",
+            "SCHEME_BOM_GROUPS": "Multiphase power modules, Sensing chain, Connectors, Harness, Isolation"
+          }
+        },
+        {
+          "image_id": "IMG-S10-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S10-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "multiphase phase-group control",
+            "SCHEME_TEST_AXES": "Single-phase fault, Phase-group fault, Harmonic subspace, Thermal, NVH"
+          }
+        },
+        {
+          "image_id": "IMG-S10-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S10-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "phase health + harmonic subspace telemetry"
+          }
+        }
+      ]
+    },
+    "S11": {
+      "scheme_id": "thermal_demag_safety_protection",
+      "name_for_root_node": "thermal / demag safety supervisor",
+      "engineering_dir": "engineering/v2/scheme-11/",
+      "draft_status": "drafts_landed",
+      "images": [
+        {
+          "image_id": "IMG-S11-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S11-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "safety supervisor block taking magnet temperature, winding temperature, oil temperature, Vdc, current, and rotor speed, gating torque request and gate-disable"
+          }
+        },
+        {
+          "image_id": "IMG-S11-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S11-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "thermal / demag derate thresholds"
+          }
+        },
+        {
+          "image_id": "IMG-S11-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S11-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Normal\", \"Thermal / demag warning\", \"Active derating\", \"Unknown sensor fallback\", \"Hardware gate-disable\", \"Latched fault\"",
+            "SCHEME_TRANSITIONS": "\"temperature rising\", \"derate trigger\", \"sensor open / short\", \"gate-disable assertion\", \"latch set\", \"latch reset only by service\""
+          }
+        },
+        {
+          "image_id": "IMG-S11-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S11-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "temperature sensor front-ends, fault latch logic, gate-disable hardware path, fault classification readback, isolation"
+          }
+        },
+        {
+          "image_id": "IMG-S11-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S11-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "magnet temperature sensor mount, winding temperature sensor, oil / coolant temperature path, controller heatsink interface, service access"
+          }
+        },
+        {
+          "image_id": "IMG-S11-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S11-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "thermal / demag safety supervisor",
+            "SCHEME_BOM_GROUPS": "Temperature sensors, Safety latch, Gate-disable hardware, Isolation parts, Fault feedback chain"
+          }
+        },
+        {
+          "image_id": "IMG-S11-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S11-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "thermal / demag / safety",
+            "SCHEME_TEST_AXES": "Thermal / demag derate, Sensor open-short, Unknown fallback, Gate-disable assertion, Latch recovery"
+          }
+        },
+        {
+          "image_id": "IMG-S11-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S11-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "safety fault classification + latch state telemetry"
+          }
+        }
+      ]
+    },
+    "S12": {
+      "scheme_id": "weighted_efficiency_pareto_selection",
+      "name_for_root_node": "weighted efficiency Pareto selector",
+      "engineering_dir": "engineering/v2/scheme-12/",
+      "draft_status": "readme_only",
+      "images": [
+        {
+          "image_id": "IMG-S12-T01",
+          "template": "T01_driver",
+          "priority": "P0",
+          "topic": "driver_block",
+          "output_name": "V2-S12-ILL-T01-driver_block-r00.png",
+          "placeholders": {
+            "SCHEME_BLOCK": "pareto scorecard block consuming drive cycle weights, system losses, maturity scores, and risk factors, producing a candidate ranking"
+          }
+        },
+        {
+          "image_id": "IMG-S12-T02",
+          "template": "T02_sequence",
+          "priority": "P2",
+          "topic": "power_on_sequence",
+          "output_name": "V2-S12-ILL-T02-power_on_sequence-r00.png",
+          "placeholders": {
+            "SCHEME_TABLE": "drive cycle weight set"
+          }
+        },
+        {
+          "image_id": "IMG-S12-T03",
+          "template": "T03_state_machine",
+          "priority": "P0",
+          "topic": "state_machine",
+          "output_name": "V2-S12-ILL-T03-state_machine-r00.png",
+          "placeholders": {
+            "SCHEME_STATES": "\"Candidate intake\", \"Drive cycle weighting\", \"System loss aggregation\", \"Maturity + risk scoring\", \"Pareto ranking\", \"Trade-study output\"",
+            "SCHEME_TRANSITIONS": "\"inputs versioned\", \"weights applied\", \"scores computed\", \"pareto sweep\", \"recommendation issued\""
+          }
+        },
+        {
+          "image_id": "IMG-S12-T04",
+          "template": "T04_pcb_concept",
+          "priority": "P1",
+          "topic": "pcb_sheet_concept",
+          "output_name": "V2-S12-ILL-T04-pcb_sheet_concept-r00.png",
+          "placeholders": {
+            "SCHEME_PCB_BLOCKS": "candidate PCB / BOM / EDA index node (no real PCB), audit trail interface, version registry, evidence link checker"
+          }
+        },
+        {
+          "image_id": "IMG-S12-T05",
+          "template": "T05_cad_concept",
+          "priority": "P1",
+          "topic": "cad_packaging_concept",
+          "output_name": "V2-S12-ILL-T05-cad_packaging_concept-r00.png",
+          "placeholders": {
+            "SCHEME_CAD_ELEMENTS": "candidate package index nodes for several topologies, each annotated with mass, packaging size, and cooling boundary boxes"
+          }
+        },
+        {
+          "image_id": "IMG-S12-T06",
+          "template": "T06_bom_tree",
+          "priority": "P2",
+          "topic": "bom_eda_tree",
+          "output_name": "V2-S12-ILL-T06-bom_eda_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "weighted efficiency Pareto",
+            "SCHEME_BOM_GROUPS": "Per-candidate BOM cost, Manufacturing risk, Supply risk, Controller delta cost"
+          }
+        },
+        {
+          "image_id": "IMG-S12-T07",
+          "template": "T07_test_tree",
+          "priority": "P2",
+          "topic": "test_tree",
+          "output_name": "V2-S12-ILL-T07-test_tree-r00.png",
+          "placeholders": {
+            "SCHEME_NAME": "Pareto selection",
+            "SCHEME_TEST_AXES": "Drive cycle audit, System loss audit, Sensitivity sweep, Evidence-path audit"
+          }
+        },
+        {
+          "image_id": "IMG-S12-T08",
+          "template": "T08_protocol",
+          "priority": "P1",
+          "topic": "protocol_link",
+          "output_name": "V2-S12-ILL-T08-protocol_link-r00.png",
+          "placeholders": {
+            "SCHEME_PROTOCOL_BLOCK": "scorecard version + audit telemetry"
+          }
+        }
+      ]
+    }
+  }
+}

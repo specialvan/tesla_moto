@@ -221,7 +221,7 @@ For T04, additionally avoid pretend pin numbers; only show signal name labels.
 
 ## 3. 模板级 r01 提示词重写（直接复用片段）
 
-下方提示词可直接粘贴生图工具（替换 `<...>` 占位符），不再依赖 r00 模板：
+下方提示词在替换 `<...>` 占位符后，必须先脱敏并确认目标生图工具获准接收项目工程信息，才能粘贴到工具中；不再依赖 r00 模板：
 
 ### T01 driver block（r01）
 

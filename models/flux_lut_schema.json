@@ -10,7 +10,8 @@
     "id_axis_a",
     "iq_axis_a",
     "lambda_d_wb",
-    "lambda_q_wb"
+    "lambda_q_wb",
+    "maturity"
   ],
   "properties": {
     "version": {
@@ -78,6 +79,34 @@
         "minItems": 2
       },
       "minItems": 2
+    },
+    "maturity": {
+      "type": "object",
+      "required": [
+        "model_maturity",
+        "physics_model_validated",
+        "engineering_validated",
+        "production_release_allowed",
+        "required_replacement"
+      ],
+      "properties": {
+        "model_maturity": {
+          "const": "synthetic_fixture"
+        },
+        "physics_model_validated": {
+          "const": false
+        },
+        "engineering_validated": {
+          "const": false
+        },
+        "production_release_allowed": {
+          "const": false
+        },
+        "required_replacement": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

@@ -149,6 +149,20 @@ def test_scheme_02_r02_sim_binding_drives_run(tmp_path: Path) -> None:
     )
 
 
+def test_scheme_02_jump_thresholds_are_marked_as_r02_proxy_gates() -> None:
+    binding = _load_binding()
+    threshold_maturity = binding["threshold_maturity"]
+
+    for key in ("mode_transitions.id_jump_a_max", "mode_transitions.iq_jump_a_max"):
+        assert binding["expect"][key] == 60.0
+        assert key in binding["soft_checks"]
+        assert key not in binding["strong_checks"]
+        maturity = threshold_maturity[key]
+        assert maturity["r02_proxy_soft_gate_a"] == 60.0
+        assert maturity["r03_production_target_a"] == 30.0
+        assert maturity["engineering_validated"] is False
+
+
 @pytest.mark.integration
 def test_scheme_02_binding_dvp_mapping_is_documented() -> None:
     """Every S02-DV-xxx ID in the DVP draft must appear in binding dvp_mapping."""

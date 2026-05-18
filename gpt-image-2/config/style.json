@@ -1,0 +1,20 @@
+{
+  "version": "2026-05-18-v0",
+  "positive_style_suffix": "technical engineering schematic, flat infographic style, clean vector look, dark navy background, pale blue node fills, gold and white labels, crisp sans-serif typography, high contrast, orthogonal connectors, professional automotive powertrain documentation aesthetic, single image",
+  "negative_prompt": "photorealistic faces, glamour photography, marketing render, watercolor, cartoon mascots, anime style, low contrast, blurry, motion blur, lens flare, busy decorative background, fake measurement units, hand-drawn sketch noise, chinese calligraphy stroke, emoji, watermark, logo, real manufacturer parts, real component photos",
+  "default_size_by_template": {
+    "T01_driver": "1024x1024",
+    "T02_sequence": "1024x1024",
+    "T03_state_machine": "1024x1024",
+    "T04_pcb_concept": "1024x1024",
+    "T05_cad_concept": "1024x1024",
+    "T06_bom_tree": "1024x1024",
+    "T07_test_tree": "1024x1024",
+    "T08_protocol": "1024x1024"
+  },
+  "notes": [
+    "positive_style_suffix 会自动追加到每个最终 prompt 末尾。",
+    "negative_prompt 仅在端点接受 negative_prompt / response_format 这类扩展字段时使用，否则忽略。",
+    "所有图默认 1024x1024；如需横向 16:9，可在 schemes.json 单条覆盖。"
+  ]
+}

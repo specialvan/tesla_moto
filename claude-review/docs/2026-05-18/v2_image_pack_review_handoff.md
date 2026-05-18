@@ -69,7 +69,7 @@
 
 | 任务 | 推荐执行者 | 工具 |
 |---|---|---|
-| 重生 P0 8 张 + BLOCKER 修补（共 ≥ 10 张） | 用户手动 + `gpt-image-2` CLI | `r01_catalog §2 / §3` prompt 整段粘贴 |
+| 重生 P0 8 张 + BLOCKER 修补（共 ≥ 10 张） | 用户手动 + `gpt-image-2` CLI | `r01_catalog §2 / §3` prompt 脱敏并确认工具获准后粘贴 |
 | 重生 P1 40 张（T02 sequence + T05 CAD 一批） | 用户手动 | 同上 |
 | `gpt-image-2/prompts/schemes.json` 单条尺寸覆盖 | 下一轮代码变更 | `r01_catalog §1.3` |
 | r01 二次评审 | 下一轮 Claude | 比较 r00 vs r01，落到 `claude-review/docs/2026-05-19/...` |

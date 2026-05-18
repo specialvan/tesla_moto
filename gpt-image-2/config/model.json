@@ -1,0 +1,26 @@
+{
+  "base_url": "",
+  "image_path": "/v1/images/generations",
+  "api_key": "",
+  "model": "gpt-image-2",
+  "defaults": {
+    "size": "1024x1024",
+    "n": 1,
+    "response_format": "b64_json"
+  },
+  "fallback_models": [
+    "gpt-image-1",
+    "dall-e-3"
+  ],
+  "request": {
+    "timeout_seconds": 120,
+    "max_retries": 3,
+    "backoff_seconds": [5, 15, 45],
+    "sleep_between_calls_seconds": 4
+  },
+  "notes": [
+    "Do not commit real endpoints or API keys. Set GPT_IMAGE_BASE_URL and GPT_IMAGE_API_KEY in the local shell or use an untracked local config copy.",
+    "If the endpoint does not support response_format, the client retries without that field.",
+    "sleep_between_calls_seconds controls serial pacing."
+  ]
+}

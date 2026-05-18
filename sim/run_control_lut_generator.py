@@ -16,6 +16,7 @@ The generated LUT follows models/control_lut_schema.json and includes:
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -45,6 +46,8 @@ def run(
     temperature_c: float | None = None,
     thermal_model: ThermalModel | None = None,
     demag_limit: DemagLimit | None = None,
+    torque_axis_nm: list[float] | None = None,
+    torque_step_nm: float | None = None,
 ) -> dict[str, Any]:
     """Generate a control LUT from search results.
 
@@ -89,40 +92,47 @@ def run(
             )
         params = apply_temperature(params, temperature_c, thermal_model)
     step_rpm = float(raw_params.get("base_speed_scan_step_rpm", 250.0))
+    speed_axis_rpm = list(speed_grid(params.speed_max_rpm, step_rpm))
+    resolved_torque_axis_nm = _resolve_torque_axis(
+        torque_axis_nm, params.torque_target_nm
+    )
+    resolved_torque_step_nm = _resolve_torque_step(
+        resolved_torque_axis_nm, torque_step_nm
+    )
 
     # Generate control points
     control_points: list[dict[str, Any]] = []
     mode_counts = {"MTPA": 0, "FW": 0, "MTPV": 0, "INFEASIBLE": 0, "IDLE": 0}
 
-    for speed_rpm in speed_grid(params.speed_max_rpm, step_rpm):
+    for speed_rpm in speed_axis_rpm:
         omega_e = mechanical_rpm_to_electrical_rad_per_second(
             speed_rpm, params.pole_pairs
         )
+        for torque_nm in resolved_torque_axis_nm:
+            min_current, infeasibility_reason = _find_min_current_with_optional_safety(
+                params,
+                omega_e,
+                torque_nm,
+                grid,
+                flux_lut=flux_lut,
+                demag_limit=demag_limit,
+            )
 
-        min_current, infeasibility_reason = _find_min_current_with_optional_safety(
-            params,
-            omega_e,
-            params.torque_target_nm,
-            grid,
-            flux_lut=flux_lut,
-            demag_limit=demag_limit,
-        )
+            # Determine control mode for target torque point (min_current)
+            control_mode = _determine_control_mode(
+                speed_rpm, min_current, params.vmax_v, params.imax_a
+            )
+            mode_counts[control_mode] = mode_counts.get(control_mode, 0) + 1
 
-        # Determine control mode for target torque point (min_current)
-        control_mode = _determine_control_mode(
-            speed_rpm, min_current, params.vmax_v, params.imax_a
-        )
-        mode_counts[control_mode] = mode_counts.get(control_mode, 0) + 1
-
-        control_point = _candidate_to_control_point(
-            speed_rpm,
-            params.torque_target_nm,
-            min_current,
-            control_mode,
-            params,
-            infeasibility_reason=infeasibility_reason,
-        )
-        control_points.append(control_point)
+            control_point = _candidate_to_control_point(
+                speed_rpm,
+                torque_nm,
+                min_current,
+                control_mode,
+                params,
+                infeasibility_reason=infeasibility_reason,
+            )
+            control_points.append(control_point)
 
     # Calculate validation metrics
     voltage_margin_warning_threshold = DEFAULT_VOLTAGE_MARGIN_WARNING_V
@@ -187,10 +197,10 @@ def run(
             "temperature_c": params.temperature_c,
         },
         "grid_definition": {
-            "speed_axis_rpm": sorted(set(cp["speed_rpm"] for cp in control_points)),
-            "torque_axis_nm": [params.torque_target_nm],
+            "speed_axis_rpm": speed_axis_rpm,
+            "torque_axis_nm": resolved_torque_axis_nm,
             "speed_step_rpm": step_rpm,
-            "torque_step_nm": None,
+            "torque_step_nm": resolved_torque_step_nm,
             "interpolation_method": "nearest",
             "extrapolation_policy": "clamp",
         },
@@ -201,7 +211,9 @@ def run(
             "mode_continuity_check_passed": _check_mode_continuity(control_points),
             "max_id_slope_per_rpm": _max_id_slope(control_points),
             "max_iq_slope_per_rpm": _max_iq_slope(control_points),
-            "torque_discontinuity_at_transitions_nm": 0.0,
+            "torque_discontinuity_at_transitions_nm": _max_transition_torque_jump(
+                mode_transitions
+            ),
             "voltage_margin_warning_threshold_v": voltage_margin_warning_threshold,
             "low_voltage_margin_points": low_voltage_margin_points,
         },
@@ -213,7 +225,7 @@ def run(
             "notes": [
                 f"Generated from {model_type} search",
                 f"Speed range: 0 to {params.speed_max_rpm} RPM",
-                f"Target torque: {params.torque_target_nm} Nm",
+                f"Torque axis: {resolved_torque_axis_nm[0]} to {resolved_torque_axis_nm[-1]} Nm",
             ],
         },
     }
@@ -228,6 +240,43 @@ def run(
     )
 
     return control_lut
+
+
+def _resolve_torque_axis(
+    torque_axis_nm: list[float] | None, default_torque_nm: float
+) -> list[float]:
+    source_axis = [default_torque_nm] if torque_axis_nm is None else torque_axis_nm
+    resolved = [float(torque_nm) for torque_nm in source_axis]
+    if not resolved:
+        raise ValueError("torque_axis_nm must not be empty")
+    if any(not math.isfinite(torque_nm) for torque_nm in resolved):
+        raise ValueError("torque_axis_nm values must be finite")
+    if any(torque_nm < 0.0 for torque_nm in resolved):
+        raise ValueError("torque_axis_nm values must be non-negative")
+    if any(right <= left for left, right in zip(resolved, resolved[1:])):
+        raise ValueError("torque_axis_nm must be strictly increasing")
+    return resolved
+
+
+def _resolve_torque_step(
+    torque_axis_nm: list[float], explicit_torque_step_nm: float | None
+) -> float | None:
+    if explicit_torque_step_nm is not None:
+        resolved_step = float(explicit_torque_step_nm)
+        if not math.isfinite(resolved_step):
+            raise ValueError("torque_step_nm must be finite")
+        if resolved_step <= 0.0:
+            raise ValueError("torque_step_nm must be positive")
+        return resolved_step
+    if len(torque_axis_nm) < 2:
+        return 0.0
+    first_step = torque_axis_nm[1] - torque_axis_nm[0]
+    if all(
+        abs((right - left) - first_step) < 1e-9
+        for left, right in zip(torque_axis_nm, torque_axis_nm[1:])
+    ):
+        return first_step
+    return None
 
 
 def _determine_control_mode(
@@ -264,6 +313,7 @@ def _candidate_to_control_point(
             "torque_nm": torque_nm,
             "id_a": None,
             "iq_a": None,
+            "actual_torque_nm": None,
             "control_mode": "INFEASIBLE",
             "feasible": False,
             "infeasibility_reason": infeasibility_reason or "search_not_converged",
@@ -282,6 +332,7 @@ def _candidate_to_control_point(
         "torque_nm": torque_nm,
         "id_a": candidate.id_a,
         "iq_a": candidate.iq_a,
+        "actual_torque_nm": candidate.torque_nm,
         "control_mode": control_mode,
         "feasible": candidate.feasible,
         "infeasibility_reason": _candidate_infeasibility_reason(
@@ -391,27 +442,66 @@ def _detect_mode_transitions(
         "current_limit_boundary": [],
     }
 
-    prev_mode = None
-    for cp in control_points:
-        current_mode = cp["control_mode"]
-        if prev_mode is not None and current_mode != prev_mode:
-            transition = {
-                "speed_rpm": cp["speed_rpm"],
-                "torque_nm": cp["torque_nm"],
-                "from_mode": prev_mode,
-                "to_mode": current_mode,
-                "id_jump_a": None,
-                "iq_jump_a": None,
-                "torque_jump_nm": None,
-                "notes": f"Transition from {prev_mode} to {current_mode}",
-            }
-            if prev_mode == "MTPA" and current_mode == "FW":
-                transitions["mtpa_to_fw_boundary"].append(transition)
-            elif prev_mode == "FW" and current_mode == "MTPV":
-                transitions["fw_to_mtpv_boundary"].append(transition)
-        prev_mode = current_mode
+    for torque_slice in _control_points_by_torque(control_points):
+        prev_cp = None
+        for cp in torque_slice:
+            current_mode = cp["control_mode"]
+            if prev_cp is not None and current_mode != prev_cp["control_mode"]:
+                prev_mode = prev_cp["control_mode"]
+                transition = _transition_point(prev_cp, cp, prev_mode, current_mode)
+                if prev_mode == "MTPA" and current_mode == "FW":
+                    transitions["mtpa_to_fw_boundary"].append(transition)
+                elif prev_mode == "FW" and current_mode == "MTPV":
+                    transitions["fw_to_mtpv_boundary"].append(transition)
+            prev_cp = cp
 
     return transitions
+
+
+def _control_points_by_torque(
+    control_points: list[dict[str, Any]]
+) -> list[list[dict[str, Any]]]:
+    torque_values = sorted({float(cp["torque_nm"]) for cp in control_points})
+    return [
+        sorted(
+            [cp for cp in control_points if float(cp["torque_nm"]) == torque_nm],
+            key=lambda cp: float(cp["speed_rpm"]),
+        )
+        for torque_nm in torque_values
+    ]
+
+
+def _transition_point(
+    prev_cp: dict[str, Any],
+    cp: dict[str, Any],
+    prev_mode: str,
+    current_mode: str,
+) -> dict[str, Any]:
+    return {
+        "speed_rpm": cp["speed_rpm"],
+        "torque_nm": cp["torque_nm"],
+        "from_mode": prev_mode,
+        "to_mode": current_mode,
+        "id_jump_a": _abs_delta(prev_cp.get("id_a"), cp.get("id_a")),
+        "iq_jump_a": _abs_delta(prev_cp.get("iq_a"), cp.get("iq_a")),
+        "torque_jump_nm": _abs_delta(
+            _transition_torque_for_jump(prev_cp), _transition_torque_for_jump(cp)
+        ),
+        "notes": f"Transition from {prev_mode} to {current_mode}",
+    }
+
+
+def _transition_torque_for_jump(cp: dict[str, Any]) -> Any:
+    actual_torque = cp.get("actual_torque_nm")
+    if actual_torque is not None:
+        return actual_torque
+    return cp.get("torque_nm")
+
+
+def _abs_delta(left: Any, right: Any) -> float | None:
+    if left is None or right is None:
+        return None
+    return abs(float(right) - float(left))
 
 
 def _add_demag_limit_transition(
@@ -438,6 +528,18 @@ def _add_demag_limit_transition(
             "notes": "Demagnetization limit rejected target operating point",
         }
     )
+
+
+def _max_transition_torque_jump(
+    mode_transitions: dict[str, list[dict[str, Any]]]
+) -> float:
+    max_jump = 0.0
+    for transitions in mode_transitions.values():
+        for transition in transitions:
+            torque_jump = transition.get("torque_jump_nm")
+            if torque_jump is not None:
+                max_jump = max(max_jump, float(torque_jump))
+    return max_jump
 
 
 def _build_feasibility_map(control_points: list[dict[str, Any]]) -> dict[str, Any]:
@@ -469,42 +571,30 @@ def _build_feasibility_map(control_points: list[dict[str, Any]]) -> dict[str, An
 def _check_mode_continuity(control_points: list[dict[str, Any]]) -> bool:
     """Check if mode transitions are continuous (no abrupt jumps)."""
     threshold = 50.0  # A/RPM
-    for i in range(1, len(control_points)):
-        prev = control_points[i - 1]
-        curr = control_points[i]
-        if prev["id_a"] is not None and curr["id_a"] is not None:
-            id_jump = abs(curr["id_a"] - prev["id_a"])
-            speed_jump = curr["speed_rpm"] - prev["speed_rpm"]
-            if speed_jump > 0 and id_jump / speed_jump > threshold:
-                return False
-    return True
+    return _max_id_slope(control_points) <= threshold
 
 
 def _max_id_slope(control_points: list[dict[str, Any]]) -> float:
     """Calculate maximum id slope across control points (A/RPM)."""
-    max_slope = 0.0
-    for i in range(1, len(control_points)):
-        prev = control_points[i - 1]
-        curr = control_points[i]
-        if prev["id_a"] is not None and curr["id_a"] is not None:
-            speed_jump = curr["speed_rpm"] - prev["speed_rpm"]
-            if speed_jump > 0:
-                slope = abs(curr["id_a"] - prev["id_a"]) / speed_jump
-                max_slope = max(max_slope, slope)
-    return max_slope
+    return _max_current_slope(control_points, "id_a")
 
 
 def _max_iq_slope(control_points: list[dict[str, Any]]) -> float:
     """Calculate maximum iq slope across control points (A/RPM)."""
+    return _max_current_slope(control_points, "iq_a")
+
+
+def _max_current_slope(control_points: list[dict[str, Any]], current_key: str) -> float:
     max_slope = 0.0
-    for i in range(1, len(control_points)):
-        prev = control_points[i - 1]
-        curr = control_points[i]
-        if prev["iq_a"] is not None and curr["iq_a"] is not None:
-            speed_jump = curr["speed_rpm"] - prev["speed_rpm"]
-            if speed_jump > 0:
-                slope = abs(curr["iq_a"] - prev["iq_a"]) / speed_jump
-                max_slope = max(max_slope, slope)
+    for torque_slice in _control_points_by_torque(control_points):
+        for i in range(1, len(torque_slice)):
+            prev = torque_slice[i - 1]
+            curr = torque_slice[i]
+            if prev[current_key] is not None and curr[current_key] is not None:
+                speed_jump = curr["speed_rpm"] - prev["speed_rpm"]
+                if speed_jump > 0:
+                    slope = abs(curr[current_key] - prev[current_key]) / speed_jump
+                    max_slope = max(max_slope, slope)
     return max_slope
 
 

@@ -10,7 +10,8 @@
 | 3D/CAD | `cad/V2-S08-CAD-field_winding_package-r00.step` | missing | 绘制励磁绕组、滑环/无刷励磁、冷却、绝缘和封装 CAD |
 | Controller | `controller/V2-S08-CTRL-three_variable_control-r00.drawio` | missing | 绘制 `id/iq/if` 三变量控制和 loss-of-field fallback |
 | BOM/EDA | `bom_eda/V2-S08-BOM-field_excitation_hardware-r00.xlsx` | missing | 列出励磁功率器件、绕组、绝缘、连接器和传感器 |
-| Test/DVP | `test_dvpr/V2-S08-DVP-hybrid_excitation-r00.md` | missing | 定义励磁热、loss-of-field、三变量优化和台架测试 |
+| Test/DVP | `test_dvpr/V2-S08-DVP-hybrid_excitation-r00.md` | draft（research pool） | 已落地励磁热、loss-of-field、三变量优化与台架相关性计划草案 |
+| Parameters/r02 | `parameters/V2-S08-PARAM-acceptance-r02.md`、`parameters/V2-S08-PARAM-sim_binding-r02.json` | r02 接入（research pool） | 励磁占位参数 + 仿真绑定（绑 EXP-007），由 `tests/test_scheme_experiment_acceptance.py` 自动校验 |
 | Simulation | `simulation/V2-S08-SIM-field_excitation_trace-r00.md` | missing | 关联励磁电流、励磁损耗、loss-of-field 和热约束证据 |
 
 ## 现有证据
