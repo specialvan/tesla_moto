@@ -14,16 +14,16 @@
 
 ## 图 1：Field excitation converter PCB
 
-Prompt: Generate a white-background engineering schematic titled “S08 Hybrid Excitation Field Converter PCB”. Include 48V field supply, bidirectional field DC/DC or H-bridge, field winding connector, field current sensing, field voltage sensing, winding temperature input, isolated power, isolated communication, loss-of-field detector, hardware fault latch, traction torque derate request, and S11 safety request. Mark field current range -20A to 30A and loss-of-field detection below 5ms.
+Prompt: Generate a white-background engineering schematic titled “S08 Hybrid Excitation Field Converter PCB”. Include 48V field supply, bidirectional field DC/DC or H-bridge, field winding connector, field current sensing, field voltage sensing, winding temperature input, isolated power, isolated communication, loss-of-field detector, hardware fault latch, traction torque derate request, and S11 safety request. Mark field current range -20A to 30A and loss-of-field detection below 5ms. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 2：Field winding CAD package
 
-Prompt: Generate an isometric CAD cutaway titled “S08 Hybrid Excitation Field Winding Package”. Show field winding, insulation class H layers, rotor/stator magnetic path, optional brushless excitation interface, terminal routing, cooling jacket, temperature sensors, psi_eff flux arrows, and loss-of-field risk callouts. White background, realistic CAD technical drawing style.
+Prompt: Generate an isometric CAD cutaway titled “S08 Hybrid Excitation Field Winding Package”. Show field winding, insulation class H layers, rotor/stator magnetic path, optional brushless excitation interface, terminal routing, cooling jacket, temperature sensors, psi_eff flux arrows, and loss-of-field risk callouts. White background, realistic CAD technical drawing style. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 3：id-iq-if controller
 
-Prompt: Generate a controller block and state diagram titled “S08 Hybrid Excitation id-iq-if Control”. Include torque request, MTPA/FW optimizer, id/iq current loop, field current loop, psi_eff estimator, voltage margin guard, field thermal derate, loss-of-field detector, PM-assist fallback, and S11 safety request. Use red safety fallback arrows and blue normal-control paths.
+Prompt: Generate a controller block and state diagram titled “S08 Hybrid Excitation id-iq-if Control”. Include torque request, MTPA/FW optimizer, id/iq current loop, field current loop, psi_eff estimator, voltage margin guard, field thermal derate, loss-of-field detector, PM-assist fallback, and S11 safety request. Use red safety fallback arrows and blue normal-control paths. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 4：Evidence traceability
 
-Prompt: Generate a traceability flow diagram titled “S08 Evidence Chain: psi_eff Proxy to Field Excitation Gate”. Flow: EXP-007 proxy -> magnetic FEA -> field converter model -> winding thermal model -> HIL loss-of-field fallback -> DVP thermal and bench correlation -> gate review. Include warning callout “psi_eff proxy is not validation”.
+Prompt: Generate a traceability flow diagram titled “S08 Evidence Chain: psi_eff Proxy to Field Excitation Gate”. Flow: EXP-007 proxy -> magnetic FEA -> field converter model -> winding thermal model -> HIL loss-of-field fallback -> DVP thermal and bench correlation -> gate review. Include warning callout “psi_eff proxy is not validation”. Callout: engineering_validated = false; evidence_gap.

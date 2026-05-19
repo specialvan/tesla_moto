@@ -13,16 +13,16 @@
 
 ## 图 1：Candidate evidence index
 
-Prompt: Generate a matrix titled “S12 Candidate Evidence Index”. Rows: S01 to S12. Columns: PCB evidence, CAD evidence, BOM evidence, DVP evidence, S11 safety binding, maturity penalty, recommendation allowed. Mark missing evidence in red, draft evidence in amber, reviewed/released in green. White background, technical audit table.
+Prompt: Generate a matrix titled “S12 Candidate Evidence Index”. Rows: S01 to S12. Columns: PCB evidence, CAD evidence, BOM evidence, DVP evidence, S11 safety binding, maturity penalty, recommendation allowed. Mark missing evidence in red, draft evidence in amber, reviewed evidence in green. White background, technical audit table. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 2：Pareto scorecard decision diagram
 
-Prompt: Generate a decision flow titled “S12 Pareto Scorecard Gate”. Include Drive-cycle Efficiency, Peak Performance, Cost, Maturity Evidence, Safety Gate, Manufacturability, Sensitivity Analysis, Candidate-for-review Output. Use red stop gate, yellow research-only gate, green candidate-for-review gate, English labels.
+Prompt: Generate a decision flow titled “S12 Pareto Scorecard Gate”. Include Drive-cycle Efficiency, Peak Performance, Cost, Maturity Evidence, Safety Gate, Manufacturability, Sensitivity Analysis, Candidate-for-review Output. Use red stop gate, yellow research-only gate, green candidate-for-review gate, English labels. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 3：BOM cost-risk Pareto input
 
-Prompt: Generate a BOM cost-risk table titled “S12 Pareto Cost and Supply Risk Inputs”. Rows: PM mass delta, electrical steel grade delta, inverter component delta, excitation hardware delta, switching hardware delta, multiphase hardware delta, diagnostic safety delta. Columns: cost impact, supply risk, missing evidence penalty, gate status.
+Prompt: Generate a BOM cost-risk table titled “S12 Pareto Cost and Supply Risk Inputs”. Rows: PM mass delta, electrical steel grade delta, inverter component delta, excitation hardware delta, switching hardware delta, multiphase hardware delta, diagnostic safety delta. Columns: cost impact, supply risk, missing evidence penalty, gate status. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 4：Traceability flow
 
-Prompt: Generate a traceability flowchart titled “S12 No Evidence, No Recommendation”. Flow: EXP-010 drive cycle -> candidate evidence index -> BOM cost risk -> CAD package penalty -> S11 safety gate -> sensitivity analysis -> recommendation class. White background, technical report style, explicit callout “proxy ranking is not engineering validation”.
+Prompt: Generate a traceability flowchart titled “S12 No Evidence, No Recommendation”. Flow: EXP-010 drive cycle -> candidate evidence index -> BOM cost risk -> CAD package penalty -> S11 safety gate -> sensitivity analysis -> recommendation class. White background, technical report style, explicit callout “proxy ranking is not engineering validation”. Callout: engineering_validated = false; evidence_gap.

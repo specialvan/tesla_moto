@@ -14,16 +14,16 @@
 
 ## 图 1：Six-phase inverter PCB
 
-Prompt: Generate a white-background engineering schematic titled “S10 Six-Phase Multiphase Inverter PCB”. Include six isolated gate drivers, six phase current sensors, phase voltage sensing, DC-link sensing, dual three-phase connectors, per-phase gate-disable latch, phase-group fault isolation, fuse or solid-state cutoff, PWM sampling windows, alpha-beta and xy harmonic observer signals, shield ground, and S11 safety request. Mark 6 phases, 130A per phase, fault derate below 2ms, 50% derate mode.
+Prompt: Generate a white-background engineering schematic titled “S10 Six-Phase Multiphase Inverter PCB”. Include six isolated gate drivers, six phase current sensors, phase voltage sensing, DC-link sensing, dual three-phase connectors, per-phase gate-disable latch, phase-group fault isolation, fuse or solid-state cutoff, PWM sampling windows, alpha-beta and xy harmonic observer signals, shield ground, and S11 safety request. Mark 6 phases, 130A per phase, fault derate below 2ms, 50% derate mode. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 2：Phase-group inverter CAD package
 
-Prompt: Generate an isometric CAD cutaway titled “S10 Six-Phase Phase-Group Inverter Package”. Show A1/B1/C1/A2/B2/C2 terminals, dual three-phase or six-phase busbar, six phase current sensors, power modules, cooling plate, thermal zones, shielded harness, service labels, phase-order keying, and fault-isolated phase-group boundaries. White background, realistic engineering CAD technical style.
+Prompt: Generate an isometric CAD cutaway titled “S10 Six-Phase Phase-Group Inverter Package”. Show A1/B1/C1/A2/B2/C2 terminals, dual three-phase or six-phase busbar, six phase current sensors, power modules, cooling plate, thermal zones, shielded harness, service labels, phase-order keying, and fault-isolated phase-group boundaries. White background, realistic engineering CAD technical style. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 3：Fault-tolerant torque allocator
 
-Prompt: Generate a controller state-machine and block diagram titled “S10 Six-Phase Fault-Tolerant Torque Allocator”. Include Clarke transform for alpha-beta and xy subspaces, six-phase current feedback, fault phase detector, per-phase isolation, remaining-phase current allocator, torque derate, xy harmonic limiter, thermal balancer, NVH guard, service reset, and S11 safety request. Use red safety paths and blue torque-control paths.
+Prompt: Generate a controller state-machine and block diagram titled “S10 Six-Phase Fault-Tolerant Torque Allocator”. Include Clarke transform for alpha-beta and xy subspaces, six-phase current feedback, fault phase detector, per-phase isolation, remaining-phase current allocator, torque derate, xy harmonic limiter, thermal balancer, NVH guard, service reset, and S11 safety request. Use red safety paths and blue torque-control paths. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 4：Evidence traceability
 
-Prompt: Generate a traceability flow diagram titled “S10 Evidence Chain: Multiphase Proxy to Fault-Tolerant Gate”. Flow: EXP-009 proxy -> six-phase machine model -> fault isolation model -> xy harmonic/NVH model -> thermal balance model -> DVP single-phase and phase-group fault -> gate review. Include warning callout “available-current proxy is not fault-tolerant validation”.
+Prompt: Generate a traceability flow diagram titled “S10 Evidence Chain: Multiphase Proxy to Fault-Tolerant Gate”. Flow: EXP-009 proxy -> six-phase machine model -> fault isolation model -> xy harmonic/NVH model -> thermal balance model -> DVP single-phase and phase-group fault -> gate review. Include warning callout “available-current proxy is not fault-tolerant validation”. Callout: engineering_validated = false; evidence_gap.

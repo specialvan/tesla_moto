@@ -13,16 +13,16 @@
 
 ## 图 1：Gate/PWM/EMC PCB 页
 
-Prompt: Generate a clean white-background engineering schematic titled “S03 SVPWM Overmodulation Gate/PWM/EMC Interface”. Include isolated gate drivers, UVLO, DESAT, Miller clamp, three-phase current sensing, DC-link voltage sensing, PWM sampling window, EMI filter, shield ground, gate-disable fault latch, and S11 safety request. Use readable English labels, thin CAD-like lines, blue signal paths, red hardware shutdown path, and amber EMC risk callouts.
+Prompt: Generate a clean white-background engineering schematic titled “S03 SVPWM Overmodulation Gate/PWM/EMC Interface”. Include isolated gate drivers, UVLO, DESAT, Miller clamp, three-phase current sensing, DC-link voltage sensing, PWM sampling window, EMI filter, shield ground, gate-disable fault latch, and S11 safety request. Use readable English labels, thin CAD-like lines, blue signal paths, red hardware shutdown path, and amber EMC risk callouts. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 2：Inverter power stage CAD 剖视
 
-Prompt: Generate an isometric CAD cutaway engineering drawing titled “S03 Overmodulation Inverter Power Stage Package”. Show DC-link capacitor bank, laminated busbar, three-phase power module, gate-driver PCB, cooling plate, HV/LV separation, EMI shield, phase-output current sensors, thermal path arrows, and stray inductance loop annotation. White background, realistic engineering CAD style, no photorealistic marketing render.
+Prompt: Generate an isometric CAD cutaway engineering drawing titled “S03 Overmodulation Inverter Power Stage Package”. Show DC-link capacitor bank, laminated busbar, three-phase power module, gate-driver PCB, cooling plate, HV/LV separation, EMI shield, phase-output current sensors, thermal path arrows, and stray inductance loop annotation. White background, realistic engineering CAD style, no photorealistic marketing render. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 3：Overmodulation guarded state machine
 
-Prompt: Generate a controller state-machine diagram titled “S03 Guarded Overmodulation State Machine”. Nodes: Linear SVPWM, Overmodulation-1, Overmodulation-2, Six-step Guarded, Fallback Linear, Fault Shutdown. Transitions labeled by k_mod, voltage margin, THD estimate, NVH/EMC guard, inverter temperature, sampling valid, gate-disable request. Use red safety fallback arrows and blue normal-control arrows.
+Prompt: Generate a controller state-machine diagram titled “S03 Guarded Overmodulation State Machine”. Nodes: Linear SVPWM, Overmodulation-1, Overmodulation-2, Six-step Guarded, Fallback Linear, Fault Shutdown. Transitions labeled by k_mod, voltage margin, THD estimate, NVH/EMC guard, inverter temperature, sampling valid, gate-disable request. Use red safety fallback arrows and blue normal-control arrows. Callout: proxy only; engineering_validated = false; evidence_gap.
 
 ## 图 4：Evidence traceability
 
-Prompt: Generate a traceability flow diagram titled “S03 Evidence Chain: Proxy Simulation to Engineering Gate”. Flow: EXP-005 k_mod sweep -> PWM harmonic model -> inverter loss map -> PCB/CAD thermal path -> THD/EMC/NVH DVP -> gate review. Include warning callout “proxy simulation is not validation”. White background, technical report style.
+Prompt: Generate a traceability flow diagram titled “S03 Evidence Chain: Proxy Simulation to Engineering Gate”. Flow: EXP-005 k_mod sweep -> PWM harmonic model -> inverter loss map -> PCB/CAD thermal path -> THD/EMC/NVH DVP -> gate review. Include warning callout “proxy simulation is not validation”. White background, technical report style. Callout: engineering_validated = false; evidence_gap.
