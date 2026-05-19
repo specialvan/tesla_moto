@@ -76,8 +76,15 @@
 - 真实 endpoint 和 key 不进仓；运行时用 `GPT_IMAGE_BASE_URL`、`GPT_IMAGE_API_KEY` 或本地忽略的 `config/model.local.json`。
 - 外部生图 / 改图要求 `GPT_IMAGE_BASE_URL` 使用 HTTPS；`--dry-run` 不需要凭据。
 - 外部生图强制 `--concurrency 1` 严格串行；`--dry-run` 不需要凭据。
+- r03 prompt maturity guard：`tests/test_r03_prompt_maturity.py`，锚定仓库根目录校验 S01-S12 精确覆盖、每包 4 条 prompt、禁止过度成熟度短语，并要求每条 standalone prompt 显式包含 `proxy`、`engineering_validated = false`、`evidence_gap`。
 
 ## 已验证命令（2026-05-20）
+
+```bash
+python -m pytest tests/test_r03_prompt_maturity.py tests/test_gpt_image_prompt_packs.py
+```
+
+结果：7/7 passed。
 
 ```bash
 python -m pytest /g/tesla_moto/tests/test_gpt_image_prompt_packs.py /g/tesla_moto/tests/test_gpt_image_client_edit.py
@@ -113,4 +120,4 @@ PYTHONPATH=/g/tesla_moto/gpt-image-2 python -m gpt_image2.generate --prompt-pack
 2. 设置 `GPT_IMAGE_BASE_URL` / `GPT_IMAGE_API_KEY` 后，先跑单个 pack 的 `--edit-reference`，确认代理端点支持 `/v1/images/edits` multipart 协议。
 3. 通过后再串行跑 `--prompt-pack-all --force` 或 `--prompt-pack-all --edit-reference-dir ... --force`，逐张回填图档 ID、生成参数、模型版本和人工审查结论。
 4. 对 S01/S02/S04/S11 优先补 bench/FEA/HIL evidence slot，避免图档成为“仅提示词完整”。
-5. 下一轮成熟度审查应检查所有 prompt 是否保留 `engineering_validated = false`、proxy gate、evidence gap 和 S11 安全链路。
+5. 下一轮成熟度审查应继续运行 `tests/test_r03_prompt_maturity.py`，确认所有 standalone prompt 保留 `proxy`、`engineering_validated = false`、`evidence_gap` 和 S11 安全链路。

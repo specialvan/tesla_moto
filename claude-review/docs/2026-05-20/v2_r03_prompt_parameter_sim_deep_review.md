@@ -2,7 +2,7 @@
 
 日期：2026-05-20  
 范围：`engineering/v2/scheme-*/parameters/*`、`engineering/v2/scheme-*/prompts/*r03-production_drawing_pack.md`、`models/scheme_simulation_coverage.json`、`tests/test_scheme_*`  
-结论：**FAIL（先不生图）**。当前 r03 prompt pack 已能全量 dry-run，但多方案的图档提示词明显超出现有 r02 仿真证据与测试合同，若直接生图容易把“工程证据计划图”误读成“已验证工程图”。
+结论：**P0 收敛完成，可继续 dry-run / 小范围人工审查，仍不建议直接全量真实生图**。原始 review 曾判定 FAIL（先不生图），原因是多方案 r03 prompt 超出现有 r02 仿真证据与测试合同；截至本轮修复，P0 prompt wording 已统一补齐 proxy、`engineering_validated = false`、`evidence_gap` standalone callout，并由 pytest guard 防回归。
 
 ## 执行摘要
 
@@ -10,7 +10,8 @@
 - r02 仿真合同明确所有方案 `engineering_validated=false`、`production_drawing_ready=false`、`manufacturing_release_ready=false`。
 - S01/S02/S04/S11 有 P0 LUT acceptance harness，但仍只覆盖 control LUT / demag / feasibility / synthetic LUT smoke 等代理链路。
 - S03/S05/S06/S12 是 numeric proxy；S07/S08/S09/S10 是 research pool proxy / binding smoke。
-- 高风险集中在 S05-S10/S12：prompt 中出现 CAD/FEA、硬件电流/电压/时序、recommendation gate 等强工程语义，但 r02 参数与测试只覆盖代理实验输出结构。
+- 原始高风险集中在 S05-S10/S12：prompt 中出现 CAD/FEA、硬件电流/电压/时序、recommendation gate 等强工程语义，但 r02 参数与测试只覆盖代理实验输出结构。
+- 复核更新：S01-S12 每条 standalone `Prompt:` 已显式包含 `proxy`、`engineering_validated = false`、`evidence_gap`，并由 `tests/test_r03_prompt_maturity.py` 校验 S01-S12 覆盖、禁止过度成熟度短语、每包 4 条 prompt 和单条 prompt 可见 callout。
 
 ## 审查基准
 
@@ -147,11 +148,11 @@
 
 在真实调用图像端点前，建议至少满足：
 
-1. P0 prompt wording 修改完成，避免生成带过度工程成熟度的 PNG。
-2. `gpt-image-2 --prompt-pack-all --dry-run` 重新通过 48/48。
-3. 新增一个轻量 prompt maturity test：扫描 12 个 r03 prompt pack，要求包含 `engineering_validated = false`、`evidence_gap` 或等价边界词。
-4. 若只想低成本试跑，先选 S01/S02/S04/S11 中 1 个方案；不要先跑 S05-S10/S12。
+1. P0 prompt wording 修改完成，避免生成带过度工程成熟度的 PNG。**状态：已完成**，覆盖 S01-S12 每条 standalone prompt。
+2. `gpt-image-2 --prompt-pack-all --dry-run` 重新通过 48/48。**状态：已完成**，`summary total=48 ok=0 skipped=0 error=0 dry=48`。
+3. 新增一个轻量 prompt maturity test：扫描 12 个 r03 prompt pack，要求包含 `engineering_validated = false`、`evidence_gap` 或等价边界词。**状态：已完成并加固**，当前 guard 同时校验 S01-S12 精确覆盖、每包 4 条 prompt、单条 prompt 的 `proxy` / `engineering_validated = false` / `evidence_gap`。
+4. 若只想低成本试跑，先选 S01/S02/S04/S11 中 1 个方案；不要先跑 S05-S10/S12。**状态：仍建议保留**，真实生图会消耗外部 API 成本并上传 prompt / reference image。
 
 ## 结论
 
-当前 r03 prompt pack 适合作为“工程图档意图草案”，不适合直接全量生图归档为生产图纸。下一步应先做 prompt wording 收敛与 prompt-to-binding trace 测试，再进入 smoke 或小范围 S01/S02/S04/S11 出图。
+当前 r03 prompt pack 已从原始 FAIL 收敛为“可 dry-run、可小范围人工审查”的工程图档意图草案，但仍不能归档为生产图纸或工程验证证据。下一步若继续，应先做 S01/S02/S04/S11 单方案低成本 smoke 或人工图审；S05-S10/S12 仍应等真实 CAD/FEA/HIL/bench evidence slot 补齐后再进入大规模出图。
