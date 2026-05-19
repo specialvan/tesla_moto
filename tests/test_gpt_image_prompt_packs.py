@@ -29,7 +29,9 @@ def test_load_s01_r03_prompt_pack_extracts_four_prompts() -> None:
     assert first["prompt"].startswith(
         "Generate a white-background engineering schematic"
     )
-    assert "engineering_validated = false" not in first["prompt"]
+    assert "Global constraints:" in first["prompt"]
+    assert "engineering_validated = false" in first["prompt"]
+    assert "proxy gate only" in first["prompt"]
 
 
 def test_discover_r03_prompt_packs_finds_all_schemes() -> None:

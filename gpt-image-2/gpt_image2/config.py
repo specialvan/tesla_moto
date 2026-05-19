@@ -6,6 +6,7 @@ import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
@@ -69,6 +70,12 @@ class StyleConfig:
     default_size_by_template: dict[str, str]
 
 
+def _validate_base_url(base_url: str, *, require_credentials: bool) -> None:
+    parsed = urlparse(base_url)
+    if require_credentials and parsed.scheme != "https":
+        raise ValueError("GPT_IMAGE_BASE_URL must use https for external image calls")
+
+
 def load_model_config(
     path: Path | None = None, *, require_credentials: bool = True
 ) -> ModelConfig:
@@ -90,6 +97,7 @@ def load_model_config(
         raise ValueError(
             "GPT_IMAGE_BASE_URL or untracked config/model.local.json base_url is required"
         )
+    _validate_base_url(base_url or "http://dry-run.local", require_credentials=require_credentials)
     return ModelConfig(
         base_url=base_url or "http://dry-run.local",
         image_path=data.get("image_path", "/v1/images/generations"),

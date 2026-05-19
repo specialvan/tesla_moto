@@ -50,6 +50,15 @@ def _decode_first_image(payload: dict[str, Any]) -> bytes:
     )
 
 
+def _mime_type_for_image(path: Path) -> str:
+    suffix = path.suffix.lower()
+    if suffix in {".jpg", ".jpeg"}:
+        return "image/jpeg"
+    if suffix == ".webp":
+        return "image/webp"
+    return "image/png"
+
+
 def _build_payload(
     *,
     model: str,
@@ -220,7 +229,13 @@ def edit_image(
         start = time.monotonic()
         try:
             with reference_image_path.open("rb") as image_file:
-                files = {"image": (reference_image_path.name, image_file, "image/png")}
+                files = {
+                    "image": (
+                        reference_image_path.name,
+                        image_file,
+                        _mime_type_for_image(reference_image_path),
+                    )
+                }
                 response = requests.post(
                     config.full_edit_url,
                     headers=headers,

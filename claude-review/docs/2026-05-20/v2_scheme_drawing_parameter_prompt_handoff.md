@@ -68,8 +68,49 @@
 - r03 图档必须呈现三温度链路、硬件 latch、传感器开短路检测、critical gate-disable 和 FMEDA/ASIL evidence gap。
 - 不得把 r02/r03 proxy 画成 ASIL 验证或量产安全件 release。
 
+## gpt-image-2 脚本状态
+
+- r03 prompt pack 解析入口：`gpt-image-2/gpt_image2/prompt_packs.py`。
+- 生图 / dry-run / 改图 CLI：`gpt-image-2/gpt_image2/generate.py`。
+- 普通生图端点：`/v1/images/generations`，改图端点：`/v1/images/edits`，由 `gpt-image-2/config/model.json` 的 `image_path` / `edit_path` 控制。
+- 真实 endpoint 和 key 不进仓；运行时用 `GPT_IMAGE_BASE_URL`、`GPT_IMAGE_API_KEY` 或本地忽略的 `config/model.local.json`。
+- 外部生图 / 改图要求 `GPT_IMAGE_BASE_URL` 使用 HTTPS；`--dry-run` 不需要凭据。
+- 外部生图强制 `--concurrency 1` 严格串行；`--dry-run` 不需要凭据。
+
+## 已验证命令（2026-05-20）
+
+```bash
+python -m pytest /g/tesla_moto/tests/test_gpt_image_prompt_packs.py /g/tesla_moto/tests/test_gpt_image_client_edit.py
+```
+
+结果：6/6 passed。
+
+```bash
+PYTHONPATH=/g/tesla_moto/gpt-image-2 python -m gpt_image2.generate --prompt-pack-all --dry-run --report-json /g/tesla_moto/gpt-image-2/outputs/_dry_run/r03_report_verify.json
+```
+
+结果：12 个 r03 prompt pack × 4 张图 = 48/48 dry-run 通过，报告落在 `gpt-image-2/outputs/_dry_run/r03_report_verify.json`。
+
+## 改图运行方式
+
+单个 r03 pack 参考图改图；注意该模式会把同一张参考图用于该 pack 内 4 张输出，仅适合做风格 / 版式迁移 smoke：
+
+```bash
+PYTHONPATH=/g/tesla_moto/gpt-image-2 python -m gpt_image2.generate --prompt-pack /g/tesla_moto/engineering/v2/scheme-01/prompts/V2-S01-PROMPT-r03-production_drawing_pack.md --edit-reference /g/tesla_moto/gpt-image-2/outputs/S01/V2-S01-ILL-T03-state_machine-r00.png --force
+```
+
+批量改图建议优先使用目录匹配：
+
+```bash
+PYTHONPATH=/g/tesla_moto/gpt-image-2 python -m gpt_image2.generate --prompt-pack-all --edit-reference-dir /g/tesla_moto/gpt-image-2/outputs --force --report-json /g/tesla_moto/gpt-image-2/outputs/r03_edit_report.json
+```
+
+注意：`--edit-reference-dir` 会按 scheme 与 T 编号找参考图，找不到时该条报错，不会静默退回纯文本生图。
+
 ## 后续建议
 
-1. 用 r03 prompt pack 生成首轮图档后，逐张回填图档 ID、生成参数、模型版本和人工审查结论。
-2. 对 S01/S02/S04/S11 优先补 bench/FEA/HIL evidence slot，避免图档成为“仅提示词完整”。
-3. 下一轮成熟度审查应检查所有 prompt 是否保留 `engineering_validated = false`、proxy gate、evidence gap 和 S11 安全链路。
+1. 先用 `--prompt-pack-all --dry-run` 固化 48 张 prompt，再人工抽查 S01/S02/S04/S11 的 evidence gap 和 safety callout 是否仍明确。
+2. 设置 `GPT_IMAGE_BASE_URL` / `GPT_IMAGE_API_KEY` 后，先跑单个 pack 的 `--edit-reference`，确认代理端点支持 `/v1/images/edits` multipart 协议。
+3. 通过后再串行跑 `--prompt-pack-all --force` 或 `--prompt-pack-all --edit-reference-dir ... --force`，逐张回填图档 ID、生成参数、模型版本和人工审查结论。
+4. 对 S01/S02/S04/S11 优先补 bench/FEA/HIL evidence slot，避免图档成为“仅提示词完整”。
+5. 下一轮成熟度审查应检查所有 prompt 是否保留 `engineering_validated = false`、proxy gate、evidence gap 和 S11 安全链路。
