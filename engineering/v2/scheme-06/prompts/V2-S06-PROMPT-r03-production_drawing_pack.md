@@ -7,6 +7,9 @@
 - 不要把低 PM 写成自动低成本，必须显示 demag、torque ripple、thermal、stress 风险。
 - 不要只画转子外观，必须标注 low PM pocket、flux barrier、hairpin slot、cooling path。
 - 不要输出工程推荐，除非图中保留 evidence/maturity gate。
+- 所有图必须可见标注 `engineering_validated = false`、`proxy / estimate only`、`evidence_gap`。
+- CAD/FEA 元素必须标为 FEA evidence target / geometry placeholder，不得画成已完成验证。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Low-PM PMaSynRM topology CAD
 
@@ -14,7 +17,7 @@ Prompt: Generate a technical CAD/FEA drawing titled “S06 High-saliency Low-PM 
 
 ## 图 2：Control map
 
-Prompt: Generate a controller diagram titled “S06 High-saliency Low-PM Control Map”. Include FEA Flux LUT, MTPA, MTPV/high-speed, Demag Guard, Thermal Derating, Drive-cycle Scorecard, Engineering Gate Decision. Use red stop conditions and blue control data flow, white background.
+Prompt: Generate a controller diagram titled “S06 High-saliency Low-PM Control Map”. Include FEA evidence target flux LUT, MTPA, MTPV/high-speed, Demag Guard, Thermal Derating, Drive-cycle Scorecard, Candidate-for-review Gate Decision. Use red stop conditions and blue control data flow, white background.
 
 ## 图 3：BOM cost-risk matrix
 
@@ -22,4 +25,4 @@ Prompt: Generate a BOM and risk matrix titled “S06 Low-PM Topology BOM Risk”
 
 ## 图 4：Evidence traceability
 
-Prompt: Generate a traceability diagram titled “S06 Evidence Chain: Saliency Trend to Engineering Candidate”. Flow: EXP-003 saliency trend -> low-PM CAD topology -> FEA LUT -> MTPA/MTPV control map -> demag/thermal guard -> BOM cost risk -> DVP gate. Include “research rank until CAD/FEA/DVP evidence exists” callout.
+Prompt: Generate a traceability diagram titled “S06 Evidence Chain: Saliency Trend to Candidate-for-Review”. Flow: EXP-003 saliency trend -> low-PM CAD topology -> FEA LUT -> MTPA/MTPV control map -> demag/thermal guard -> BOM cost risk -> DVP gate. Include “research rank until CAD/FEA/DVP evidence exists” callout.

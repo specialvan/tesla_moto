@@ -8,6 +8,9 @@
 - 不要生成虚构品牌、真实供应商 Logo 或不可读小字。
 - 不要把静态 Ke/Kt 代理画成已验证切换安全。
 - 所有图必须保留英文工程标签、illegal-state interlock、arc suppression 和 S11 safety request 标识。
+- 所有图必须可见标注 `engineering_validated = false`、`research pool proxy only`、`evidence_gap`。
+- 800V/300A、switching window、circulating current 和 arc suppression 必须标为 DVP target，不是切换暂态验证结果。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Winding switch matrix schematic
 

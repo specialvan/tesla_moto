@@ -8,6 +8,9 @@
 - 不要生成虚构品牌、真实供应商 Logo 或不可读小字。
 - 不要把三相逆变器重复画成多相系统。
 - 所有图必须保留英文工程标签、phase isolation、xy harmonic observer、thermal balance 和 S11 safety request 标识。
+- 所有图必须可见标注 `engineering_validated = false`、`research pool proxy only`、`evidence_gap`。
+- six-phase hardware、130A/phase、fault derate <2ms 和 xy harmonic observer 必须标为 architecture/DVP target，不是容错验证结果。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Six-phase inverter PCB
 

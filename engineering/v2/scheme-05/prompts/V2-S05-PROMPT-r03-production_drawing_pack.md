@@ -7,6 +7,9 @@
 - 不要只画磁力线概念图，必须有 barrier/bridge/rib/magnet pocket 标注。
 - 不要把 EXP-003 参数趋势画成真实几何验证。
 - 不要省略 stress、demag、iron loss、manufacturing risk。
+- 所有图必须可见标注 `engineering_validated = false`、`proxy / estimate only`、`evidence_gap`。
+- CAD/FEA 元素必须标为 FEA evidence target / geometry placeholder，不得画成已完成验证。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Rotor barrier/bridge CAD+FEA
 
@@ -22,4 +25,4 @@ Prompt: Generate a technical BOM risk matrix titled “S05 Magnetic Stack BOM an
 
 ## 图 4：Evidence traceability
 
-Prompt: Generate a traceability diagram titled “S05 Evidence Chain: Parameter Trend to FEA-backed Candidate”. Flow: EXP-003 parameter trend -> rotor CAD candidates -> FEA flux LUT -> stress FEA -> iron loss -> demag boundary -> control scorecard -> DVP gate. Include callout “no parameter-scaling shortcut”.
+Prompt: Generate a traceability diagram titled “S05 Evidence Chain: Parameter Trend to FEA Evidence Target Candidate-for-Review”. Flow: EXP-003 parameter trend -> rotor CAD candidates -> FEA evidence target flux LUT -> stress FEA -> iron loss -> demag boundary -> control scorecard -> DVP gate. Include callout “no parameter-scaling shortcut”.

@@ -24,4 +24,4 @@ Prompt: Generate a controller state-machine diagram titled “S04 Flux LUT Inter
 
 ## 图 4：Evidence traceability
 
-Prompt: Generate a traceability flow diagram titled “S04 Evidence Chain: Synthetic LUT to FEA-backed Validation”. Flow: flux_lut_sample synthetic fixture -> schema/runtime smoke test -> nonlinear control LUT branch -> FEA geometry source -> >=30x30 id/iq grid -> temperature slices -> bench correlation -> DVP gate. Include warning callout “sample-only LUT is not FEA validation”.
+Prompt: Generate a traceability flow diagram titled “S04 Evidence Chain: Synthetic LUT to FEA-backed Evidence Plan”. Flow: flux_lut_sample synthetic fixture -> schema/runtime smoke test -> nonlinear control LUT branch -> FEA geometry source target -> >=30x30 id/iq grid target -> temperature slices target -> bench correlation plan -> DVP gate plan. Include warning callout “sample-only LUT is not FEA validation; engineering_validated = false; evidence_gap”.

@@ -4,9 +4,12 @@
 
 ## 通用负面约束
 
-- 不要把 research rank 画成 engineering recommendation。
+- 不要把 research rank 画成 engineering release recommendation。
 - 不要隐藏 missing evidence。
 - 不要只画效率曲线，必须显示 PCB/CAD/BOM/DVP/S11 safety 证据。
+- 所有图必须可见标注 `engineering_validated = false`、`proxy ranking only`、`evidence_gap`。
+- recommendation allowed 必须表示 candidate-for-review gate，不是工程推荐或量产 release。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Candidate evidence index
 
@@ -14,7 +17,7 @@ Prompt: Generate a matrix titled “S12 Candidate Evidence Index”. Rows: S01 t
 
 ## 图 2：Pareto scorecard decision diagram
 
-Prompt: Generate a decision flow titled “S12 Pareto Scorecard Gate”. Include Drive-cycle Efficiency, Peak Performance, Cost, Maturity Evidence, Safety Gate, Manufacturability, Sensitivity Analysis, Recommendation Output. Use red stop gate, yellow research-only gate, green engineering candidate gate, English labels.
+Prompt: Generate a decision flow titled “S12 Pareto Scorecard Gate”. Include Drive-cycle Efficiency, Peak Performance, Cost, Maturity Evidence, Safety Gate, Manufacturability, Sensitivity Analysis, Candidate-for-review Output. Use red stop gate, yellow research-only gate, green candidate-for-review gate, English labels.
 
 ## 图 3：BOM cost-risk Pareto input
 

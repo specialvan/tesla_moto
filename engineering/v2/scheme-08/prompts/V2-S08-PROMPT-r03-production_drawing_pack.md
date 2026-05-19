@@ -8,6 +8,9 @@
 - 不要生成虚构品牌、真实供应商 Logo 或不可读小字。
 - 不要把 `psi_eff` 代理仿真画成已验证量产结论。
 - 所有图必须保留英文工程标签、thermal derate、loss-of-field 和 safety request 标识。
+- 所有图必须可见标注 `engineering_validated = false`、`research pool proxy only`、`evidence_gap`。
+- field converter、loss-of-field 和 thermal derate 必须标为 control target / DVP target，不是已验证硬件结果。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Field excitation converter PCB
 

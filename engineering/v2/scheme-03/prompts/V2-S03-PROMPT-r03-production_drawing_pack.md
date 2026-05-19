@@ -8,6 +8,8 @@
 - 不要生成虚构品牌、真实供应商 Logo 或不可读小字。
 - 不要把代理仿真画成已验证量产结论。
 - 所有图必须保留英文工程标签和 gate/status 标识。
+- 所有图必须可见标注 `engineering_validated = false`、`proxy / estimate only`、`evidence_gap`。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Gate/PWM/EMC PCB 页
 

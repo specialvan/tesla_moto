@@ -8,6 +8,9 @@
 - 不要生成虚构品牌、真实供应商 Logo 或不可读小字。
 - 不要把 `psi_f` 代理仿真画成已验证量产结论。
 - 所有图必须保留英文工程标签、状态门槛和 safety interlock 标识。
+- 所有图必须可见标注 `engineering_validated = false`、`research pool proxy only`、`evidence_gap`。
+- 脉冲电流、脉宽、能量和 interlock 延迟必须标为 design target，不是硬件验证结果。
+- PNG/prompt 仅为 concept illustration，不是 production drawing 或 validation evidence。
 
 ## 图 1：Magnetization pulse driver PCB
 
