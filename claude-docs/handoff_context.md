@@ -56,7 +56,8 @@ Claude 主线只允许基于以下来源形成结论：
 2. 把 EXP-006 的 synthetic `lambda_d/lambda_q` LUT 从独立插值与非线性转矩证明推进到 FEA/测量数据回灌，并接入电压约束控制搜索。
 3. 用 Pyleecan/FEMM/SyR-e 或等效 FEA 数据替换 EXP-003 的独立缩放代理。
 4. 引入铁耗、逆变器损耗、热模型和工况加权 Pareto 评分。
-5. 仅在仿真收益明确且安全边界充分后，再进入低压台架验证。
+5. 按 `claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.md` 暂存结论，新增两挡电驱、绕组重构、小范围混合励磁和可变磁化的统一总损耗 scorecard。
+6. 仅在仿真收益明确且安全边界充分后，再进入低压台架验证。
 
 ## 6. 接手时优先检查
 

@@ -43,6 +43,7 @@
 | EXP-008 切换暂态 | `passed_numeric_simulation`（参数缩放） | 增加接触器电弧、循环电流、并联支路热分担 |
 | EXP-009 故障暂态 | `passed_numeric_simulation`（聚合电流降额） | 增加谐波子空间、零序偏移、相级热 RC 故障暂态 |
 | EXP-010 工况评分 | `passed_numeric_simulation`（铜耗+可达性） | 用实测 drive cycle、增加铁耗 / 机械损耗 / 逆变器损耗 |
+| 高速反电动势待定方案 | `pending_deep_dive` | 参考 `claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.md`，用统一总损耗 scorecard 比较两挡、绕组重构、小范围混合励磁和可变磁化 |
 
 ## 5. 接手时优先检查
 

@@ -34,6 +34,7 @@
 | `docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的 HTML 阅读版 |
 | `docs/2026-05-18/v2_image_pack_r00_deep_review.md` | 12 方案 × 8 模板 = 96 张 r00 生图的深度评审、共性问题与 r01 推进决策 |
 | `docs/2026-05-18/v2_image_pack_r00_deep_review.html` | r00 生图深度评审的 HTML 阅读版 |
+| `docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.md` | 高速反电动势、物理换挡、绕组重构、混合励磁边界的待定方案深度暂存 |
 | `../engineering/v2/README.md` | V2 12 个方案图纸包仓库落点和 README 审计索引 |
 
 ## 3. 当前核验结论
