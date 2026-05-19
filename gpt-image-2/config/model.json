@@ -1,6 +1,7 @@
 {
   "base_url": "",
   "image_path": "/v1/images/generations",
+  "edit_path": "/v1/images/edits",
   "api_key": "",
   "model": "gpt-image-2",
   "defaults": {

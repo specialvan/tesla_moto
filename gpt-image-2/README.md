@@ -101,7 +101,43 @@ python -m gpt_image2.generate --all --priority P0
 python -m gpt_image2.generate --image-id IMG-S01-T03 --dry-run
 ```
 
-会把最终展开后的 prompt 打到 stdout 并写 `outputs/_dry_run/<image_id>.prompt.txt`；如需复制到 Web 端工具，必须先脱敏并确认该工具获准接收项目工程信息。
+会把最终展开后的 prompt 写到 `outputs/_dry_run/<image_id>.prompt.txt`；如需复制到 Web 端工具，必须先脱敏并确认该工具获准接收项目工程信息。
+
+### 2.7 r03 production prompt pack 生图
+
+按单个 r03 prompt pack 干跑：
+
+```powershell
+$env:PYTHONPATH = 'gpt-image-2'
+python -m gpt_image2.generate --prompt-pack engineering/v2/scheme-01/prompts/V2-S01-PROMPT-r03-production_drawing_pack.md --dry-run --output-dir gpt-image-2/outputs/_dry_run/r03_s01
+```
+
+按全部 12 个 r03 prompt pack 干跑并输出报告：
+
+```powershell
+$env:PYTHONPATH = 'gpt-image-2'
+python -m gpt_image2.generate --prompt-pack-all --dry-run --report-json gpt-image-2/outputs/_dry_run/r03_report.json
+```
+
+确认无误后串行烧 API：
+
+```powershell
+$env:PYTHONPATH = 'gpt-image-2'
+python -m gpt_image2.generate --prompt-pack-all --force
+```
+
+默认输出到 `outputs/SXX/r03/`，每个 r03 pack 产出 4 张图。
+
+### 2.8 参考图改图
+
+使用单张参考图走 `/v1/images/edits`：
+
+```powershell
+$env:PYTHONPATH = 'gpt-image-2'
+python -m gpt_image2.generate --prompt-pack engineering/v2/scheme-01/prompts/V2-S01-PROMPT-r03-production_drawing_pack.md --edit-reference gpt-image-2/outputs/S01/V2-S01-ILL-T03-state_machine-r00.png --force
+```
+
+批量改图可用 `--edit-reference-dir <目录>`，脚本会按输出名查找参考图；找不到参考图时该条会报错，不会静默退化为文本生图。改图仍是 concept/proxy 图档，不代表 EDA / CAD / FEA / ASIL 验证通过。
 
 ## 3. 断点续传
 

@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Iterable
 
-from .client import GenerationError, GenerationResult, generate_image
+from .client import GenerationError, GenerationResult, edit_image, generate_image
 from .config import (
     OUTPUTS_DIR,
     ModelConfig,
@@ -23,6 +23,7 @@ from .config import (
     load_style_config,
     load_templates,
 )
+from .prompt_packs import discover_r03_prompt_packs, load_prompt_pack
 from .render import render_prompt, resolve_size
 
 
@@ -47,6 +48,7 @@ def _write_prompt_sidecar(
     positive_prompt: str,
     negative_prompt: str | None,
     result: GenerationResult | None,
+    reference_image: Path | None = None,
     notes: str = "",
 ) -> None:
     sidecar = output_path.with_name(output_path.stem + "-prompt.txt")
@@ -56,7 +58,7 @@ def _write_prompt_sidecar(
     lines.append(f"[model]    {model}")
     lines.append(f"[size]     {size}")
     lines.append(f"[mode]     {mode}")
-    lines.append("[reference image] none")
+    lines.append(f"[reference image] {reference_image if reference_image else 'none'}")
     lines.append("[positive prompt]")
     lines.append(positive_prompt)
     lines.append("[negative prompt]")
@@ -95,7 +97,9 @@ def _select_images_for_all(
 ) -> list[tuple[str, dict[str, Any]]]:
     result: list[tuple[str, dict[str, Any]]] = []
     for scheme_key in sorted(schemes.keys()):
-        result.extend(_select_images_for_scheme(scheme_key, schemes, priorities=priorities))
+        result.extend(
+            _select_images_for_scheme(scheme_key, schemes, priorities=priorities)
+        )
     return result
 
 
@@ -105,9 +109,71 @@ def _resolve_output_path(
     *,
     output_dir: Path | None,
 ) -> Path:
-    base = output_dir or (OUTPUTS_DIR / scheme_key)
+    revision = image_entry.get("revision")
+    if output_dir is not None:
+        base = output_dir
+    elif revision:
+        base = OUTPUTS_DIR / scheme_key / revision
+    else:
+        base = OUTPUTS_DIR / scheme_key
     base.mkdir(parents=True, exist_ok=True)
     return base / image_entry["output_name"]
+
+
+def _render_entry_prompt(
+    image_entry: dict[str, Any],
+    *,
+    templates: dict[str, Any],
+    style_config: StyleConfig,
+) -> str:
+    if image_entry.get("template") == "PROMPT_PACK":
+        return f"{image_entry['prompt'].strip()} {style_config.positive_style_suffix.strip()}".strip()
+    return render_prompt(image_entry, templates=templates, style=style_config)
+
+
+def _validate_reference_image(path: Path) -> Path:
+    if path.is_symlink():
+        raise ValueError(f"reference image must not be a symlink: {path}")
+    resolved = path.resolve()
+    if not resolved.exists() or not resolved.is_file():
+        raise ValueError(f"reference image is not a file: {path}")
+    if resolved.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp"}:
+        raise ValueError(f"reference image must be png/jpg/webp: {path}")
+    if resolved.stat().st_size > 25 * 1024 * 1024:
+        raise ValueError(f"reference image is larger than 25 MB: {path}")
+    return resolved
+
+
+def _resolve_reference_image(
+    scheme_key: str,
+    image_entry: dict[str, Any],
+    *,
+    reference_image: Path | None,
+    reference_dir: Path | None,
+) -> Path | None:
+    if reference_image is not None:
+        return _validate_reference_image(reference_image)
+    if reference_dir is None:
+        return None
+    output_name = Path(image_entry["output_name"])
+    image_id = image_entry["image_id"]
+    t_match = next((part for part in image_id.split("-") if part.startswith("T")), "")
+    search_roots = [reference_dir, reference_dir / scheme_key]
+    candidates = [root / output_name.name for root in search_roots]
+    if t_match:
+        candidates.extend(
+            candidate
+            for root in search_roots
+            for pattern in (
+                f"V2-{scheme_key}-ILL-{t_match}-*.png",
+                f"*{scheme_key}*{t_match}*.png",
+            )
+            for candidate in root.glob(pattern)
+        )
+    for candidate in candidates:
+        if candidate.exists():
+            return _validate_reference_image(candidate)
+    return None
 
 
 def _generate_one(
@@ -120,6 +186,8 @@ def _generate_one(
     output_dir: Path | None,
     dry_run: bool,
     force: bool,
+    reference_image: Path | None,
+    reference_dir: Path | None,
 ) -> dict[str, Any]:
     image_id = image_entry["image_id"]
     output_path = _resolve_output_path(scheme_key, image_entry, output_dir=output_dir)
@@ -131,11 +199,35 @@ def _generate_one(
             "output_path": str(output_path),
         }
 
-    final_prompt = render_prompt(image_entry, templates=templates, style=style_config)
+    final_prompt = _render_entry_prompt(
+        image_entry, templates=templates, style_config=style_config
+    )
     size = resolve_size(image_entry, style=style_config)
+    try:
+        resolved_reference = _resolve_reference_image(
+            scheme_key,
+            image_entry,
+            reference_image=reference_image,
+            reference_dir=reference_dir,
+        )
+    except ValueError as exc:
+        return {
+            "image_id": image_id,
+            "status": "error",
+            "error": str(exc),
+            "output_path": str(output_path),
+        }
+
+    if reference_dir is not None and resolved_reference is None:
+        return {
+            "image_id": image_id,
+            "status": "error",
+            "error": f"reference image not found in {reference_dir}",
+            "output_path": str(output_path),
+        }
 
     if dry_run:
-        dry_dir = (output_dir or (OUTPUTS_DIR / "_dry_run"))
+        dry_dir = output_dir or (OUTPUTS_DIR / "_dry_run")
         dry_dir.mkdir(parents=True, exist_ok=True)
         target = dry_dir / f"{image_id}.prompt.txt"
         target.write_text(final_prompt + "\n", encoding="utf-8")
@@ -147,21 +239,32 @@ def _generate_one(
         }
 
     try:
-        result = generate_image(
-            config=model_config,
-            prompt=final_prompt,
-            size=size,
-        )
+        if resolved_reference is not None:
+            result = edit_image(
+                config=model_config,
+                prompt=final_prompt,
+                reference_image_path=resolved_reference,
+                size=size,
+            )
+            mode = "改图"
+        else:
+            result = generate_image(
+                config=model_config,
+                prompt=final_prompt,
+                size=size,
+            )
+            mode = "生图"
     except GenerationError as exc:
         _write_prompt_sidecar(
             output_path=output_path,
             image_id=image_id,
             model=model_config.model,
             size=size,
-            mode="生图 (failed)",
+            mode="改图 (failed)" if resolved_reference else "生图 (failed)",
             positive_prompt=final_prompt,
             negative_prompt=style_config.negative_prompt,
             result=None,
+            reference_image=resolved_reference,
             notes=f"FAILED: {exc}",
         )
         return {
@@ -177,10 +280,11 @@ def _generate_one(
         image_id=image_id,
         model=model_config.model,
         size=size,
-        mode="生图",
+        mode=mode,
         positive_prompt=final_prompt,
         negative_prompt=style_config.negative_prompt,
         result=result,
+        reference_image=resolved_reference,
     )
     return {
         "image_id": image_id,
@@ -200,6 +304,8 @@ def _generate_many(
     output_dir: Path | None,
     dry_run: bool,
     force: bool,
+    reference_image: Path | None,
+    reference_dir: Path | None,
     concurrency: int = 1,
 ) -> list[dict[str, Any]]:
     selections = list(selections)
@@ -222,6 +328,8 @@ def _generate_many(
                 output_dir=output_dir,
                 dry_run=dry_run,
                 force=force,
+                reference_image=reference_image,
+                reference_dir=reference_dir,
             )
             reports.append(report)
             print(f"    -> {report['status']}", flush=True)
@@ -249,9 +357,13 @@ def _generate_many(
             output_dir=output_dir,
             dry_run=dry_run,
             force=force,
+            reference_image=reference_image,
+            reference_dir=reference_dir,
         )
         with print_lock:
-            print(f"[{idx}/{total}] {entry['image_id']} -> {report['status']}", flush=True)
+            print(
+                f"[{idx}/{total}] {entry['image_id']} -> {report['status']}", flush=True
+            )
         return report
 
     results: list[dict[str, Any]] = []
@@ -271,7 +383,9 @@ def _do_smoke(model_config: ModelConfig, output_dir: Path | None) -> int:
     base.mkdir(parents=True, exist_ok=True)
     output_path = base / "smoke-r00.png"
     try:
-        result = generate_image(config=model_config, prompt=SMOKE_PROMPT, size="1024x1024")
+        result = generate_image(
+            config=model_config, prompt=SMOKE_PROMPT, size="1024x1024"
+        )
     except GenerationError as exc:
         print(f"smoke FAILED: {exc}", file=sys.stderr)
         return 2
@@ -305,6 +419,10 @@ def build_parser() -> argparse.ArgumentParser:
     group.add_argument("--scheme", help="按方案串行，如 S01")
     group.add_argument("--all", action="store_true", help="按全部 12 方案串行")
     group.add_argument("--smoke", action="store_true", help="端点烟囱测试，仅 1 张图")
+    group.add_argument("--prompt-pack", type=Path, help="按单个 r03 prompt pack 串行")
+    group.add_argument(
+        "--prompt-pack-all", action="store_true", help="按全部 r03 prompt pack 串行"
+    )
     parser.add_argument(
         "--priority",
         action="append",
@@ -312,7 +430,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="筛选优先级，可重复（如 --priority P0 --priority P1）",
     )
     parser.add_argument("--output-dir", type=Path, help="覆盖默认输出目录")
-    parser.add_argument("--dry-run", action="store_true", help="只渲染 prompt，不调用 API")
+    parser.add_argument(
+        "--edit-reference", type=Path, help="使用单张参考图走 images/edits 改图"
+    )
+    parser.add_argument(
+        "--edit-reference-dir", type=Path, help="批量改图时从目录查找参考图"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="只渲染 prompt，不调用 API"
+    )
     parser.add_argument(
         "--force",
         action="store_true",
@@ -337,9 +463,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.concurrency != 1:
-        parser.error("external image generation is approval-gated and must run with --concurrency 1")
+        parser.error(
+            "external image generation is approval-gated and must run with --concurrency 1"
+        )
+    if args.smoke and args.dry_run:
+        parser.error("--smoke cannot be combined with --dry-run")
 
-    model_config = load_model_config()
+    model_config = load_model_config(require_credentials=not args.dry_run)
     style_config = load_style_config()
     templates = load_templates()
     schemes = load_schemes()
@@ -358,6 +488,12 @@ def main(argv: list[str] | None = None) -> int:
         )
     elif args.all:
         selections = _select_images_for_all(schemes, priorities=priorities)
+    elif args.prompt_pack:
+        selections = load_prompt_pack(args.prompt_pack)
+    elif args.prompt_pack_all:
+        selections = []
+        for pack_path in discover_r03_prompt_packs():
+            selections.extend(load_prompt_pack(pack_path))
     else:
         parser.print_help()
         return 1
@@ -370,6 +506,8 @@ def main(argv: list[str] | None = None) -> int:
         output_dir=args.output_dir,
         dry_run=args.dry_run,
         force=args.force,
+        reference_image=args.edit_reference,
+        reference_dir=args.edit_reference_dir,
         concurrency=max(1, args.concurrency),
     )
 

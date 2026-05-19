@@ -18,6 +18,7 @@ OUTPUTS_DIR = PACKAGE_ROOT / "outputs"
 class ModelConfig:
     base_url: str
     image_path: str
+    edit_path: str
     api_key: str
     model: str
     defaults: dict[str, Any]
@@ -27,7 +28,19 @@ class ModelConfig:
     @property
     def full_url(self) -> str:
         base = self.base_url.rstrip("/")
-        path = self.image_path if self.image_path.startswith("/") else "/" + self.image_path
+        path = (
+            self.image_path
+            if self.image_path.startswith("/")
+            else "/" + self.image_path
+        )
+        return base + path
+
+    @property
+    def full_edit_url(self) -> str:
+        base = self.base_url.rstrip("/")
+        path = (
+            self.edit_path if self.edit_path.startswith("/") else "/" + self.edit_path
+        )
         return base + path
 
     @property
@@ -56,23 +69,32 @@ class StyleConfig:
     default_size_by_template: dict[str, str]
 
 
-def load_model_config(path: Path | None = None) -> ModelConfig:
+def load_model_config(
+    path: Path | None = None, *, require_credentials: bool = True
+) -> ModelConfig:
     target = path or (CONFIG_DIR / "model.json")
     data = json.loads(target.read_text(encoding="utf-8"))
     local_path = CONFIG_DIR / "model.local.json"
     local_data = (
-        json.loads(local_path.read_text(encoding="utf-8")) if local_path.exists() else {}
+        json.loads(local_path.read_text(encoding="utf-8"))
+        if local_path.exists()
+        else {}
     )
     api_key = os.environ.get("GPT_IMAGE_API_KEY") or local_data.get("api_key")
     base_url = os.environ.get("GPT_IMAGE_BASE_URL") or local_data.get("base_url")
-    if not api_key:
-        raise ValueError("GPT_IMAGE_API_KEY or untracked config/model.local.json api_key is required")
-    if not base_url:
-        raise ValueError("GPT_IMAGE_BASE_URL or untracked config/model.local.json base_url is required")
+    if require_credentials and not api_key:
+        raise ValueError(
+            "GPT_IMAGE_API_KEY or untracked config/model.local.json api_key is required"
+        )
+    if require_credentials and not base_url:
+        raise ValueError(
+            "GPT_IMAGE_BASE_URL or untracked config/model.local.json base_url is required"
+        )
     return ModelConfig(
-        base_url=base_url,
+        base_url=base_url or "http://dry-run.local",
         image_path=data.get("image_path", "/v1/images/generations"),
-        api_key=api_key,
+        edit_path=data.get("edit_path", "/v1/images/edits"),
+        api_key=api_key or "dry-run",
         model=data["model"],
         defaults=data.get("defaults", {}),
         fallback_models=data.get("fallback_models", []),
