@@ -10,10 +10,12 @@
 | V2 review-pr 工程差距 Wiki | `wiki/v2_review_pr_engineering_prd_wiki.md` | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` |
 | V2 分方案工程落地 Wiki | `wiki/v2_scheme_engineering_playbook_wiki.md` | `claude-docs/snapshots/wiki/v2_scheme_engineering_playbook_wiki.md` |
 | V2 分方案物理工程交付物 Wiki | `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | `claude-docs/snapshots/wiki/v2_scheme_physical_deliverables_matrix_wiki.md` |
+| V2 高速反电动势待定方案 Wiki | `wiki/v2_high_speed_back_emf_pending_scheme_wiki.md` | `claude-docs/snapshots/wiki/v2_high_speed_back_emf_pending_scheme_wiki.md` |
 | HTML 可视化知识库 | `controllable_flux_motor_kb.html` | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` |
 | V2 review-pr 工程差距 HTML | `claude-review/docs/2026-05-15/v2_review_pr_engineering_prd.html` | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` |
 | V2 分方案工程落地 HTML | `claude-review/docs/2026-05-15/v2_scheme_engineering_playbook.html` | `claude-docs/snapshots/html/v2_scheme_engineering_playbook.html` |
 | V2 分方案物理工程交付物 HTML | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | `claude-docs/snapshots/html/v2_scheme_physical_deliverables_matrix.html` |
+| V2 高速反电动势待定方案 HTML | `claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.html` | `claude-docs/snapshots/html/v2_high_speed_back_emf_pending_scheme_deep_dive.html` |
 
 快照用于上下文恢复和证据留痕。活动源发生变更时，应重新复制到 `snapshots/` 并更新 `evidence_manifest.md`。
 
@@ -91,7 +93,17 @@
 - P0 主线优先补传感/故障 PCB 页、控制器状态机和热/退磁 CAD 安装图。
 - P1/P2 路线必须先补硬件拓扑、互锁、FEA/CAD、BOM scorecard 和停止条件，再谈晋级。
 
-## 7. 使用方式
+## 7. V2 高速反电动势待定方案补充
+
+`wiki/v2_high_speed_back_emf_pending_scheme_wiki.md` 和 `claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.html` 用于承载高速反电动势、物理换挡、绕组重构、混合励磁和可变磁化路线的待定方案暂存。
+
+关键结论：
+
+- 高速节能关键不是长期用电流抵消反电动势，而是让动力系统在高速前切换到更合适的低 `Ke/低磁链/低电机转速` 状态。
+- 混合励磁降级为小范围磁链微调、电压边界补偿和温度补偿候选，不能在未算总损耗账前替代 IPMSM 弱磁。
+- 两挡电驱、绕组重构和可变磁化需要进入统一总损耗 scorecard，并持续标注 `engineering_validated=false`。
+
+## 8. 使用方式
 
 1. 面向工程继续开发时，以活动源为准。
 2. 面向上下文交接或审计时，使用 `claude-docs/snapshots/` 中的冻结快照。

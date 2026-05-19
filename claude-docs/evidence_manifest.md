@@ -8,10 +8,12 @@
 | V2 review-pr 工程差距 Wiki | `claude-docs/snapshots/wiki/v2_review_pr_engineering_prd_wiki.md` | 外部资料到真实工程落地差距的知识库证据 |
 | V2 分方案工程落地 Wiki | `claude-docs/snapshots/wiki/v2_scheme_engineering_playbook_wiki.md` | 12 条主线、候选、研究池路线逐条推进的知识库证据 |
 | V2 分方案物理工程交付物 Wiki | `claude-docs/snapshots/wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | 12 条路线 PCB、3D/CAD、控制器、BOM/EDA 与 gate 图纸包要求的知识库证据 |
+| V2 高速反电动势待定方案 Wiki | `claude-docs/snapshots/wiki/v2_high_speed_back_emf_pending_scheme_wiki.md` | 高速反电动势、两挡、绕组重构、混合励磁和可变磁化路线重排的知识库证据 |
 | HTML 知识库 | `claude-docs/snapshots/html/controllable_flux_motor_kb.html` | 可视化知识库和页面化证据 |
 | V2 review-pr 工程差距 HTML | `claude-docs/snapshots/html/v2_review_pr_engineering_prd.html` | V2 PRD 的页面化评审证据 |
 | V2 分方案工程落地 HTML | `claude-docs/snapshots/html/v2_scheme_engineering_playbook.html` | V2 分方案 playbook 的页面化评审证据 |
 | V2 分方案物理工程交付物 HTML | `claude-docs/snapshots/html/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的页面化评审证据 |
+| V2 高速反电动势待定方案 HTML | `claude-docs/snapshots/html/v2_high_speed_back_emf_pending_scheme_deep_dive.html` | 高速反电动势待定方案的页面化评审证据 |
 
 ## 2. 活动证据源
 
@@ -42,6 +44,9 @@
 | V2 自动化 handoff | `claude-review/docs/2026-05-19/v2_automation_handoff.md` | 后续 agent 接续成熟度闭环、证据同步和自动化优化的交接入口 |
 | V2 分方案物理工程交付物 Wiki | `wiki/v2_scheme_physical_deliverables_matrix_wiki.md` | V2 物理工程交付物矩阵的知识库索引活动源 |
 | V2 分方案物理工程交付物 HTML | `claude-review/docs/2026-05-15/v2_scheme_physical_deliverables_matrix.html` | V2 物理工程交付物矩阵的页面化活动源 |
+| V2 高速反电动势待定方案 Wiki | `wiki/v2_high_speed_back_emf_pending_scheme_wiki.md` | 高速反电动势路线重排的知识库索引活动源；保持 `engineering_validated=false` |
+| V2 高速反电动势待定方案 Markdown | `claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.md` | 高速反电动势、两挡、绕组重构、混合励磁和可变磁化路线的待定方案权威源；仅为研究暂存，不代表 FEA、台架或量产工程验证 |
+| V2 高速反电动势待定方案 HTML | `claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.html` | 高速反电动势待定方案的页面化活动源；不作为工程验证证据 |
 | V2 工程图纸包索引 | `engineering/v2/README.md` | 12 个方案 PCB、3D/CAD、控制器、BOM/EDA、DVP&R 仓库落点的 README 审计索引 |
 | S01 控制器草图 | `engineering/v2/scheme-01/controller/V2-S01-CTRL-field_weakening_state_machine-r00.drawio` | 负 d 轴弱磁、`id_min(T,fault)`、降额和故障回退状态机草案 |
 | S02 控制器草图 | `engineering/v2/scheme-02/controller/V2-S02-CTRL-mode_transition_lut-r00.drawio` | MTPA/FW/MTPV 模式切换、LUT CRC 和安全回退状态机草案 |

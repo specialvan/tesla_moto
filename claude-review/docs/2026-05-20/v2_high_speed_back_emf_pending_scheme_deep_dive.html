@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>V2 高速反电动势待定方案深度梳理暂存</title>
+  <style>
+    :root{--bg:#07111f;--panel:#101d33;--text:#e8f1ff;--muted:#9bb0ca;--accent:#7dd3fc;--ok:#22c55e;--warn:#facc15;--risk:#fb7185;--gold:#D8A638;--line:rgba(255,255,255,.13)}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top right,#1e3a5f,var(--bg) 52%);color:var(--text);line-height:1.68}
+    header{padding:48px 6vw 34px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(125,211,252,.14),rgba(216,166,56,.10))}
+    h1{margin:0 0 12px;font-size:clamp(28px,4.4vw,46px);line-height:1.1}
+    h2{margin:24px 0 14px;font-size:24px;color:var(--accent)}
+    h3{margin:16px 0 8px;color:var(--gold)}
+    p{margin:8px 0}.subtitle{max-width:1120px;color:var(--muted);font-size:17px}
+    main{padding:28px 6vw 64px;max-width:1280px;margin:0 auto}
+    nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:28px}
+    nav a{border:1px solid var(--line);background:rgba(16,29,51,.84);border-radius:14px;color:var(--text);text-decoration:none;padding:12px 14px;font-size:14px}
+    nav a:hover{background:rgba(125,211,252,.14)}
+    .card{border:1px solid var(--line);background:rgba(16,29,51,.84);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 16px 42px rgba(0,0,0,.22)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+    .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;color:#06131d;background:var(--accent);font-weight:700}
+    .ok{background:var(--ok)}.warn{background:var(--warn);color:#1a1300}.risk{background:var(--risk);color:#24040b}.gold{background:var(--gold);color:#1a1100}
+    table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;margin:12px 0;font-size:14px}
+    th,td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}th{background:rgba(125,211,252,.12);text-align:left;font-weight:600}tr:nth-child(even)td{background:rgba(255,255,255,.035)}
+    code,pre{color:#c4b5fd;background:rgba(196,181,253,.08);border-radius:6px}code{padding:1px 5px;font-size:13px}pre{padding:12px 14px;overflow:auto}
+    .callout{border-left:5px solid var(--accent);background:rgba(20,36,62,.82);padding:16px 18px;border-radius:14px;margin:12px 0}.callout.warn{border-left-color:var(--warn);background:rgba(60,40,10,.5)}.callout.risk{border-left-color:var(--risk);background:rgba(60,15,25,.5)}
+    ul{padding-left:1.4em}li{margin:4px 0}footer{padding:24px 6vw;color:var(--muted);border-top:1px solid var(--line);font-size:14px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>V2 高速反电动势待定方案深度梳理暂存</h1>
+    <p class="subtitle">沉淀关于 IPMSM 弱磁、混合励磁、两挡电驱、绕组重构、可变磁化与 FE 方程式系统匹配思路的阶段性判断。</p>
+    <p class="subtitle">状态：<code>pending_deep_dive</code> · 日期：2026-05-20 · 权威源：<code>claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.md</code> · 不代表 FEA、台架或量产工程验证。</p>
+  </header>
+  <main>
+    <nav>
+      <a href="#principle">第一性原理</a>
+      <a href="#routes">路线重排</a>
+      <a href="#hybrid">混合励磁边界</a>
+      <a href="#fe">FE 启发</a>
+      <a href="#experiments">后续实验</a>
+      <a href="#limits">限制声明</a>
+    </nav>
+
+    <section id="principle" class="card">
+      <h2>1. 第一性原理判断</h2>
+      <div class="grid">
+        <div class="card"><span class="badge risk">根因</span><h3>高速反电动势</h3><pre>E ≈ Ke × ωmotor
+Vmax ≈ Vdc / sqrt(3)</pre><p>当反电动势接近逆变器可用相电压上限时，系统必须弱磁、降扭、提高母线电压、降低电机转速或降低等效 <code>Ke/ψf</code>。</p></div>
+        <div class="card"><span class="badge warn">矛盾</span><h3>低速高 Kt vs 高速低 Ke</h3><p>高 <code>Ke/Kt</code> 有利于起步和爬坡，但高速反电动势高；低 <code>Ke/Kt</code> 高速压力低，但低速同扭矩需要更高电流。</p></div>
+        <div class="card"><span class="badge gold">结论</span><h3>状态切换优先</h3><p>真正要解决的是低速高 <code>Kt</code> 与高速低 <code>Ke</code> 的物理状态切换，而不是长期用电流抵消永磁磁链。</p></div>
+      </div>
+      <div class="callout warn"><strong>弱磁限制：</strong><code>id &lt; 0</code> 能降低合成 d 轴磁链，但 <code>id</code> 不直接产生有效转矩，会占用电流容量并增加铜耗与逆变器损耗。</div>
+    </section>
+
+    <section id="routes" class="card">
+      <h2>2. 待定路线重排</h2>
+      <table>
+        <tr><th>优先级</th><th>路线</th><th>定位</th><th>关键判断</th><th>主要风险 / 验证点</th></tr>
+        <tr><td>P0</td><td>普通 IPMSM 弱磁</td><td>基线</td><td>产业应用成熟、成本路径相对清晰；但不是高速节能最优解。</td><td>补齐 FEA、台架、热、EMC 和故障安全验证。</td></tr>
+        <tr><td>P1</td><td>高弱磁能力 IPMSM + 高压平台</td><td>近期主线</td><td>通过更高 <code>Vdc</code>、合理 <code>Ld/Lq</code>、低电阻与转子磁路设计后移弱磁边界。</td><td>凸极率、磁钢用量、退磁风险、高速轻载效率岛。</td></tr>
+        <tr><td>P2</td><td>两挡电驱 / 双电机差异化 Ke</td><td>系统级高收益候选</td><td>高速升挡直接降低 <code>ωmotor</code>，比用电流抵消磁链更符合第一性原理。</td><td>变速箱效率损耗、换挡冲击、NVH、可靠性、成本和重量。</td></tr>
+        <tr><td>P3</td><td>绕组重构</td><td>电机本体可变 <code>Ke/Kt</code> 候选</td><td>低速高匝数/串联得到高 <code>Kt</code>，高速低匝数/并联降低 <code>Ke</code>。</td><td>切换瞬态、环流、拉弧、interlock、open/short/stuck fault。</td></tr>
+        <tr><td>P4</td><td>可变磁化 / Memory Motor</td><td>真可变磁链研究路线</td><td>低速高磁链、高速低磁链，理论上能直接改变 <code>ψf</code> 状态。</td><td>磁链状态观测、脉冲能量、高温漂移、不可逆退磁、转矩冲击。</td></tr>
+        <tr><td>P5</td><td>混合励磁</td><td>辅助微调候选</td><td>适合小范围磁链微调，不应默认作为大幅抵消反电动势主方案。</td><td>励磁铜耗、励磁变换器损耗、热管理代价和结构复杂度。</td></tr>
+      </table>
+    </section>
+
+    <section id="hybrid" class="card">
+      <h2>3. 混合励磁边界</h2>
+      <pre>ψeff = ψPM + ψfield(if)
+Ptotal = Pstator_cu + Pfield_cu + Pinverter + Piron + Pthermal_penalty</pre>
+      <div class="callout risk"><strong>禁止误判：</strong>如果混合励磁只是长期用励磁电流反向抵消永磁反电动势，本质上仍是“用电量换电压裕度”。</div>
+      <p>它只有在以下总损耗账成立时才有工程价值：</p>
+      <pre>减少的弱磁铜耗 + 减少的铁耗 + 减少的电压饱和损失
+>
+新增的励磁铜耗 + 励磁变换器损耗 + 热管理代价 + 结构复杂度</pre>
+      <p>本轮将混合励磁降级为小范围磁链微调、电压边界补偿、温度补偿和效率岛微调候选。</p>
+    </section>
+
+    <section id="fe" class="card">
+      <h2>4. FE 方程式赛车启发</h2>
+      <p>公开 FE / Formula Student 电车案例中常见的高速反电动势处理思路不是单点黑科技，而是系统匹配；本项目后续仍需补充来源或仿真证据。</p>
+      <pre>低 Ke 电机 + 高电压电池 + 合理单级减速比 + 轻度弱磁 + 赛道最高速约束</pre>
+      <ul>
+        <li>不应先固定高 <code>Ke</code> 电机，再用控制策略补救高速反电动势。</li>
+        <li>应从目标车速、轮胎半径、减速比、电机最高转速、母线电压反推允许 <code>Ke</code>。</li>
+        <li>弱磁应作为扩速和边界补偿，而不是长期高速节能主手段。</li>
+        <li>赛车可接受短时高热；量产/民用高速巡航必须额外考虑持续电耗、NVH、热寿命和安全冗余。</li>
+      </ul>
+    </section>
+
+    <section id="experiments" class="card">
+      <h2>5. 后续仿真建议</h2>
+      <div class="callout"><strong>统一评分：</strong><code>P_total = P_cu_stator + P_cu_field + P_inverter + P_iron + P_mech + P_switching_penalty + P_thermal_penalty</code></div>
+      <table>
+        <tr><th>实验</th><th>目标</th><th>输出</th></tr>
+        <tr><td>高速弱磁基线</td><td>固定 <code>Ke/Vdc/gear_ratio</code>，扫描 <code>speed × torque</code>。</td><td><code>id/iq/I²R/V_margin</code> 与热/退磁边界。</td></tr>
+        <tr><td>两挡传动代理</td><td>比较单挡与两挡高速轻载、再加速和传动损耗后的总损耗。</td><td>换挡点、弱磁下降量、总损耗差值。</td></tr>
+        <tr><td>绕组重构代理</td><td>评估 <code>turns_ratio/R/Imax/Ke/Kt</code> 切换收益。</td><td>低速扭矩保持、高速弱磁下降和切换惩罚。</td></tr>
+        <tr><td>混合励磁小范围</td><td>限制 10%~20% 磁链调节，验证是否减少深弱磁点。</td><td>励磁损耗与弱磁损耗节省的净值。</td></tr>
+        <tr><td>可变磁化状态</td><td>高/中/低 <code>ψf</code> 档位叠加脉冲能量和状态误判惩罚。</td><td>状态收益、可达性、故障回退指标。</td></tr>
+      </table>
+    </section>
+
+    <section id="limits" class="card">
+      <h2>6. 文档状态与限制</h2>
+      <ul>
+        <li>当前页面是方案重排与研究暂存，不是 FEA、台架或量产验证。</li>
+        <li>任何“可调磁通量”宣传都需拆解为控制弱磁、高弱磁 IPMSM、绕组重构、混合励磁、可变磁化或系统级多挡/双电机。</li>
+        <li>下一轮应把 P2/P3/P5 的代理实验接入覆盖目录或新增 coverage 字段，并保持 <code>engineering_validated=false</code>。</li>
+      </ul>
+    </section>
+  </main>
+  <footer>V2 高速反电动势待定方案 HTML 阅读版 · 完整内容以活动源 Markdown：claude-review/docs/2026-05-20/v2_high_speed_back_emf_pending_scheme_deep_dive.md 为准。</footer>
+</body>
+</html>
