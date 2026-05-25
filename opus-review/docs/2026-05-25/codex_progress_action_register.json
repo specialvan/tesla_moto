@@ -1,0 +1,269 @@
+{
+  "version": "2026-05-25-opus-r01",
+  "review_head": {
+    "claude-mainline": "d7abf6e",
+    "codex-review-line": "6b137bf"
+  },
+  "purpose": "Machine-readable action register for the 2026-05-25 Opus deep review of Codex development progress. Each item must keep its evidence path and severity intact until closed by a follow-up PR.",
+  "severity_legend": {
+    "P0": "must be addressed in the next PR; blocks downstream r02/r03 closure",
+    "P1": "must be addressed within current iteration; affects engineering credibility",
+    "P2": "should be addressed before next milestone; not blocking",
+    "P3": "nice to have; track but do not block"
+  },
+  "supersedes": [],
+  "items": [
+    {
+      "id": "OPUS-2026-05-25-CDR-001",
+      "title": "codex-review-line 与 claude-mainline 分叉未消化",
+      "severity": "P0",
+      "status": "open",
+      "owner_hint": "claude-mainline maintainer",
+      "evidence": [
+        "git log --oneline claude-mainline ^codex-review-line",
+        "git log --oneline codex-review-line ^claude-mainline",
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md"
+      ],
+      "next_action": "执行 branch_integration_strategy.md §3 推荐的单向 cherry-pick + 文件级迁移流程",
+      "related": ["codex CDR-2026-05-15-001"]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-002",
+      "title": "工作树仍有 5 项 untracked + 1 项 modified，测试污染未根治",
+      "severity": "P0",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "git status",
+        "codex-review/docs/scheme_drawing_prompts_r02_simulation_batch/",
+        "codex-review/docs/v2_r02_sim_image_generation_handoff_2026-05-20.md",
+        "codex-docs/wereview.md",
+        "review-pr/",
+        ".claude/worktrees/"
+      ],
+      "next_action": "提交 r02 sim 批包与 handoff；删除/迁出 wereview.md；.gitignore 增加 review-pr/ 与 .claude/worktrees/",
+      "related": ["codex CDR-2026-05-15-002", "codex AMR-001..004"]
+    },
+    {
+      "id": "OPUS-2026-05-25-PYFLUENT-001",
+      "title": "PyFluent 工作流仅在 codex-review-line，未迁到 claude-mainline",
+      "severity": "P0",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/pyfluent_workflow.py (在 codex-review-line)",
+        "tests/test_pyfluent_workflow.py (在 codex-review-line)",
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md §3.1"
+      ],
+      "next_action": "cherry-pick 4e0c489；同步增加 pyproject optional extras、dry-run 测试与 coverage 入口",
+      "related": ["codex CDR-2026-05-15-010"]
+    },
+    {
+      "id": "OPUS-2026-05-25-AMR-001",
+      "title": "run_control_lut_generator 默认写 models/control_lut.json 且 generated_at 不可注入",
+      "severity": "P0",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/run_control_lut_generator.py:215-235",
+        "tests/test_control_lut_generator.py",
+        "codex-review/docs/artifact_mutation_review_2026-05-15.md"
+      ],
+      "next_action": "增加 output_path 必传 + generated_at 注入参数；测试用 tmp_path；CI 增加 dirty check",
+      "related": ["codex AMR-001/002/003"]
+    },
+    {
+      "id": "OPUS-2026-05-25-COMBINED-LOSSES",
+      "title": "sim/iron_loss.py combined_losses 语义错误，仍未修",
+      "severity": "P1",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "codex-review/docs/claude_development_review_2026-05-15.md CDR-003"
+      ],
+      "next_action": "把返回值改为 iron_loss_fraction，或接收 mechanical_power 返回真效率；修测试断言语义",
+      "related": ["codex CDR-2026-05-15-003"]
+    },
+    {
+      "id": "OPUS-2026-05-25-BERTOTTI-FREQ",
+      "title": "Bertotti freq_max_hz 未在 runtime 执行",
+      "severity": "P1",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/iron_loss.py::bertotti_iron_loss_per_phase (CDR-004)",
+        "experiments/exp_011_iron_loss/summary.json"
+      ],
+      "next_action": "增加 freq_hz > coeffs.freq_max_hz 标记；runner summary 输出 out_of_range_speed_points",
+      "related": ["codex CDR-2026-05-15-004"]
+    },
+    {
+      "id": "OPUS-2026-05-25-EXP011-RATIO",
+      "title": "EXP-011 损耗比指标分子分母统计口径不一致",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/run_iron_loss_experiment.py (CDR-005)"
+      ],
+      "next_action": "改为 avg/avg 或输出逐点 ratio 的均值/最大",
+      "related": ["codex CDR-2026-05-15-005"]
+    },
+    {
+      "id": "OPUS-2026-05-25-FLUX-LUT-COHERENCE",
+      "title": "Flux LUT 与 MotorParams 一致性未校验",
+      "severity": "P1",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/search.py nonlinear 分支",
+        "sim/run_control_lut_generator.py:70-83",
+        "models/flux_lut_sample.json",
+        "models/motor_params.json"
+      ],
+      "next_action": "校验 params.pole_pairs == flux_lut.pole_pairs；LUT JSON 增加 motor_id 字段",
+      "related": ["codex CDR-2026-05-15-006"]
+    },
+    {
+      "id": "OPUS-2026-05-25-DOCS-SYNC",
+      "title": "claude-docs/ 与 wiki/HTML 入口未同步到 EXP-011 + r02/r03",
+      "severity": "P1",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "claude-docs/README.md",
+        "claude-docs/handoff_context.md",
+        "wiki/controllable_flux_motor_research_plan.md",
+        "controllable_flux_motor_kb.html"
+      ],
+      "next_action": "一次性 docs sync PR；刷新 snapshots/ 哈希；增加 link-check 脚本",
+      "related": ["codex CDR-2026-05-15-007/008"]
+    },
+    {
+      "id": "OPUS-2026-05-25-AGENT-WORKTREE-ISOLATION",
+      "title": ".claude/worktrees/ 与 14 个 agent worktree 分支应迁出仓库",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "git branch -a (14 个 worktree-agent-* 分支)",
+        ".claude/worktrees/"
+      ],
+      "next_action": ".gitignore 增加 .claude/worktrees/ 与 .claude/cache/；批量清理过期分支",
+      "related": ["codex CDR-2026-05-15-009"]
+    },
+    {
+      "id": "OPUS-2026-05-25-001",
+      "title": "PyFluent BoundaryUpdate setattr 失败信号未写入 manifest",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/pyfluent_workflow.py:155-159"
+      ],
+      "next_action": "在 FluentRunConfig.validate() 增加 boundary key allow-list；失败时把 zone/variable 写入 manifest"
+    },
+    {
+      "id": "OPUS-2026-05-25-002",
+      "title": "PyFluent manifest 未在 finally 写入，失败 run 无 audit 痕迹",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/pyfluent_workflow.py:88-117"
+      ],
+      "next_action": "在 finally 中按 success=false 也写一份 manifest"
+    },
+    {
+      "id": "OPUS-2026-05-25-003",
+      "title": "PyFluent runner 缺少 --dry-run / --no-launch",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/run_pyfluent_workflow.py:50-72"
+      ],
+      "next_action": "增加 --dry-run：只 load_config()，不实例化 PyFluentAdapter"
+    },
+    {
+      "id": "OPUS-2026-05-25-004",
+      "title": "PyFluent manifest 缺少 validation_chain 字段 (cad_source_sha256 / material_card_path / mesh_summary)",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "sim/pyfluent_workflow.py:95-110"
+      ],
+      "next_action": "manifest schema 增加 cad_source_sha256、material_card_path、mesh_summary 字段"
+    },
+    {
+      "id": "OPUS-2026-05-25-005",
+      "title": "feasible_points_min 在 P0 与 smoke 之间没有显式分级",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json:18-26",
+        "models/scheme_simulation_coverage.json"
+      ],
+      "next_action": "在 coverage / sim_binding 增加 gate_class 字段（smoke/proxy/production_target）"
+    },
+    {
+      "id": "OPUS-2026-05-25-006",
+      "title": "sim_binding-r02.json 没有 schema 校验",
+      "severity": "P1",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "engineering/v2/scheme-*/parameters/V2-S*-PARAM-sim_binding-r02.json (12 份)"
+      ],
+      "next_action": "新增 models/sim_binding_schema.json + tests/test_scheme_simulation_coverage.py 校验 12 份 binding"
+    },
+    {
+      "id": "OPUS-2026-05-25-007",
+      "title": "r03 prompt pack figure id 顺序未校验",
+      "severity": "P2",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "tests/test_r03_prompt_maturity.py:62-74"
+      ],
+      "next_action": "增加 figure id 校验，期望 ## 图 1 / 图 2 / 图 3 / 图 4 顺序固定"
+    },
+    {
+      "id": "OPUS-2026-05-25-008",
+      "title": "r02 sim 批包仅覆盖 S02/S04，10 方案缺失或被 r03 隐式替代",
+      "severity": "P1",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "codex-review/docs/scheme_drawing_prompts_r02_simulation_batch/prompt_packs/"
+      ],
+      "next_action": "补齐 S01/S03/S05..S12 r02 sim prompt pack，或在 README 显式声明 r03 全面替代并归档"
+    },
+    {
+      "id": "OPUS-2026-05-25-009",
+      "title": "review-pr/ 目录含外部 HTML，存在被误提交风险",
+      "severity": "P1",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "review-pr/新能源汽车驱动电机系列（）——驱动电机发展趋势（扁线、油冷、多合一）.html",
+        "review-pr/这是奇瑞公司的可变磁通电机，技术思路非常巧妙.html"
+      ],
+      "next_action": ".gitignore 增加 review-pr/；外部资料迁到 claude-docs/external_refs/ 并登记 evidence_manifest"
+    },
+    {
+      "id": "OPUS-2026-05-25-017",
+      "title": "codex-review × claude-review 跨包链接缺少自动校验",
+      "severity": "P3",
+      "status": "open",
+      "owner_hint": "claude-mainline",
+      "evidence": [
+        "codex-review/docs/README.md (引用 ../../claude-review/docs/2026-05-15/...)",
+        "claude-review/README.md (引用 ../engineering/v2/README.md)"
+      ],
+      "next_action": "新增链接体检脚本，grep markdown 中的相对路径并 Path.exists 校验"
+    }
+  ]
+}
