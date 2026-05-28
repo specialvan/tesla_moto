@@ -6,7 +6,7 @@
 
 - 开发上下文 handoff；
 - wiki / HTML 知识库冻结快照；
-- EXP-001 到 EXP-004 与 EXP-006 的仿真实验证据；
+- EXP-001 到 EXP-011 的仿真实验证据；
 - 工程路线、阶段门、报告和覆盖目录的证据索引；
 - 后续 FEA、非线性 LUT、台架验证前的技术边界。
 
@@ -37,9 +37,10 @@
 
 - 主线分支：`claude-mainline`
 - 研发原则：干净室推演，不复制、不猜测闭源厂商实现
-- 当前落地实验：EXP-001、EXP-002、EXP-003、EXP-004、EXP-006（synthetic `lambda_d/lambda_q` LUT 插值与非线性转矩证明）
+- 当前落地实验：EXP-001 到 EXP-011；其中 EXP-011 是 Bertotti 三项简化铁耗扫描，`freq_out_of_range_points` 用于暴露系数有效域外的外推风险。
 - 当前关键结论：低 `ψf` 不能单独带来高速收益，必须与高凸极比、母线电压、电流能力、MTPV 轨迹和安全边界协同设计
-- 当前工程文档：`reports/` 下已有工程落地矩阵、驱动/上电/协议图、BOM/EDA、stage-gate 流程
+- 当前工程文档：`reports/` 下已有工程落地矩阵、驱动/上电/协议图、BOM/EDA、stage-gate 流程；`models/scheme_simulation_coverage.json` 已使用 `simulation_status`、`model_maturity`、`gate_class` 区分 smoke / proxy / research pool。
+- 当前图档提示词口径：12 份 r02 sim_binding 仍是仿真绑定和证据锚点；`codex-review/docs/scheme_drawing_prompts_r02_simulation_batch/README.md` 已声明 r02-sim 局部批包由 12 份 r03 production drawing pack 归档替代，并由 `tests/test_r02_sim_batch_archival.py`、`tests/test_r03_prompt_simulation_anchor.py` 护栏。
 - 当前仿真方案：`toolchain_selection_and_github_references.md` 和 `maxwell_motorcad_simulation_plan.md` 已明确 Motor-CAD + Maxwell 2D/3D 为工程主线，PyMotorCAD/PyAEDT 为自动化入口，PyFluent 仅用于 Fluent 冷却/CFD 支线，Pyleecan/FEMM/SyR-e/Simulink/Python 为开源复核与控制闭环
 
 ## 4. 主线证明了什么
@@ -54,7 +55,7 @@
 
 - 当前参数族排序不是真实电磁几何推荐。
 - EXP-005、EXP-007 到 EXP-010 不属于 Claude 主线已完成工程闭环的正式结论；EXP-006 当前仅完成独立的 synthetic LUT 数值证明，尚未接入共享控制搜索。
-- 非线性 `lambda_d/lambda_q` LUT、铁耗、逆变器损耗、NVH、EMC、机械强度仍未完成。
+- 非线性 `lambda_d/lambda_q` LUT、铁耗、逆变器损耗、NVH、EMC、机械强度仍未完成工程验证；EXP-011 的 Bertotti 铁耗只是 proxy 风险扫描。
 - 任何结果都不能直接用于高压高速实机部署。
 - 工程释放仍需 FEA、HIL/台架、热、绝缘、EMC、功能安全和失效模式验证。
 
@@ -63,5 +64,5 @@
 1. 新增实验必须同步更新 `simulation_traceability.md` 和 `models/scheme_simulation_coverage.json`。
 2. wiki 或 HTML 知识库发生关键变更时，必须重新写入 `snapshots/` 并更新 `evidence_manifest.md`。
 3. 所有工程结论必须标注证据路径，避免只写结论。
-4. `passed_numeric_simulation` 只代表可复现实验，不代表工程验证。
+4. `passed_numeric_simulation` 只代表可复现实验，不代表工程验证；所有 r02/r03 文档继续保持 `engineering_validated=false`。
 5. Claude 主线与 Codex 推演应继续分支隔离，避免把 Codex 扩展实验误写成 Claude 主线结论。

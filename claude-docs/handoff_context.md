@@ -4,7 +4,7 @@
 
 - 主线分支：`claude-mainline`
 - 主要目标：以干净室方式推进可控磁通量电机技术开发，把公开物理模型、仿真闭环、工程路线和证据链沉淀为可继续开发的主线知识库。
-- 当前状态：EXP-001 到 EXP-004 与 EXP-006 是 Claude 主线当前已落地范围；其中 EXP-006 只完成 synthetic `lambda_d/lambda_q` LUT 插值与非线性转矩证明，尚未回灌共享控制搜索。
+- 当前状态：EXP-001 到 EXP-011 是 Claude 主线当前已落地的可重跑数值/代理实验范围；EXP-006 仍是 synthetic `lambda_d/lambda_q` LUT 与受约束搜索，EXP-011 是 Bertotti 三项简化铁耗风险扫描，不能替代材料、FEA、HIL 或台架验证。
 - 本目录目的：让后续 agent / 工程师快速恢复上下文，定位仿真入口、证据路径、工程边界和下一步技术任务。
 
 ## 2. 干净室边界
@@ -34,6 +34,8 @@ Claude 主线只允许基于以下来源形成结论：
 | 参数族协同扫描 | `experiments/exp_003_param_sweep/README.md` |
 | 热/退磁安全边界 | `experiments/exp_004_safety_boundaries/summary.json` |
 | 非线性 `lambda_d/lambda_q` LUT | `experiments/exp_006_nonlinear_flux_lut/summary.json` |
+| 加权效率 Pareto | `experiments/exp_010_weighted_efficiency_pareto/summary.json` |
+| Bertotti 铁耗扫描 | `experiments/exp_011_iron_loss/summary.json` |
 | 工程落地矩阵 | `reports/scheme_engineering_landing_matrix.md` |
 | 驱动、上电时序、协议图 | `reports/scheme_driver_power_protocol_diagrams.md` |
 | BOM / EDA 集成设计 | `reports/scheme_bom_eda_integration_design.md` |
@@ -49,6 +51,15 @@ Claude 主线只允许基于以下来源形成结论：
 | EXP-003 | `psi_f/Ld/Lq/Vdc/Imax` 参数族扫描 | 最优为 `psi1.00_ld0.80_lq1.60_vdc1.15_imax1.15`，低磁链候选必须协同高凸极比和更高 `Vdc/Imax` |
 | EXP-004 | 温度、Vdc 降额、简化退磁边界 | 已建立安全边界数值入口，但需要真实磁钢/FEA 数据替换简化退磁线 |
 | EXP-006 | synthetic `lambda_d/lambda_q` LUT 插值与非线性转矩证明 | 已建立 schema、边界检查、双线性插值和非线性转矩数值入口，但尚未接入电压约束控制搜索 |
+| EXP-010 | 示意工况加权效率 Pareto | 已可重跑候选路线排序，但评分仍是 proxy，不含实测工况、铁耗、机械损耗和逆变器损耗闭环 |
+| EXP-011 | Bertotti 三项简化铁耗扫描 | 已输出 `freq_out_of_range_points` 和有效频率 KPI，用于暴露高速铁耗风险；系数仍是干净室假设 |
+
+## 4.1 r02/r03 成熟度口径
+
+- 12 份 r02 sim_binding 是当前机器可读仿真绑定，字段包括 `simulation_status`、`model_maturity` 和 `gate_class`。
+- r02-sim 局部图档批包仅保留 S02/S04 历史证据，已由 12 份 r03 production drawing pack 归档替代。
+- r03 production drawing pack 继承 `SIM ANCHOR`、pytest gate、`model_maturity`、`next_simulation_step` 与 `engineering_validated=false` 护栏。
+- 相关测试：`tests/test_r02_sim_batch_archival.py`、`tests/test_r03_prompt_simulation_anchor.py`、`tests/test_r03_prompt_maturity.py`。
 
 ## 5. 后续优先级
 
