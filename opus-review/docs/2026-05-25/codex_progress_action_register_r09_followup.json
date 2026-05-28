@@ -1,0 +1,75 @@
+{
+  "version": "2026-05-29-opus-r09-followup",
+  "review_head": {
+    "claude-mainline": "a0cc8b7",
+    "working_tree": "dirty"
+  },
+  "purpose": "Sixth follow-up register after adding a repo-local Markdown link checker and migrating the missing 2026-05-15 Codex review evidence files referenced by the Opus package. This closes the cross-package link-check gap without rewriting prior registers.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_docs_links.py -q",
+      "result": "1 passed in 0.03s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m json.tool codex-review/docs/review_action_register_2026-05-15.json; python -m json.tool codex-review/docs/artifact_mutation_matrix_2026-05-15.json; python -m json.tool codex-review/docs/goal_traceability_checklist_2026-05-15.json",
+      "result": "exit 0",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-25-017"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-25-017",
+      "severity": "P3",
+      "status": "closed",
+      "closure_summary": "Cross-package Markdown links in claude-review, codex-review/docs, opus-review, claude-docs, and codex-docs are now checked by a reusable repo-local script and pytest guard. The first red run exposed that the Opus report linked to a 2026-05-15 Codex review file present only on codex-review-line; the missing CDR/AMR/goal-traceability evidence package was migrated into claude-mainline as local review evidence.",
+      "evidence": [
+        "scripts/docs_link_check.py",
+        "tests/test_docs_links.py",
+        "codex-review/docs/claude_development_review_2026-05-15.md",
+        "codex-review/docs/artifact_mutation_review_2026-05-15.md",
+        "codex-review/docs/goal_traceability_audit_2026-05-15.md",
+        "codex-review/docs/README.md"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-001",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "The missing 2026-05-15 Codex review evidence files are now present locally and PyFluent is already implemented, but claude-mainline is still ahead of origin and the final publish/integration step remains outside this local link-check closure.",
+      "evidence": [
+        "git status --short --branch",
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md",
+        "codex-review/docs/claude_development_review_2026-05-15.md"
+      ],
+      "next_action": "Publish or integrate the content-scoped commits through the branch_integration_strategy.md workflow."
+    },
+    {
+      "id": "OPUS-2026-05-25-008",
+      "severity": "P1",
+      "status": "open",
+      "remaining_gap": "The r02 simulation prompt batch still only covers S02/S04 unless the package is explicitly archived in favor of the complete r03 prompt set.",
+      "evidence": [
+        "codex-review/docs/scheme_drawing_prompts_r02_simulation_batch/README.md",
+        "tests/test_r03_prompt_simulation_anchor.py"
+      ],
+      "next_action": "Either complete S01/S03/S05-S12 r02-sim prompt packs or append a documented r03 supersession/archive decision."
+    },
+    {
+      "id": "OPUS-2026-05-25-DOCS-SYNC",
+      "severity": "P1",
+      "status": "open",
+      "remaining_gap": "The Markdown link guard is in place, but claude-docs, wiki, HTML, and snapshot content still need a content sync to EXP-011 and the r02/r03 maturity boundary.",
+      "evidence": [
+        "claude-docs/README.md",
+        "claude-docs/handoff_context.md",
+        "wiki/controllable_flux_motor_research_plan.md",
+        "controllable_flux_motor_kb.html"
+      ],
+      "next_action": "Synchronize stale docs and snapshots while preserving engineering_validated=false and proxy/synthetic boundaries."
+    }
+  ]
+}
