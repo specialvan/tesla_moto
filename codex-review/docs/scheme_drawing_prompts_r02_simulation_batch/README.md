@@ -4,6 +4,36 @@
 定位：在 r01 图档提示词之上增加“面向下一轮仿真”的语义层。  
 适用范围：12 个 V2 方案的 T01-T08 概念图、PCB/CAD 概念图、验证树、协议链路图。
 
+## 0. 归档状态与 r03 替代关系
+
+```text
+archive_status = archived_by_r03
+superseded_by = engineering/v2/scheme-*/prompts/*r03-production_drawing_pack.md
+retained_scope = S02/S04 r02-sim historical prompt evidence only
+do_not_expand_r02_sim_batch = true
+```
+
+本目录保留为 2026-05-20 首批 S02/S04 r02-sim 试运行证据，不再继续扩展 S01/S03/S05-S12 的 r02-sim 分册。当前主线已经以 r03 production drawing pack 作为 12 个方案的统一图档提示词入口；r03 prompt pack 继承 r02-sim 的 `SIM ANCHOR`、`model_maturity`、`engineering_validated=false`、pytest gate 与 `next_simulation_step` 护栏，并由 `tests/test_r03_prompt_simulation_anchor.py` 和 `tests/test_r03_prompt_maturity.py` 校验。
+
+r03 全量替代入口：
+
+| Scheme | r03 prompt pack |
+|---|---|
+| S01 | `engineering/v2/scheme-01/prompts/V2-S01-PROMPT-r03-production_drawing_pack.md` |
+| S02 | `engineering/v2/scheme-02/prompts/V2-S02-PROMPT-r03-production_drawing_pack.md` |
+| S03 | `engineering/v2/scheme-03/prompts/V2-S03-PROMPT-r03-production_drawing_pack.md` |
+| S04 | `engineering/v2/scheme-04/prompts/V2-S04-PROMPT-r03-production_drawing_pack.md` |
+| S05 | `engineering/v2/scheme-05/prompts/V2-S05-PROMPT-r03-production_drawing_pack.md` |
+| S06 | `engineering/v2/scheme-06/prompts/V2-S06-PROMPT-r03-production_drawing_pack.md` |
+| S07 | `engineering/v2/scheme-07/prompts/V2-S07-PROMPT-r03-production_drawing_pack.md` |
+| S08 | `engineering/v2/scheme-08/prompts/V2-S08-PROMPT-r03-production_drawing_pack.md` |
+| S09 | `engineering/v2/scheme-09/prompts/V2-S09-PROMPT-r03-production_drawing_pack.md` |
+| S10 | `engineering/v2/scheme-10/prompts/V2-S10-PROMPT-r03-production_drawing_pack.md` |
+| S11 | `engineering/v2/scheme-11/prompts/V2-S11-PROMPT-r03-production_drawing_pack.md` |
+| S12 | `engineering/v2/scheme-12/prompts/V2-S12-PROMPT-r03-production_drawing_pack.md` |
+
+边界：r03 替代只表示提示词入口和成熟度护栏已经全量化，不表示任何方案已获得 FEA、台架、HIL 或量产释放验证。S02/S04 r02-sim 分册仍只能作为历史提示词证据和风险口径参考。
+
 ## 1. 为什么需要 r02 simulation-facing prompt
 
 r01 主要解决的是：
@@ -83,4 +113,3 @@ gpt-image-2/outputs/SXX/V2-SXX-ILL-TYY-<template>-r02-sim-prompt.txt
 不要继续追求写实图纸。
 每张图必须暴露 sim_binding、maturity、strong/soft checks、next_simulation_step。
 ```
-
