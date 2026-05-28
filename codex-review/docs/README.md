@@ -25,6 +25,14 @@
 | `scheme_landing_roadmap_2026-05-14.md` | 12 个方案的分层落地路线图、阶段门和下一步工作包 |
 | `scheme_landing_work_packages_2026-05-14.json` | 机器可读的方案落地工作包登记 |
 | `working_tree_delta_note_2026-05-14.md` | 首轮评审落盘后观察到的额外工作树变化补充记录 |
+| `claude_development_review_2026-05-15.md` | Codex 对 Claude 主线开发进度的 10 条 CDR 深度评审，作为 Opus 2026-05-25 复审证据源 |
+| `review_action_register_2026-05-15.json` | 2026-05-15 CDR 机器可读行动登记 |
+| `artifact_mutation_review_2026-05-15.md` | artifact mutation 风险复审，覆盖 control LUT 污染、生成时间与工作树卫生风险 |
+| `artifact_mutation_matrix_2026-05-15.json` | artifact mutation 风险矩阵的机器可读版本 |
+| `goal_traceability_audit_2026-05-15.md` | Codex 对目标链路、证据链与落地缺口的追踪审计 |
+| `goal_traceability_checklist_2026-05-15.json` | goal traceability checklist 的机器可读版本 |
+| `evidence_index_2026-05-15.md` | 2026-05-15 CDR/AMR 评审读取与引用的证据索引 |
+| `git_state_2026-05-15.md` | 2026-05-15 评审时的 git 状态记录 |
 | `claude_image_to_production_deep_review_2026-05-19.md` | Claude 图档生产化深度评审与打回意见，核对生图评审、r01 提示词、r02 参数化和真实图纸缺口 |
 | `image_to_production_action_register_2026-05-19.json` | 图档生产化打回项的机器可读行动登记 |
 | `scheme_drawing_prompts_r02_simulation_batch/` | 面向下一轮仿真的 r02 图档提示词升级包，新增 SIM ANCHOR、maturity、sim_binding、pytest gate 和 next simulation step |

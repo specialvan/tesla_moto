@@ -1,0 +1,97 @@
+{
+  "version": "2026-05-15-v0",
+  "review_package": "codex-review/docs",
+  "objective": "持续深度详细梳理 Claude 开发的内容，包括过程文档、wiki、HTML、Git 历史与相关工程产物，进行深度评审，并将评审报告持续沉淀到新建的工程包中。",
+  "completion_status": "not_complete_ongoing_goal",
+  "deliverables": [
+    {
+      "requirement": "新建工程包",
+      "status": "covered",
+      "evidence": [
+        "codex-review/docs/README.md",
+        "commit 69b40b4"
+      ]
+    },
+    {
+      "requirement": "持续沉淀评审报告",
+      "status": "started",
+      "evidence": [
+        "codex-review/docs/claude_development_review_2026-05-15.md",
+        "codex-review/docs/artifact_mutation_review_2026-05-15.md",
+        "commit 69b40b4",
+        "commit dd47e70"
+      ],
+      "remaining_work": "Continue appending dated reviews for wiki/HTML, reports, branch integration, and automated gates."
+    },
+    {
+      "requirement": "过程文档评审",
+      "status": "partially_covered",
+      "evidence": [
+        "codex-review/docs/evidence_index_2026-05-15.md",
+        "codex-review/docs/claude_development_review_2026-05-15.md"
+      ],
+      "remaining_work": "Perform file-level follow-up after Claude docs are synchronized to EXP-011 and control LUT."
+    },
+    {
+      "requirement": "wiki 评审",
+      "status": "partially_covered",
+      "evidence": [
+        "CDR-2026-05-15-008 in claude_development_review_2026-05-15.md"
+      ],
+      "remaining_work": "Create a dedicated wiki/html sync matrix from active wiki sections to coverage JSON."
+    },
+    {
+      "requirement": "HTML 评审",
+      "status": "partially_covered",
+      "evidence": [
+        "CDR-2026-05-15-008 in claude_development_review_2026-05-15.md"
+      ],
+      "remaining_work": "Parse and compare HTML experiment cards, links, and status copy against EXP-001 through EXP-011 facts."
+    },
+    {
+      "requirement": "Git 历史评审",
+      "status": "covered_first_pass",
+      "evidence": [
+        "codex-review/docs/git_state_2026-05-15.md",
+        "git log --oneline -5",
+        "git diff --stat codex-review-line..claude-mainline"
+      ],
+      "remaining_work": "Re-run after branch integration or push state changes."
+    },
+    {
+      "requirement": "工程产物评审",
+      "status": "partially_covered",
+      "evidence": [
+        "codex-review/docs/claude_development_review_2026-05-15.md",
+        "codex-review/docs/artifact_mutation_review_2026-05-15.md",
+        "codex-review/docs/artifact_mutation_matrix_2026-05-15.json"
+      ],
+      "remaining_work": "Deep-review reports/, BOM/EDA catalogs, driver protocol docs, and stage-gate artifacts."
+    },
+    {
+      "requirement": "风险和行动项登记",
+      "status": "covered_first_pass",
+      "evidence": [
+        "codex-review/docs/review_action_register_2026-05-15.json",
+        "codex-review/docs/artifact_mutation_matrix_2026-05-15.json"
+      ],
+      "remaining_work": "Append new registers or update statuses as follow-up reviews land."
+    },
+    {
+      "requirement": "不要把无关生成物混入评审提交",
+      "status": "covered",
+      "evidence": [
+        "git show --stat 69b40b4",
+        "git show --stat dd47e70",
+        "git status --short --branch"
+      ],
+      "remaining_work": "Keep the 8 summary path diffs isolated until deliberately handled."
+    }
+  ],
+  "next_recommended_reviews": [
+    "wiki_html_sync_review_2026-05-15.md",
+    "reports_engineering_artifacts_review_2026-05-15.md",
+    "branch_integration_decision_review_2026-05-15.md"
+  ],
+  "goal_should_be_marked_complete": false
+}
