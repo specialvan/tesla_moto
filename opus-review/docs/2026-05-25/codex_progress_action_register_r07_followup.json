@@ -1,0 +1,61 @@
+{
+  "version": "2026-05-29-opus-r07-followup",
+  "review_head": {
+    "claude-mainline": "df2ef16",
+    "working_tree": "clean"
+  },
+  "purpose": "Fourth follow-up register after splitting the Opus cleanup work into content-scoped commits and clearing the remaining untracked empty local file. This appends worktree-hygiene closure evidence without rewriting prior registers.",
+  "verification": [
+    {
+      "command": "git status --short --branch",
+      "result": "## claude-mainline...origin/claude-mainline [ahead 36]",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_repository_hygiene.py tests/test_scheme_simulation_coverage.py tests/test_r03_prompt_maturity.py tests/test_r03_prompt_simulation_anchor.py tests/test_control_lut_generator.py tests/test_scheme_02_lut_acceptance.py tests/test_scheme_p0_lut_acceptance.py tests/test_scheme_experiment_acceptance.py tests/test_iron_loss.py tests/test_nonlinear_flux_lut.py tests/test_dashboard_api.py tests/test_frontend_dashboard.py -q",
+      "result": "220 passed in 553.43s",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-25-CDR-002"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-25-CDR-002",
+      "severity": "P0",
+      "status": "closed",
+      "closure_summary": "The intended Opus/Codex cleanup deliverables are split into content-scoped commits, review-pr/ and .claude/worktrees/ are ignored by test-backed hygiene rules, and the remaining empty codex-docs/wereview.md local artifact was removed so git status is clean apart from the branch being ahead of origin.",
+      "evidence": [
+        "git status --short --branch",
+        ".gitignore:18",
+        ".gitignore:19",
+        "tests/test_repository_hygiene.py:6",
+        "git log --oneline -8"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-001",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "The local claude-mainline branch is still ahead of origin and the codex-review-line to claude-mainline integration strategy remains a branch-management step outside local worktree cleanup.",
+      "evidence": [
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md",
+        "git status --short --branch"
+      ],
+      "next_action": "Publish or integrate the staged content-scoped commits through the branch_integration_strategy.md workflow."
+    },
+    {
+      "id": "OPUS-2026-05-25-PYFLUENT-001",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "The PyFluent workflow files are still not present on claude-mainline and need a separate implementation/cherry-pick with dry-run and manifest tests.",
+      "evidence": [
+        "Test-Path sim/pyfluent_workflow.py",
+        "Test-Path sim/run_pyfluent_workflow.py",
+        "Test-Path tests/test_pyfluent_workflow.py"
+      ],
+      "next_action": "Cherry-pick or reimplement PyFluent workflow support in a separate commit series."
+    }
+  ]
+}

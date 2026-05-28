@@ -13,6 +13,7 @@
 | `codex_progress_action_register_r04_followup.json` | R03/R04 整改后的追加 closure/open register；显式 supersedes，不改写旧结论 |
 | `codex_progress_action_register_r05_followup.json` | R04 follow-up 后继续推进的追加 closure/open register；关闭商业措辞、cache path、prompt block anchor |
 | `codex_progress_action_register_r06_followup.json` | R01/R02/R03 继续推进的追加 closure/open register；关闭 control LUT 污染、sim_binding schema/gate class、仓库卫生护栏 |
+| `codex_progress_action_register_r07_followup.json` | 内容分组提交后的追加 closure/open register；关闭工作树卫生项并保留分支集成/PyFluent open 项 |
 | `evidence_index.md` | 本轮评审读取或引用的证据路径索引 |
 | `branch_integration_strategy.md` | `codex-review-line` 与 `claude-mainline` 集成、cherry-pick、回归策略 |
 

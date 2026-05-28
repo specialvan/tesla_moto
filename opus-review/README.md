@@ -33,6 +33,7 @@
 | `docs/2026-05-25/codex_progress_action_register_r04_followup.json` | R03/R04 整改后的追加 closure/open register；显式 supersedes，不改写旧结论 |
 | `docs/2026-05-25/codex_progress_action_register_r05_followup.json` | R04 follow-up 后继续推进的追加 closure/open register；关闭商业措辞、cache path、prompt block anchor |
 | `docs/2026-05-25/codex_progress_action_register_r06_followup.json` | R01/R02/R03 继续推进的追加 closure/open register；关闭 control LUT 污染、sim_binding schema/gate class、仓库卫生护栏 |
+| `docs/2026-05-25/codex_progress_action_register_r07_followup.json` | 内容分组提交后的追加 closure/open register；关闭工作树卫生项并保留分支集成/PyFluent open 项 |
 | `docs/2026-05-25/codex_deliverable_inventory.md` | Codex 当前产物全量清单与跨分支映射 |
 | `docs/2026-05-25/evidence_index.md` | 本轮评审读取/引用的证据路径索引 |
 | `docs/2026-05-25/branch_integration_strategy.md` | `codex-review-line` 与 `claude-mainline` 集成策略 |
