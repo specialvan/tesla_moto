@@ -2,6 +2,19 @@
 
 目标：把 S02 MTPA / FW / MTPV 连续控制从 r02 参数样板升级为可审查的 LUT 发布链、NVM/CRC、模式切换连续性和证据追溯工程图。
 
+## SIM ANCHOR
+
+```text
+scheme_id: mtpa_fw_mtpv_control
+simulation_status: numeric_proxy_passed
+model_maturity: parameterized_linear_model
+sim_binding: engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json
+pytest_gate: tests/test_scheme_02_lut_acceptance.py; tests/test_scheme_p0_lut_acceptance.py
+engineering_validated: false
+next_simulation_step: Replace estimate parameters with FEA / bench; tighten id_jump / iq_jump strong-check thresholds; define DTC enums.
+```
+
+
 ## 通用负面约束
 
 - 不要画营销海报、抽象控制曲线或概念车。
@@ -13,15 +26,20 @@
 ## 图 1：MTPA/FW/MTPV controller IO PCB
 
 Prompt: Generate a white-background engineering schematic titled “S02 MTPA-FW-MTPV Controller IO and LUT Interface”. Include MCU FOC core, NVM A/B banks, LUT CRC checker, ADC current channels, Vdc sensing, resolver/encoder interface, CAN-FD, SPI to NVM, Ethernet XCP calibration, gate-driver interface, gate-disable request, and S11 demag safety input. Mark ADC 12-bit 100 kSPS, CAN-FD 5 Mbit/s, SPI 50 MHz, Ethernet XCP 100 Mbit/s, and CRC-32 IEEE 802.3. Use blue control/data paths, red safety fallback paths, and amber estimate callouts for Rs/Ld/Lq/psi_f. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S02 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_02_lut_acceptance.py; tests/test_scheme_p0_lut_acceptance.py
 
 ## 图 2：Controller packaging and NVM thermal CAD
 
 Prompt: Generate an isometric CAD cutaway titled “S02 LUT Controller Packaging and Thermal Boundary”. Show controller housing, MCU/NVM PCB, gate-driver PCB interface, HV/LV connector separation, calibration connector, thermal pad to housing, EMI partition, harness outlet, and service access boundary. Include callouts for NVM dual-bank update, LUT version label, CRC check on power-up, and no manufacturing release. White background, CAD technical drawing style. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S02 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_02_lut_acceptance.py; tests/test_scheme_p0_lut_acceptance.py
 
 ## 图 3：MTPA-FW-MTPV guarded mode transition
 
 Prompt: Generate a state-machine diagram titled “S02 Guarded MTPA-FW-MTPV Mode Transition”. Nodes: IDLE, MTPA, Field Weakening, MTPV, Infeasible Derate, Fault Fallback. Transitions labeled by voltage margin, torque axis [50,100,150,200] Nm, demagnetization_risk, current_exceeded, voltage_exceeded, LUT CRC fail, and mode reset. Add explicit callout: “r02 id/iq jump soft gate <= 60 A; r03 target <= 30 A”. Use red fallback arrows and blue normal-control arrows. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S02 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_02_lut_acceptance.py; tests/test_scheme_p0_lut_acceptance.py
 
 ## 图 4：Evidence traceability
 
 Prompt: Generate a traceability flow diagram titled “S02 Evidence Chain: r02 LUT Proxy to r03 Control Gate”. Flow: motor_params estimate -> control_lut generator -> torque axis expansion -> mode transition jump check -> feasibility map -> NVM CRC/version DVP -> HIL mode transition plan -> FEA/bench replacement of Rs/Ld/Lq/psi_f. Include warning callout “60 A is r02 proxy gate, not production acceptance”. Callout: engineering_validated = false; evidence_gap.
+Anchor: S02 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_02_lut_acceptance.py; tests/test_scheme_p0_lut_acceptance.py
+

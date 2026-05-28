@@ -2,6 +2,19 @@
 
 目标：把 S09 从“绕组参数代理”升级为可审查的开关矩阵、可重构绕组封装、切换状态机和瞬态证据追溯工程图。
 
+## SIM ANCHOR
+
+```text
+scheme_id: winding_reconfiguration
+simulation_status: binding_smoke_passed
+model_maturity: research_pool_proxy
+sim_binding: engineering/v2/scheme-09/parameters/V2-S09-PARAM-sim_binding-r02.json
+pytest_gate: tests/test_scheme_experiment_acceptance.py
+engineering_validated: false
+next_simulation_step: Model contactor switching transients, circulating currents, and parallel-path thermal sharing.
+```
+
+
 ## 通用负面约束
 
 - 不要画营销海报、概念电机或抽象电流光效。
@@ -15,15 +28,20 @@
 ## 图 1：Winding switch matrix schematic
 
 Prompt: Generate a white-background engineering schematic titled “S09 Winding Reconfiguration Switch Matrix”. Include HV contactors or solid-state switches, star/delta or series/parallel winding paths, coil/gate drivers, position feedback, zero-torque window enable, zero-current detector, circulating current sensing, snubbers, TVS arc suppression, HVIL, illegal-state hardware interlock, and S11 safety request. Mark 800V/300A class, interlock below 1ms, switching window 50-200ms, circulating current below 5A. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S09 | model_maturity=research_pool_proxy | simulation_status=binding_smoke_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_experiment_acceptance.py
 
 ## 图 2：Reconfigurable winding CAD package
 
 Prompt: Generate an isometric CAD cutaway titled “S09 Reconfigurable Winding and Switch Matrix Package”. Show stator end-turns, winding taps, HV switch matrix, star/delta or series/parallel busbar paths, insulated terminals, shielded harness, service cover, temperature sensors, creepage/clearance callouts, and thermal path arrows. White background, realistic CAD technical drawing style. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S09 | model_maturity=research_pool_proxy | simulation_status=binding_smoke_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_experiment_acceptance.py
 
 ## 图 3：Winding reconfiguration state machine
 
 Prompt: Generate a controller state-machine diagram titled “S09 Winding Reconfiguration State Machine”. Nodes: Config A Active, Switch Request, Zero-Torque Window, Open Old Path, Close New Path, Config B Active, Illegal-State Fallback, Fault Shutdown. Transitions labeled by torque request, phase current, switch feedback, switch voltage, circulating current, arc detection, HVIL, and S11 safety request. Red fallback arrows and blue normal switching arrows. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S09 | model_maturity=research_pool_proxy | simulation_status=binding_smoke_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_experiment_acceptance.py
 
 ## 图 4：Evidence traceability
 
 Prompt: Generate a traceability flow diagram titled “S09 Evidence Chain: Static Winding Proxy to Switching Transient Gate”. Flow: EXP-008 proxy -> circuit transient model -> arc suppression model -> HIL zero-torque switching -> thermal and NVH model -> DVP stuck/open/short fault -> gate review. Include warning callout “static winding proxy is not switching validation”. Callout: engineering_validated = false; evidence_gap.
+Anchor: S09 | model_maturity=research_pool_proxy | simulation_status=binding_smoke_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_experiment_acceptance.py
+

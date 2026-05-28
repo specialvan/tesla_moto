@@ -28,6 +28,7 @@ PROMPT_SECTION_RE = re.compile(
     r"^Prompt:\s*(.*?)(?=\n## 图|\nPrompt:|\Z)",
     re.MULTILINE | re.DOTALL,
 )
+FIGURE_HEADING_RE = re.compile(r"^## 图 (\d)：", re.MULTILINE)
 SCHEME_RE = re.compile(r"scheme-(\d{2})")
 
 
@@ -72,3 +73,10 @@ def test_r03_standalone_prompts_keep_visible_maturity_callouts() -> None:
             assert any(
                 marker in lowered for marker in PROXY_MARKERS
             ), f"{path}: {prompt}"
+
+
+def test_r03_prompt_pack_figure_ids_are_sequential() -> None:
+    for path in _r03_prompt_paths():
+        text = path.read_text(encoding="utf-8")
+        figure_ids = [int(match.group(1)) for match in FIGURE_HEADING_RE.finditer(text)]
+        assert figure_ids == [1, 2, 3, 4], path

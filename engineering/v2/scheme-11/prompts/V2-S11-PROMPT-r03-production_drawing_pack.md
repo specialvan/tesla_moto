@@ -2,6 +2,19 @@
 
 目标：把 S11 温度 / 退磁 / 安全保护从简化安全边界模型升级为可审查的温度三链路、demag limit、gate-disable latch 和证据追溯工程图。
 
+## SIM ANCHOR
+
+```text
+scheme_id: thermal_demag_safety_protection
+simulation_status: numeric_proxy_passed
+model_maturity: parameterized_linear_model
+sim_binding: engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json
+pytest_gate: tests/test_scheme_p0_lut_acceptance.py
+engineering_validated: false
+next_simulation_step: Replace simplified demag line with FEA / magnet vendor curve; lock pm/winding/oil thresholds with bench; start FMEDA + ASIL allocation.
+```
+
+
 ## 通用负面约束
 
 - 不要画营销海报、抽象安全盾牌或概念车。
@@ -13,15 +26,20 @@
 ## 图 1：Thermal demag safety PCB chain
 
 Prompt: Generate a white-background engineering schematic titled “S11 Thermal Demag Safety and Fault Latch PCB”. Include pm_temp dual NTC channels, winding_temp PT1000, oil_temp NTC, Vdc safety window monitor, id_min_allowed lookup, MCU safety monitor, independent hardware fault latch, gate_disable_n output, fault_latched feedback, fault_reason coding, and service-only reset. Mark pm warning/critical 100/120 C, winding warning/critical 140/160 C, oil warning/critical 80/100 C, Vdc critical window 240-420 V, sensor open/short detection below 1 ms, and gate-disable target below 100 us. Use red hardware shutdown path and blue diagnostic path. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S11 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_p0_lut_acceptance.py
 
 ## 图 2：Thermal sensor and cooling CAD package
 
 Prompt: Generate an isometric CAD cutaway titled “S11 Thermal Sensor and Cooling Boundary Package”. Show PM temperature sensing location, winding temperature sensing, oil temperature sensor, cooling jacket or oil path, controller thermal path, HV/LV separation, sensor harness routing, service access, and safety latch connection. Add callouts for demag risk rising with temperature and r02 estimate thresholds. White background, CAD technical drawing style, no photorealistic marketing render. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S11 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_p0_lut_acceptance.py
 
 ## 图 3：Safety fault state machine
 
 Prompt: Generate a safety state-machine diagram titled “S11 Thermal Demag Fault State Machine”. Nodes: Normal Torque, Thermal Warning Derate, Demag-Limited Derate, Sensor-Unknown Fallback, Critical Gate-Disable, Latched Fault. Transitions labeled by pm_temp, winding_temp, oil_temp, Vdc critical, sensor open/short, demag margin low, service reset, and gate_disable asserted. Use red critical shutdown arrows, amber derate arrows, and blue normal recovery arrows. Callout: proxy only; engineering_validated = false; evidence_gap.
+Anchor: S11 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_p0_lut_acceptance.py
 
 ## 图 4：Evidence traceability
 
 Prompt: Generate a traceability flow diagram titled “S11 Evidence Chain: Safety Boundary Proxy to Bench Gate”. Flow: r02 temperature thresholds -> DemagLimit estimate 25/100/140 C -> control LUT demagnetization_risk -> safety boundary experiment -> PCB hardware latch draft -> HIL fault injection -> bench gate-disable timing -> FMEDA/ASIL evidence gap. Include warning callout “r02/r03 proxy is not ASIL validation”. Callout: engineering_validated = false; evidence_gap.
+Anchor: S11 | model_maturity=parameterized_linear_model | simulation_status=numeric_proxy_passed | engineering_validated=false | evidence_gap | pytest_gate=tests/test_scheme_p0_lut_acceptance.py
+
