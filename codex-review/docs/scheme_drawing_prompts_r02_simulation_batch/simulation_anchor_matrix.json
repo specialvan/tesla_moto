@@ -1,0 +1,152 @@
+{
+  "version": "2026-05-20-r02-sim",
+  "purpose": "Machine-readable prompt anchors for V2 r02 simulation-facing images. These anchors constrain generated diagrams to show maturity, sim binding, pytest gates, and next simulation work.",
+  "global_rules": "_simulation_globals.md",
+  "schemes": [
+    {
+      "scheme_short": "S01",
+      "scheme_id": "negative_d_axis_field_weakening",
+      "simulation_status": "numeric_proxy_passed",
+      "model_maturity": "parameterized_linear_model",
+      "sim_binding": "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_p0_lut_acceptance.py",
+      "prompt_focus": "show demag-limited negative id command, voltage/current constraints, and soft check boundaries",
+      "must_show": ["engineering_validated=false", "DemagLimit estimate", "soft mode transition checks", "next FEA/bench replacement"],
+      "must_not_claim": ["bench demag validated", "gate-disable latency validated", "production release"],
+      "next_simulation_step": "Replace Rs/Ld/Lq/psi_f estimates with nonlinear-flux LUT / FEA values; lock gate-disable < 100 us latency via r03 bench."
+    },
+    {
+      "scheme_short": "S02",
+      "scheme_id": "mtpa_fw_mtpv_control",
+      "simulation_status": "numeric_proxy_passed",
+      "model_maturity": "parameterized_linear_model",
+      "sim_binding": "engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_02_lut_acceptance.py; tests/test_scheme_p0_lut_acceptance.py",
+      "prompt_focus": "make the 30 A document target vs 60 A binding gate visible until reconciled",
+      "must_show": ["engineering_validated=false", "torque_axis [50,100,150,200] Nm", "id/iq jump threshold mismatch", "CRC/NVM DVP mapping"],
+      "must_not_claim": ["30 A strong gate passed if binding still uses 60 A", "HIL passed", "production LUT release"],
+      "next_simulation_step": "Replace estimate parameters with FEA / bench; tighten id_jump / iq_jump strong-check thresholds; define DTC enums."
+    },
+    {
+      "scheme_short": "S03",
+      "scheme_id": "svpwm_overmodulation_voltage_utilization",
+      "simulation_status": "numeric_proxy_passed",
+      "model_maturity": "proxy_model",
+      "sim_binding": "engineering/v2/scheme-03/parameters/V2-S03-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show k_mod sweep as proxy harmonic/loss scoring, not reconstructed PWM/EMC",
+      "must_show": ["engineering_validated=false", "proxy_model badge", "k_mod sweep", "THD/EMC/NVH planned"],
+      "must_not_claim": ["EMC Class 5 passed", "PWM waveform reconstruction validated", "bench inverter loss map"],
+      "next_simulation_step": "Replace parametric harmonic / loss curves with measured inverter loss maps and PWM-reconstructed THD."
+    },
+    {
+      "scheme_short": "S04",
+      "scheme_id": "nonlinear_flux_lut",
+      "simulation_status": "binding_smoke_passed",
+      "model_maturity": "synthetic_fixture",
+      "sim_binding": "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_p0_lut_acceptance.py",
+      "prompt_focus": "make synthetic 3x3 LUT smoke status explicit and block engineering-validation interpretation",
+      "must_show": ["engineering_validated=false", "synthetic_fixture badge", "flux_lut_sample.json", "feasible_points_min=1 smoke gate", "FEA 30x30xT target"],
+      "must_not_claim": ["FEA-derived LUT", "physics_model_validated", "production nonlinear flux map"],
+      "next_simulation_step": "Replace synthetic 3x3 LUT with FEA-derived 30x30 LUT with temperature slices; wire EXP-006 phase-3 into control LUT generator."
+    },
+    {
+      "scheme_short": "S05",
+      "scheme_id": "magnetic_saturation_codesign",
+      "simulation_status": "numeric_proxy_passed",
+      "model_maturity": "proxy_model",
+      "sim_binding": "engineering/v2/scheme-05/parameters/V2-S05-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show scaled Ld/Lq saliency proxy and FEA candidate-map replacement path",
+      "must_show": ["engineering_validated=false", "proxy_model badge", "scaled Ld/Lq", "FEA lambda map planned"],
+      "must_not_claim": ["geometry optimized", "stress verified", "saturation FEA validated"],
+      "next_simulation_step": "Replace scaled Ld/Lq proxy with FEA-derived lambda_d/lambda_q candidate maps."
+    },
+    {
+      "scheme_short": "S06",
+      "scheme_id": "pmasynrm_high_saliency_low_pm",
+      "simulation_status": "numeric_proxy_passed",
+      "model_maturity": "proxy_model",
+      "sim_binding": "engineering/v2/scheme-06/parameters/V2-S06-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show PM fraction/saliency proxy limits and missing torque ripple/stress evidence",
+      "must_show": ["engineering_validated=false", "proxy_model badge", "PM fraction planned", "torque ripple planned"],
+      "must_not_claim": ["rotor stress verified", "PM fraction optimized", "low-PM design released"],
+      "next_simulation_step": "Add PM fraction and torque ripple screening fields instead of only psi/Ld/Lq scaling."
+    },
+    {
+      "scheme_short": "S07",
+      "scheme_id": "variable_magnetization_memory_motor",
+      "simulation_status": "binding_smoke_passed",
+      "model_maturity": "research_pool_proxy",
+      "sim_binding": "engineering/v2/scheme-07/parameters/V2-S07-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show research-pool pulse/state assumptions and missing transition-energy model",
+      "must_show": ["engineering_validated=false", "research_pool_proxy badge", "virtual psi_f states", "state energy planned"],
+      "must_not_claim": ["magnetization pulse hardware designed", "state observer validated", "lifetime cycles proven"],
+      "next_simulation_step": "Add state transition energy, state confidence, and unknown-state derating to the variable flux experiment."
+    },
+    {
+      "scheme_short": "S08",
+      "scheme_id": "hybrid_excitation",
+      "simulation_status": "binding_smoke_passed",
+      "model_maturity": "research_pool_proxy",
+      "sim_binding": "engineering/v2/scheme-08/parameters/V2-S08-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show psi_eff proxy and missing field-winding thermal/electrical coupling",
+      "must_show": ["engineering_validated=false", "research_pool_proxy badge", "psi_eff = psi_pm + kf * if", "thermal coupling planned"],
+      "must_not_claim": ["exciter hardware released", "loss-of-field HIL passed", "field winding thermally validated"],
+      "next_simulation_step": "Add field-winding inductance, exciter loss, and rotor leakage; couple thermally to the field circuit."
+    },
+    {
+      "scheme_short": "S09",
+      "scheme_id": "winding_reconfiguration",
+      "simulation_status": "binding_smoke_passed",
+      "model_maturity": "research_pool_proxy",
+      "sim_binding": "engineering/v2/scheme-09/parameters/V2-S09-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show configuration-scaling proxy and missing switching transient/circulating-current model",
+      "must_show": ["engineering_validated=false", "research_pool_proxy badge", "turns_scale proxy", "switch transient planned"],
+      "must_not_claim": ["contactor selected", "arc suppression validated", "winding hardware released"],
+      "next_simulation_step": "Model contactor switching transients, circulating currents, and parallel-path thermal sharing."
+    },
+    {
+      "scheme_short": "S10",
+      "scheme_id": "multiphase_phase_group_control",
+      "simulation_status": "binding_smoke_passed",
+      "model_maturity": "research_pool_proxy",
+      "sim_binding": "engineering/v2/scheme-10/parameters/V2-S10-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show phase-current derating proxy and missing harmonic subspace/per-phase thermal model",
+      "must_show": ["engineering_validated=false", "research_pool_proxy badge", "phase derating cases", "harmonic subspace planned"],
+      "must_not_claim": ["fault-tolerant torque validated", "multiphase hardware selected", "ASIL safety closed"],
+      "next_simulation_step": "Add harmonic subspace decoupling, neutral-shift voltage vectors, and per-phase thermal RC for fault transients."
+    },
+    {
+      "scheme_short": "S11",
+      "scheme_id": "thermal_demag_safety_protection",
+      "simulation_status": "numeric_proxy_passed",
+      "model_maturity": "parameterized_linear_model",
+      "sim_binding": "engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_p0_lut_acceptance.py",
+      "prompt_focus": "show simplified demag line and thermal thresholds as proxy safety limits",
+      "must_show": ["engineering_validated=false", "temperature_c=120", "DemagLimit estimate", "FMEDA planned"],
+      "must_not_claim": ["ASIL allocated", "FMEDA complete", "magnet vendor curve validated"],
+      "next_simulation_step": "Replace simplified demag line with FEA / magnet vendor curve; lock pm/winding/oil thresholds with bench; start FMEDA + ASIL allocation."
+    },
+    {
+      "scheme_short": "S12",
+      "scheme_id": "weighted_efficiency_pareto_selection",
+      "simulation_status": "numeric_proxy_passed",
+      "model_maturity": "proxy_model",
+      "sim_binding": "engineering/v2/scheme-12/parameters/V2-S12-PARAM-sim_binding-r02.json",
+      "pytest_gate": "tests/test_scheme_experiment_acceptance.py",
+      "prompt_focus": "show Pareto score depends on proxy losses and missing drive-cycle/material/inverter loss evidence",
+      "must_show": ["engineering_validated=false", "proxy_model badge", "candidate score audit", "loss model replacement planned"],
+      "must_not_claim": ["final architecture selected", "drive cycle validated", "FEA material loss complete"],
+      "next_simulation_step": "Replace iron loss coefficients with FEA-derived material data; add mechanical loss, inverter loss, and temperature coupling."
+    }
+  ]
+}
+

@@ -27,6 +27,8 @@
 | `working_tree_delta_note_2026-05-14.md` | 首轮评审落盘后观察到的额外工作树变化补充记录 |
 | `claude_image_to_production_deep_review_2026-05-19.md` | Claude 图档生产化深度评审与打回意见，核对生图评审、r01 提示词、r02 参数化和真实图纸缺口 |
 | `image_to_production_action_register_2026-05-19.json` | 图档生产化打回项的机器可读行动登记 |
+| `scheme_drawing_prompts_r02_simulation_batch/` | 面向下一轮仿真的 r02 图档提示词升级包，新增 SIM ANCHOR、maturity、sim_binding、pytest gate 和 next simulation step |
+| `v2_r02_sim_image_generation_handoff_2026-05-20.md` | 等待生图服务器确认后的 S02/S04 首批 r02-sim 改图开跑 handoff，含 smoke、dry-run、改图命令和验收清单 |
 | `../../claude-review/docs/2026-05-15/v0.5_true_production_drawing_deliverables_matrix.md` | Claude 按打回意见补充的真实生产图纸五档交付物矩阵 |
 
 ## 3. 首轮评审结论摘要
