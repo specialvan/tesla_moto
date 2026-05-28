@@ -1,0 +1,316 @@
+{
+  "name": "open_design_dashboard_spec",
+  "product": "customer_dashboard",
+  "page": "controllable_flux_motor_kb.html",
+  "source_url": "http://127.0.0.1:8000/controllable_flux_motor_kb.html",
+  "design_system": "opendesign-dashboard",
+  "audience": "customer technical review and sales engineering demo",
+  "visual_direction": {
+    "tone": "premium black-gold engineering dashboard",
+    "density": "high information density on dark panels with gold hierarchy and restrained data accents",
+    "avoid": [
+      "marketing landing page",
+      "decorative card nesting",
+      "single-hue gold-only palette",
+      "low contrast chart labels",
+      "unbounded text blocks"
+    ]
+  },
+  "tokens": {
+    "colors": {
+      "primary": "#d6b260",
+      "data_cyan": "#37c7b4",
+      "success": "#62c486",
+      "warning": "#d08b45",
+      "danger": "#ef6a73",
+      "surface": "#12141b",
+      "background": "#08090d",
+      "line": "rgba(214, 178, 96, .28)",
+      "text": "#f8ecd2",
+      "muted": "#b8aa8d"
+    },
+    "radius": {
+      "card": 8,
+      "control": 8,
+      "marker": 8
+    },
+    "shadow": {
+      "panel": "0 14px 34px rgba(0, 0, 0, .30)",
+      "hero": "0 22px 58px rgba(0, 0, 0, .46)"
+    },
+    "typography": {
+      "base": "Microsoft YaHei compatible sans-serif",
+      "heading_weight": 830,
+      "body_line_height": 1.55,
+      "letter_spacing": 0
+    }
+  },
+  "components": [
+    {
+      "id": "hero-main",
+      "role": "first-screen customer summary",
+      "states": [
+        "api connected",
+        "offline fallback"
+      ]
+    },
+    {
+      "id": "candidate-filters",
+      "role": "primary scenario selection",
+      "states": [
+        "active",
+        "hover",
+        "default"
+      ]
+    },
+    {
+      "id": "demo-flow",
+      "role": "animated customer explanation flow",
+      "states": [
+        "manual",
+        "auto playback"
+      ]
+    },
+    {
+      "id": "benefit-chart",
+      "role": "before-after value proof"
+    },
+    {
+      "id": "compare-mode",
+      "role": "two-scheme decision comparison"
+    },
+    {
+      "id": "weight-simulator",
+      "role": "customer workload weighting simulator"
+    },
+    {
+      "id": "algorithm-map",
+      "role": "algorithm-to-delivery traceability"
+    },
+    {
+      "id": "algorithm-maturity",
+      "role": "algorithm implementation maturity matrix",
+      "states": [
+        "selected candidate linked",
+        "algorithm focus changed",
+        "route relevance highlighted"
+      ]
+    },
+    {
+      "id": "design-handoff",
+      "role": "OpenDesign token and handoff surface"
+    },
+    {
+      "id": "solution-drilldown",
+      "role": "four-tab candidate diagnostic workbench",
+      "states": [
+        "benefit",
+        "risk",
+        "delivery",
+        "evidence"
+      ]
+    },
+    {
+      "id": "drilldown-tabs",
+      "role": "diagnostic mode navigation"
+    },
+    {
+      "id": "drilldown-panel",
+      "role": "selected candidate deep-dive content"
+    },
+    {
+      "id": "confidence-meter",
+      "role": "customer communication confidence indicator"
+    },
+    {
+      "id": "evidence-ladder",
+      "role": "evidence and validation sequence"
+    },
+    {
+      "id": "business-case",
+      "role": "customer ROI calculator for selected candidate",
+      "states": [
+        "selected candidate linked",
+        "assumption slider changed"
+      ]
+    },
+    {
+      "id": "business-results",
+      "role": "annual saving and payback result cards"
+    },
+    {
+      "id": "business-controls",
+      "role": "ROI assumption slider controls"
+    },
+    {
+      "id": "presentation-mode",
+      "role": "customer meeting guided presentation mode",
+      "states": [
+        "off",
+        "on",
+        "step cycling"
+      ]
+    },
+    {
+      "id": "presentation-bar",
+      "role": "sticky narration progress and mode toggle"
+    },
+    {
+      "id": "decision-pack-export",
+      "role": "clipboard export for selected candidate decision package",
+      "states": [
+        "ready",
+        "copied",
+        "copy blocked"
+      ]
+    },
+    {
+      "id": "decision-pack-preview",
+      "role": "customer decision package preview",
+      "states": [
+        "selected candidate linked",
+        "evidence score updated",
+        "review question linked",
+        "preview copied"
+      ]
+    },
+    {
+      "id": "customer-minutes-generator",
+      "role": "customer review minutes generator",
+      "states": [
+        "technical review mode",
+        "business review mode",
+        "validation follow-up mode",
+        "minutes copied"
+      ]
+    },
+    {
+      "id": "validation-action-timeline",
+      "role": "customer validation action timeline",
+      "states": [
+        "selected step changed",
+        "candidate linked",
+        "evidence gap linked",
+        "timeline copied"
+      ]
+    },
+    {
+      "id": "validation-risk-heatmap",
+      "role": "customer validation risk heatmap",
+      "states": [
+        "selected risk changed",
+        "heat score updated",
+        "owner matrix linked",
+        "risk matrix copied"
+      ]
+    },
+    {
+      "id": "customer-acceptance-gate",
+      "role": "customer acceptance gate",
+      "states": [
+        "ready to accept",
+        "conditional acceptance",
+        "acceptance paused",
+        "acceptance copied"
+      ]
+    },
+    {
+      "id": "benchmark-board",
+      "role": "route and candidate benchmark board",
+      "states": [
+        "all routes",
+        "family filtered",
+        "candidate selected"
+      ]
+    },
+    {
+      "id": "closure-board",
+      "role": "risk closure task board linked to selected candidate",
+      "states": [
+        "ready",
+        "high priority",
+        "needs evidence"
+      ]
+    },
+    {
+      "id": "delivery-health",
+      "role": "delivery readiness status panel",
+      "states": [
+        "api online",
+        "offline fallback"
+      ]
+    },
+    {
+      "id": "evidence-gap-priority",
+      "role": "evidence gap priority board",
+      "states": [
+        "selected candidate linked",
+        "priority focus changed",
+        "urgent evidence highlighted"
+      ]
+    },
+    {
+      "id": "review-question-board",
+      "role": "customer review question board",
+      "states": [
+        "selected question changed",
+        "answer copied",
+        "candidate linked"
+      ]
+    },
+    {
+      "id": "meeting-script",
+      "role": "customer decision talk track and value path",
+      "states": [
+        "selected candidate linked",
+        "copy ready",
+        "copy blocked"
+      ]
+    },
+    {
+      "id": "stage-gate-board",
+      "role": "customer validation stage gate board",
+      "states": [
+        "ready",
+        "watch",
+        "blocked"
+      ]
+    },
+    {
+      "id": "sensitivity-matrix",
+      "role": "ROI sensitivity matrix for conservative current and upside assumptions",
+      "states": [
+        "conservative",
+        "current",
+        "upside",
+        "applied to sliders"
+      ]
+    }
+  ],
+  "review_checklist": [
+    "The first viewport must show product identity, selected recommendation, API state, and next section hint.",
+    "Black-gold theme must keep chart labels and controls readable on dark surfaces.",
+    "Charts must remain legible at 390px mobile width without horizontal overflow.",
+    "Customer-facing Chinese labels must fit inside controls and cards.",
+    "Design must preserve engineering evidence links and avoid unsupported production claims.",
+    "Weight simulator and compare mode must read as decision tools, not decorative panels.",
+    "Solution drilldown must keep benefit, risk, delivery, and evidence tabs wired to the selected candidate.",
+    "Business case calculator must stay linked to selected candidate and update from assumption sliders.",
+    "Presentation mode must preserve black-gold theme and guide benefit, drilldown, ROI, and evidence sections.",
+    "Decision pack export must include selected candidate, gains, business case, ranking, evidence, and disclaimer.",
+    "Benchmark board must keep candidate cards clickable and explain family-level route positioning.",
+    "Closure board must keep voltage, demagnetization, iron-loss, and bench validation tasks visible.",
+    "Delivery health panel must expose API, OpenDesign, evidence, interaction, and export readiness.",
+    "Meeting script must stay linked to selected candidate, ROI assumptions, workload weights, and risk closure.",
+    "Stage gate board must translate recommendation into workload freeze, FEA/material review, HIL/bench entry, and decision-pack review.",
+    "Sensitivity matrix must show conservative, current, and upside ROI scenarios and keep cards clickable into ROI assumptions.",
+    "Algorithm maturity matrix must keep model, data, interface, validation, and customer value visible for every algorithm row.",
+    "Evidence gap priority board must rank voltage, demagnetization, iron-loss, and HIL/bench evidence by customer decision impact.",
+    "Review question board must map customer questions to selected candidate, ROI, evidence gaps, and next actions.",
+    "Decision pack preview must connect selected candidate, ROI, evidence gaps, review questions, and next actions before export.",
+    "Customer minutes generator must turn selected candidate, ROI, evidence gaps, review answers, and stage gates into Chinese action items.",
+    "Validation action timeline must map T+3/T+5/T+7/T+10 actions to owners, evidence outputs, customer value, and dashboard refill targets.",
+    "Validation risk heatmap must rank voltage, demagnetization, iron-loss, and HIL/bench risks by impact, urgency, owner, and refill target.",
+    "Customer acceptance gate must combine decision pack completeness, ROI, validation timeline, risk heat, and customer confirmation into clear Chinese sign-off conditions."
+  ]
+}

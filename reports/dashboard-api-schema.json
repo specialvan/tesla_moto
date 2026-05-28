@@ -1,0 +1,315 @@
+{
+  "source": "backend-api",
+  "schemaVersion": 1,
+  "endpoints": [
+    {
+      "path": "/api/dashboard",
+      "methods": [
+        "GET"
+      ],
+      "responseKeys": [
+        "meta",
+        "maturity",
+        "paretoFront",
+        "cycleRows",
+        "ironLossRows",
+        "algorithmRows",
+        "deliveryItems"
+      ],
+      "responseObjectKeys": {
+        "maturity": [
+          "engineering_validated",
+          "physics_model_validated",
+          "production_release_allowed",
+          "production_drawing_ready",
+          "manufacturing_release_ready",
+          "model_maturity",
+          "required_evidence",
+          "not_allowed_claims"
+        ],
+        "paretoFront": [
+          "candidate",
+          "label",
+          "meanScore",
+          "feasible",
+          "loss",
+          "family",
+          "color"
+        ],
+        "cycleRows": [
+          "candidate",
+          "cycle",
+          "feasibleWeight",
+          "copperLoss",
+          "score"
+        ],
+        "ironLossRows": [
+          "speed",
+          "targetFeasible",
+          "ironLoss",
+          "efficiency",
+          "freqOutOfRange"
+        ]
+      },
+      "responseTupleLengths": {
+        "algorithmRows": 4,
+        "deliveryItems": 2
+      }
+    },
+    {
+      "path": "/api/health",
+      "methods": [
+        "GET"
+      ],
+      "responseKeys": [
+        "status",
+        "source",
+        "schemaVersion",
+        "page",
+        "pageAvailable",
+        "counts"
+      ],
+      "responseObjectKeys": {
+        "counts": [
+          "paretoFront",
+          "cycleRows",
+          "ironLossRows",
+          "algorithmRows",
+          "deliveryItems"
+        ]
+      }
+    },
+    {
+      "path": "/api/schema",
+      "methods": [
+        "GET"
+      ],
+      "responseKeys": [
+        "source",
+        "schemaVersion",
+        "endpoints",
+        "frontendRequiredPaths"
+      ]
+    },
+    {
+      "path": "/api/scenario-state",
+      "methods": [
+        "GET",
+        "DELETE"
+      ],
+      "responseKeys": [
+        "source",
+        "schemaVersion",
+        "stateAvailable",
+        "stateSource",
+        "state"
+      ],
+      "responseObjectKeys": {
+        "state": [
+          "candidate",
+          "businessAssumptions",
+          "weights"
+        ]
+      }
+    },
+    {
+      "path": "/api/decision-pack",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "requestStateKeys": [
+        "candidate",
+        "businessAssumptions",
+        "weights"
+      ],
+      "getQueryKeys": [
+        "candidate",
+        "production",
+        "mileage",
+        "energyPrice",
+        "validationInvestment",
+        "urban_low_speed",
+        "highway_high_speed",
+        "launch_peak_torque"
+      ],
+      "postJson": {
+        "requiredKeys": [
+          "candidate",
+          "businessAssumptions",
+          "weights"
+        ],
+        "businessAssumptionKeys": [
+          "production",
+          "mileage",
+          "energyPrice",
+          "validationInvestment"
+        ],
+        "weightKeys": [
+          "urban_low_speed",
+          "highway_high_speed",
+          "launch_peak_torque"
+        ]
+      },
+      "responseKeys": [
+        "source",
+        "schemaVersion",
+        "selected",
+        "gains",
+        "businessCase",
+        "weights",
+        "ranking",
+        "maturity"
+      ],
+      "responseObjectKeys": {
+        "selected": [
+          "candidate",
+          "label",
+          "family",
+          "meanScore",
+          "weightedCopperLossW",
+          "feasible"
+        ],
+        "gains": [
+          "scoreGainPercent",
+          "copperLossChangePercent",
+          "feasibleCycles",
+          "confidencePercent"
+        ],
+        "businessCase": [
+          "assumptions",
+          "conversionKwhPer100kmPerKw",
+          "perVehicleAnnualSavingYuan",
+          "fleetAnnualSavingYuan",
+          "paybackMonths"
+        ],
+        "weights": [
+          "urban_low_speed",
+          "highway_high_speed",
+          "launch_peak_torque"
+        ],
+        "ranking": [
+          "candidate",
+          "label",
+          "family",
+          "simulatedScore",
+          "simulatedFeasible",
+          "rank"
+        ],
+        "maturity": [
+          "engineering_validated",
+          "physics_model_validated",
+          "production_release_allowed",
+          "production_drawing_ready",
+          "manufacturing_release_ready",
+          "model_maturity",
+          "required_evidence",
+          "not_allowed_claims"
+        ]
+      }
+    },
+    {
+      "path": "/api/session-snapshot",
+      "methods": [
+        "GET",
+        "POST",
+        "DELETE"
+      ],
+      "requestStateKeys": [
+        "candidate",
+        "businessAssumptions",
+        "weights",
+        "decisionPack",
+        "apiSyncLog"
+      ],
+      "responseKeys": [
+        "source",
+        "schemaVersion",
+        "snapshotAvailable",
+        "snapshot",
+        "metadata"
+      ],
+      "responseObjectKeys": {
+        "snapshot": [
+          "candidate",
+          "businessAssumptions",
+          "weights",
+          "decisionPack",
+          "apiSyncLog",
+          "metadata"
+        ]
+      },
+      "metadataKeys": [
+        "snapshotId",
+        "createdAt",
+        "updatedAt",
+        "source",
+        "schemaVersion",
+        "apiContractVersion"
+      ]
+    },
+    {
+      "path": "/api/customer-brief",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "requestStateKeys": [
+        "candidate",
+        "businessAssumptions",
+        "weights"
+      ],
+      "responseKeys": [
+        "source",
+        "schemaVersion",
+        "candidate",
+        "brief",
+        "decisionPack"
+      ],
+      "responseObjectKeys": {
+        "decisionPack": [
+          "source",
+          "schemaVersion",
+          "selected",
+          "gains",
+          "businessCase",
+          "weights",
+          "ranking"
+        ]
+      }
+    },
+    {
+      "path": "/api/design-spec",
+      "methods": [
+        "GET"
+      ],
+      "responseKeys": [
+        "source",
+        "schemaVersion",
+        "file",
+        "spec"
+      ],
+      "responseObjectKeys": {
+        "spec": [
+          "name",
+          "product",
+          "page",
+          "design_system",
+          "audience",
+          "tokens",
+          "components"
+        ]
+      }
+    }
+  ],
+  "frontendRequiredPaths": [
+    "/api/dashboard",
+    "/api/health",
+    "/api/schema",
+    "/api/scenario-state",
+    "/api/decision-pack",
+    "/api/session-snapshot",
+    "/api/customer-brief",
+    "/api/design-spec"
+  ]
+}
