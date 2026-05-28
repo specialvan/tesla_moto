@@ -14,7 +14,6 @@ replaced with FEA / bench data before any production claim.
 from __future__ import annotations
 
 import json
-import re
 import warnings
 from pathlib import Path
 from typing import Any
@@ -23,6 +22,7 @@ import pytest
 
 from sim.run_control_lut_generator import run
 from sim.safety_limits import DemagLimit
+from tests.scheme_expect_dsl import eval_expect_check
 
 ROOT = Path(__file__).resolve().parents[1]
 BINDING_PATH = (
@@ -44,19 +44,24 @@ def _load_binding() -> dict[str, Any]:
     return json.loads(BINDING_PATH.read_text(encoding="utf-8"))
 
 
+def _load_ref(spec: dict[str, Any]) -> dict[str, Any]:
+    ref = spec["$ref"]
+    ref_path = (ROOT / ref).resolve()
+    try:
+        ref_path.relative_to(ROOT)
+    except ValueError as exc:
+        raise ValueError(f"ref must resolve inside project root: {ref}") from exc
+    return json.loads(ref_path.read_text(encoding="utf-8"))
+
+
 def _resolve_kwargs(binding: dict[str, Any]) -> dict[str, Any]:
     kwargs = dict(binding["kwargs"])
     demag_spec = kwargs.get("demag_limit")
+    if isinstance(demag_spec, dict) and "$ref" in demag_spec:
+        demag_spec = _load_ref(demag_spec)
     if isinstance(demag_spec, dict) and demag_spec.get("type") == "DemagLimit":
         kwargs["demag_limit"] = _materialize_demag_limit(demag_spec)
     return kwargs
-
-
-def _walk(output: dict[str, Any], dotted: str) -> Any:
-    cursor: Any = output
-    for part in dotted.split("."):
-        cursor = cursor[part]
-    return cursor
 
 
 def _voltage_exceeded_ratio(output: dict[str, Any]) -> float:
@@ -65,52 +70,20 @@ def _voltage_exceeded_ratio(output: dict[str, Any]) -> float:
     return int(fmap["infeasible_reasons"]["voltage_exceeded"]) / total
 
 
-def _eval_check(key: str, expected: Any, output: dict[str, Any]) -> tuple[bool, str]:
-    """Return (passed, message) for one expect key."""
-    if key == "metadata.generator_version.regex":
-        value = output["metadata"]["generator_version"]
-        ok = bool(re.match(expected, value))
-        return ok, f"generator_version={value!r} regex={expected}"
-    if key == "model_source.model_type.enum":
-        value = output["model_source"]["model_type"]
-        ok = value in expected
-        return ok, f"model_type={value!r} enum={expected}"
-    if key == "grid_definition.speed_axis_rpm.count_min":
-        value = len(output["grid_definition"]["speed_axis_rpm"])
-        return value >= expected, f"speed_axis count={value} >= {expected}"
-    if key == "grid_definition.torque_axis_nm.count_min":
-        value = len(output["grid_definition"]["torque_axis_nm"])
-        return value >= expected, f"torque_axis count={value} >= {expected}"
-    if key == "feasibility_map.feasible_points_min":
-        value = output["feasibility_map"]["feasible_points"]
-        return value >= expected, f"feasible_points={value} >= {expected}"
-    if key == "feasibility_map.infeasible_reasons.search_not_converged_max":
-        value = output["feasibility_map"]["infeasible_reasons"]["search_not_converged"]
-        return value <= expected, f"search_not_converged={value} <= {expected}"
-    if key == "feasibility_map.infeasible_reasons.demagnetization_risk_max":
-        value = output["feasibility_map"]["infeasible_reasons"]["demagnetization_risk"]
-        return value <= expected, f"demagnetization_risk={value} <= {expected}"
-    if key == "feasibility_map.infeasible_reasons.voltage_exceeded_ratio_max":
-        ratio = _voltage_exceeded_ratio(output)
-        return ratio <= expected, f"voltage_exceeded_ratio={ratio:.3f} <= {expected}"
-    if key == "validation.torque_discontinuity_at_transitions_nm_max":
-        value = output["validation"]["torque_discontinuity_at_transitions_nm"]
-        return value <= expected, f"torque_discontinuity={value} <= {expected}"
-    if key == "mode_transitions.id_jump_a_max":
-        transitions = output["mode_transitions"].get("mtpa_to_fw_boundary", [])
-        transitions += output["mode_transitions"].get("fw_to_mtpv_boundary", [])
-        worst = max((abs(t.get("id_jump_a", 0.0)) for t in transitions), default=0.0)
-        return worst <= expected, f"max id_jump={worst} <= {expected}"
-    if key == "mode_transitions.iq_jump_a_max":
-        transitions = output["mode_transitions"].get("mtpa_to_fw_boundary", [])
-        transitions += output["mode_transitions"].get("fw_to_mtpv_boundary", [])
-        worst = max((abs(t.get("iq_jump_a", 0.0)) for t in transitions), default=0.0)
-        return worst <= expected, f"max iq_jump={worst} <= {expected}"
-    if key == "metadata.demag_limit_present":
-        value = output["metadata"].get("demag_limit")
-        ok = value is not None and bool(expected)
-        return ok, f"metadata.demag_limit present={value is not None}"
-    raise KeyError(f"unhandled expect key: {key}")
+def _all_transition_jumps(output: dict[str, Any], field: str) -> float:
+    transitions = output["mode_transitions"].get("mtpa_to_fw_boundary", [])
+    transitions += output["mode_transitions"].get("fw_to_mtpv_boundary", [])
+    return max((abs(t.get(field, 0.0)) for t in transitions), default=0.0)
+
+
+def _with_p0_derived_metrics(output: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(output)
+    enriched["p0_acceptance"] = {
+        "voltage_exceeded_ratio": _voltage_exceeded_ratio(output),
+        "max_id_jump_a": _all_transition_jumps(output, "id_jump_a"),
+        "max_iq_jump_a": _all_transition_jumps(output, "iq_jump_a"),
+    }
+    return enriched
 
 
 @pytest.mark.integration
@@ -128,9 +101,10 @@ def test_scheme_02_r02_sim_binding_drives_run(tmp_path: Path) -> None:
 
     strong_failures: list[str] = []
     soft_warnings: list[str] = []
+    output_view = _with_p0_derived_metrics(output)
 
     for key, expected_value in expect.items():
-        passed, message = _eval_check(key, expected_value, output)
+        passed, message = eval_expect_check(key, expected_value, output_view)
         if passed:
             continue
         if key in strong_keys:
@@ -153,11 +127,14 @@ def test_scheme_02_jump_thresholds_are_marked_as_r02_proxy_gates() -> None:
     binding = _load_binding()
     threshold_maturity = binding["threshold_maturity"]
 
-    for key in ("mode_transitions.id_jump_a_max", "mode_transitions.iq_jump_a_max"):
+    for key, maturity_key in (
+        ("p0_acceptance.max_id_jump_a.max", "mode_transitions.id_jump_a_max"),
+        ("p0_acceptance.max_iq_jump_a.max", "mode_transitions.iq_jump_a_max"),
+    ):
         assert binding["expect"][key] == 60.0
         assert key in binding["soft_checks"]
         assert key not in binding["strong_checks"]
-        maturity = threshold_maturity[key]
+        maturity = threshold_maturity[maturity_key]
         assert maturity["r02_proxy_soft_gate_a"] == 60.0
         assert maturity["r03_production_target_a"] == 30.0
         assert maturity["engineering_validated"] is False

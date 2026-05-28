@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
 
+import sim.run_control_lut_generator as control_lut_generator
 from sim.search import Candidate
 from sim.safety_limits import DemagLimit
 from sim.run_control_lut_generator import (
@@ -22,10 +24,71 @@ from sim.run_control_lut_generator import (
 
 CONTROL_LUT_SCHEMA_PATH = Path("models/control_lut_schema.json")
 FLUX_LUT_PATH = Path("models/flux_lut_sample.json")
+FIXED_GENERATED_AT = "2026-05-28T00:00:00+00:00"
+_GENERATED_LUT_CACHE: dict[str, dict[str, Any]] = {}
 
 
-def generate_control_lut(tmp_path: Path, **kwargs: Any) -> dict[str, Any]:
-    return run(output_path=tmp_path / "control_lut.json", **kwargs)
+def _cache_key(kwargs: dict[str, Any]) -> str:
+    def default(value: Any) -> Any:
+        if isinstance(value, Path):
+            return value.as_posix()
+        if isinstance(value, DemagLimit):
+            return {"points_c_to_id_min_a": value.points_c_to_id_min_a}
+        raise TypeError(f"unhandled cache value {type(value).__name__}")
+
+    return json.dumps(kwargs, sort_keys=True, separators=(",", ":"), default=default)
+
+
+def generate_control_lut(
+    tmp_path: Path, output_path: Path | None = None, **kwargs: Any
+) -> dict[str, Any]:
+    kwargs.setdefault("generated_at", FIXED_GENERATED_AT)
+    output_path = output_path or tmp_path / "control_lut.json"
+    cache_key = _cache_key({**kwargs, "output_path": output_path})
+    if cache_key not in _GENERATED_LUT_CACHE:
+        _GENERATED_LUT_CACHE[cache_key] = run(output_path=output_path, **kwargs)
+    return _GENERATED_LUT_CACHE[cache_key]
+
+
+def test_generate_control_lut_caches_identical_successful_runs(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _GENERATED_LUT_CACHE.clear()
+    calls = 0
+
+    def fake_run(**kwargs: Any) -> dict[str, Any]:
+        nonlocal calls
+        calls += 1
+        return {"kwargs": kwargs}
+
+    monkeypatch.setattr(sys.modules[__name__], "run", fake_run)
+
+    first = generate_control_lut(tmp_path, torque_axis_nm=[50.0, 100.0])
+    second = generate_control_lut(tmp_path, torque_axis_nm=[50.0, 100.0])
+
+    assert first == second
+    assert calls == 1
+    _GENERATED_LUT_CACHE.clear()
+
+
+def test_generate_control_lut_cache_key_includes_output_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _GENERATED_LUT_CACHE.clear()
+    calls: list[Path] = []
+
+    def fake_run(**kwargs: Any) -> dict[str, Any]:
+        calls.append(kwargs["output_path"])
+        return {"output_path": kwargs["output_path"].as_posix()}
+
+    monkeypatch.setattr(sys.modules[__name__], "run", fake_run)
+
+    first = generate_control_lut(tmp_path, output_path=tmp_path / "first.json")
+    second = generate_control_lut(tmp_path, output_path=tmp_path / "second.json")
+
+    assert first != second
+    assert calls == [tmp_path / "first.json", tmp_path / "second.json"]
+    _GENERATED_LUT_CACHE.clear()
 
 
 def assert_matches_control_lut_schema(control_lut: dict[str, Any]) -> None:
@@ -45,6 +108,39 @@ def test_control_lut_generator_writes_json_output(tmp_path: Path) -> None:
     assert result["unit_convention"]["dq_transform"] == "amplitude_invariant"
     assert result["model_source"]["model_type"] == "linear_dq"
     assert result["pole_pairs"] == 4
+
+
+def test_control_lut_requires_explicit_output_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(control_lut_generator, "ROOT", tmp_path)
+
+    with pytest.raises(ValueError, match="output_path is required"):
+        control_lut_generator.run()
+
+    assert not (tmp_path / "models" / "control_lut.json").exists()
+
+
+def test_control_lut_cli_requires_output_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(control_lut_generator, "ROOT", tmp_path)
+
+    with pytest.raises(SystemExit):
+        control_lut_generator.main([])
+
+    assert not (tmp_path / "models" / "control_lut.json").exists()
+
+
+def test_control_lut_cli_writes_explicit_output_path(tmp_path: Path) -> None:
+    output_path = tmp_path / "cli_control_lut.json"
+
+    result = control_lut_generator.main(
+        ["--output-path", str(output_path), "--generated-at", FIXED_GENERATED_AT]
+    )
+
+    assert output_path.exists()
+    assert result["metadata"]["generated_at"] == FIXED_GENERATED_AT
 
 
 def test_control_lut_schema_allows_documented_nullable_enums() -> None:
@@ -327,6 +423,14 @@ def test_control_lut_has_metadata(tmp_path: Path) -> None:
     assert "generator_version" in m
 
 
+def test_control_lut_accepts_injected_generated_at(tmp_path: Path) -> None:
+    generated_at = "2026-05-28T00:00:00+00:00"
+
+    result = run(output_path=tmp_path / "control_lut.json", generated_at=generated_at)
+
+    assert result["metadata"]["generated_at"] == generated_at
+
+
 def test_control_lut_persists_to_disk(tmp_path: Path) -> None:
     output_path = tmp_path / "persisted_control_lut.json"
 
@@ -486,3 +590,33 @@ def test_control_lut_rejects_flux_lut_outside_project_root(
         generate_control_lut(
             tmp_path, model_type="nonlinear_flux_lut", lut_path=outside_lut_path
         )
+
+
+def test_control_lut_rejects_flux_lut_pole_pair_mismatch(tmp_path: Path) -> None:
+    lut_data = json.loads(FLUX_LUT_PATH.read_text(encoding="utf-8"))
+    lut_data["pole_pairs"] = 6
+    mismatch_path = Path("reports/test_flux_lut_pole_pair_mismatch.json")
+    mismatch_path.write_text(json.dumps(lut_data), encoding="utf-8")
+
+    try:
+        with pytest.raises(ValueError, match="flux_lut.pole_pairs"):
+            generate_control_lut(
+                tmp_path, model_type="nonlinear_flux_lut", lut_path=mismatch_path
+            )
+    finally:
+        mismatch_path.unlink(missing_ok=True)
+
+
+def test_control_lut_rejects_flux_lut_motor_id_mismatch(tmp_path: Path) -> None:
+    lut_data = json.loads(FLUX_LUT_PATH.read_text(encoding="utf-8"))
+    lut_data["motor_id"] = "different_motor"
+    mismatch_path = Path("reports/test_flux_lut_motor_id_mismatch.json")
+    mismatch_path.write_text(json.dumps(lut_data), encoding="utf-8")
+
+    try:
+        with pytest.raises(ValueError, match="motor_id"):
+            generate_control_lut(
+                tmp_path, model_type="nonlinear_flux_lut", lut_path=mismatch_path
+            )
+    finally:
+        mismatch_path.unlink(missing_ok=True)

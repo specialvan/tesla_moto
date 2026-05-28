@@ -15,6 +15,7 @@ The generated LUT follows models/control_lut_schema.json and includes:
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 from datetime import datetime, timezone
@@ -48,13 +49,15 @@ def run(
     demag_limit: DemagLimit | None = None,
     torque_axis_nm: list[float] | None = None,
     torque_step_nm: float | None = None,
+    generated_at: str | None = None,
 ) -> dict[str, Any]:
     """Generate a control LUT from search results.
 
     Args:
         model_type: Either "linear_dq" or "nonlinear_flux_lut".
         lut_path: Path to flux LUT JSON file (required for nonlinear_flux_lut).
-        output_path: Path for output control_lut.json (default: models/control_lut.json).
+        output_path: Path for output control_lut.json. Required for library calls;
+            the module CLI writes models/control_lut.json explicitly.
 
     Returns:
         The generated control LUT dictionary.
@@ -83,6 +86,8 @@ def run(
         flux_lut = None
 
     params, raw_params, grid = load_params()
+    if flux_lut is not None:
+        _validate_flux_lut_matches_params(flux_lut, params)
     if temperature_c is not None:
         if thermal_model is None:
             thermal_model = ThermalModel(
@@ -218,7 +223,7 @@ def run(
             "low_voltage_margin_points": low_voltage_margin_points,
         },
         "metadata": {
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": generated_at or datetime.now(timezone.utc).isoformat(),
             "generator_script": "sim/run_control_lut_generator.py",
             "generator_version": "2026-05-14-v1",
             "demag_limit": _demag_limit_metadata(demag_limit, params.temperature_c),
@@ -230,16 +235,29 @@ def run(
         },
     }
 
-    # Write output
     if output_path is None:
-        output_path = ROOT / "models" / "control_lut.json"
+        raise ValueError("output_path is required; pass a tmp_path in tests or an explicit artifact path")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
-        json.dumps(control_lut, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(control_lut, ensure_ascii=False, indent=2, allow_nan=False),
+        encoding="utf-8",
     )
 
     return control_lut
+
+
+def _validate_flux_lut_matches_params(flux_lut: FluxLut, params: Any) -> None:
+    if flux_lut.pole_pairs != params.pole_pairs:
+        raise ValueError(
+            f"flux_lut.pole_pairs={flux_lut.pole_pairs} != "
+            f"params.pole_pairs={params.pole_pairs}"
+        )
+    if flux_lut.motor_id != params.name:
+        raise ValueError(
+            f"flux_lut.motor_id={flux_lut.motor_id!r} does not match "
+            f"motor_params name={params.name!r}"
+        )
 
 
 def _resolve_torque_axis(
@@ -598,6 +616,36 @@ def _max_current_slope(control_points: list[dict[str, Any]], current_key: str) -
     return max_slope
 
 
+def main(argv: list[str] | None = None) -> dict[str, Any]:
+    parser = argparse.ArgumentParser(
+        description="Generate a control LUT. Use an explicit output path to avoid tracked artifact drift."
+    )
+    parser.add_argument(
+        "--output-path",
+        required=True,
+        type=Path,
+        help="Path to write the generated control LUT JSON.",
+    )
+    parser.add_argument(
+        "--model-type",
+        choices=("linear_dq", "nonlinear_flux_lut"),
+        default="linear_dq",
+    )
+    parser.add_argument("--lut-path", type=Path)
+    parser.add_argument("--temperature-c", type=float)
+    parser.add_argument("--generated-at")
+    args = parser.parse_args(argv)
+
+    result = run(
+        model_type=args.model_type,
+        lut_path=args.lut_path,
+        output_path=args.output_path,
+        temperature_c=args.temperature_c,
+        generated_at=args.generated_at,
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
+    return result
+
+
 if __name__ == "__main__":
-    result = run()
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    main()
