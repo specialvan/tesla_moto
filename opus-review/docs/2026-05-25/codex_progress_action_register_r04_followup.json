@@ -1,0 +1,254 @@
+{
+  "version": "2026-05-29-opus-r04-followup",
+  "review_head": {
+    "claude-mainline": "b22d46e",
+    "working_tree": "dirty"
+  },
+  "purpose": "Follow-up action register after implementing the R03/R04 Opus review fixes. This file appends closure evidence and remaining gaps without rewriting the historical R03/R04 review conclusions.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_dashboard_api.py tests/test_frontend_dashboard.py tests/test_nonlinear_flux_lut.py tests/test_iron_loss.py -q",
+      "result": "122 passed in 113.62s",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-29-R04-ROI-FORMULA-DRIFT",
+    "OPUS-2026-05-29-R04-COPY-EXPORT-MATURITY",
+    "OPUS-2026-05-29-R04-INPUT-BOUNDS",
+    "OPUS-2026-05-29-R04-FALLBACK-DATA-PROVENANCE",
+    "OPUS-2026-05-29-R04-QUESTION-MARK-TEST",
+    "OPUS-2026-05-29-R04-SCHEMA-SHALLOW",
+    "OPUS-2026-05-28-R03-FLUX-MATURITY-RUNTIME",
+    "OPUS-2026-05-28-R03-EXP011-KPI-OOB",
+    "OPUS-2026-05-28-R03-DASHBOARD-MATURITY-MISSING",
+    "OPUS-2026-05-28-R03-LOCAL-API-BOUNDARY",
+    "OPUS-2026-05-28-R03-ALLOW-NAN"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-29-R04-ROI-FORMULA-DRIFT",
+      "severity": "P0",
+      "status": "closed",
+      "closure_summary": "Frontend and backend now use the same 0.12 ROI conversion constant and expose the constant in decision-pack payloads.",
+      "evidence": [
+        "sim/dashboard_api.py:421",
+        "sim/dashboard_api.py:739",
+        "sim/dashboard_api.py:768",
+        "controllable_flux_motor_kb.html:2918",
+        "controllable_flux_motor_kb.html:3717",
+        "controllable_flux_motor_kb.html:5153",
+        "tests/test_dashboard_api.py:468",
+        "tests/test_frontend_dashboard.py:383"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-29-R04-COPY-EXPORT-MATURITY",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "Customer-facing copy/export builders now inject maturity disclaimer lines including engineering_validated=false and no engineering/production release language.",
+      "evidence": [
+        "controllable_flux_motor_kb.html:2943",
+        "controllable_flux_motor_kb.html:3862",
+        "controllable_flux_motor_kb.html:4151",
+        "controllable_flux_motor_kb.html:4400",
+        "controllable_flux_motor_kb.html:4706",
+        "tests/test_frontend_dashboard.py:289",
+        "tests/test_frontend_dashboard.py:484",
+        "tests/test_frontend_dashboard.py:571"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-29-R04-INPUT-BOUNDS",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "Dashboard business assumptions and weights are bounded server-side and clamped in frontend state restoration/input paths.",
+      "evidence": [
+        "sim/dashboard_api.py:423",
+        "sim/dashboard_api.py:447",
+        "controllable_flux_motor_kb.html:3093",
+        "controllable_flux_motor_kb.html:3704",
+        "controllable_flux_motor_kb.html:5198",
+        "tests/test_frontend_dashboard.py:788",
+        "tests/test_dashboard_api.py"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-29-R04-FALLBACK-DATA-PROVENANCE",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "Frontend fallback iron-loss rows carry source/hash provenance and freqOutOfRange flags; backend schema and chart styling expose the same field.",
+      "evidence": [
+        "controllable_flux_motor_kb.html:2920",
+        "controllable_flux_motor_kb.html:2970",
+        "controllable_flux_motor_kb.html:3321",
+        "controllable_flux_motor_kb.html:3327",
+        "sim/dashboard_api.py:184",
+        "sim/dashboard_api.py:238",
+        "reports/dashboard-api-schema.json:51",
+        "tests/test_frontend_dashboard.py:815",
+        "tests/test_dashboard_api.py:45"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-29-R04-QUESTION-MARK-TEST",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "Corrupted question-mark Chinese assertions were replaced with real Chinese strings and negative guards remain in frontend/handoff tests.",
+      "evidence": [
+        "tests/test_frontend_dashboard.py:568",
+        "tests/test_frontend_dashboard.py:581",
+        "reports/dashboard_black_gold_handoff.md"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-29-R04-SCHEMA-SHALLOW",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "Frontend decision-pack validation now checks maturity, ROI conversion, numeric business case fields, disclaimer presence, and deeper API schema keys.",
+      "evidence": [
+        "controllable_flux_motor_kb.html:5267",
+        "controllable_flux_motor_kb.html:5268",
+        "controllable_flux_motor_kb.html:5279",
+        "controllable_flux_motor_kb.html:5582",
+        "controllable_flux_motor_kb.html:5585",
+        "tests/test_frontend_dashboard.py:597",
+        "tests/test_frontend_dashboard.py:600"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-FLUX-MATURITY-RUNTIME",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "FluxLut runtime DTO now carries and validates maturity, rejecting release/validated flags and missing replacement evidence.",
+      "evidence": [
+        "sim/nonlinear_flux_lut.py:33",
+        "sim/nonlinear_flux_lut.py:84",
+        "sim/nonlinear_flux_lut.py:154",
+        "tests/test_nonlinear_flux_lut.py:114",
+        "tests/test_nonlinear_flux_lut.py:118"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-EXP011-KPI-OOB",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "EXP-011 summary now preserves full target KPIs and adds valid-frequency counts/averages/ratio for Bertotti freq_max_hz scope.",
+      "evidence": [
+        "sim/run_iron_loss_experiment.py:259",
+        "sim/run_iron_loss_experiment.py:265",
+        "experiments/exp_011_iron_loss/summary.json:29",
+        "experiments/exp_011_iron_loss/summary.json:35",
+        "tests/test_iron_loss.py:293"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-DASHBOARD-MATURITY-MISSING",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "Dashboard and decision-pack API payloads/schema now include machine-readable engineering maturity false/release false contract.",
+      "evidence": [
+        "sim/dashboard_api.py:42",
+        "sim/dashboard_api.py:199",
+        "sim/dashboard_api.py:235",
+        "sim/dashboard_api.py:773",
+        "reports/dashboard-api-schema.json:23",
+        "reports/dashboard-api-schema.json:202",
+        "tests/test_dashboard_api.py:30",
+        "tests/test_dashboard_api.py:474"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-LOCAL-API-BOUNDARY",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "Local API now has explicit POST body size limit, non-wildcard local CORS origin, and JSON 413 handling.",
+      "evidence": [
+        "sim/dashboard_api.py:38",
+        "sim/dashboard_api.py:39",
+        "sim/dashboard_api.py:835",
+        "sim/dashboard_api.py:924",
+        "sim/dashboard_api.py:930",
+        "tests/test_dashboard_api.py:410"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-ALLOW-NAN",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "Dashboard API, session/state writes, control LUT output, and iron-loss output use json.dumps(..., allow_nan=False).",
+      "evidence": [
+        "sim/dashboard_api.py:612",
+        "sim/dashboard_api.py:651",
+        "sim/dashboard_api.py:696",
+        "sim/run_control_lut_generator.py:242",
+        "sim/run_control_lut_generator.py:620",
+        "sim/run_iron_loss_experiment.py:283",
+        "sim/run_iron_loss_experiment.py:299"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-DASHBOARD-COMMERCIAL-WORDING",
+      "severity": "P1",
+      "status": "open",
+      "remaining_gap": "Global dashboard wording still contains customer-delivery language such as 客户交付清单 and 可交付, even though maturity disclaimers were added to copy/export paths.",
+      "evidence": [
+        "controllable_flux_motor_kb.html:2391",
+        "controllable_flux_motor_kb.html:2819",
+        "controllable_flux_motor_kb.html:3016",
+        "controllable_flux_motor_kb.html:3044"
+      ],
+      "next_action": "Rewrite visible dashboard labels to candidate/draft/plan wording while preserving the explicit maturity false contract."
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-CONTROL-LUT-CACHE-PATH",
+      "severity": "P2",
+      "status": "open",
+      "remaining_gap": "Control LUT test cache remains keyed only by scheme id and not by output path, so file-writing behavior can still be hidden by cache reuse.",
+      "evidence": [
+        "tests/test_control_lut_generator.py:27",
+        "tests/test_control_lut_generator.py:44",
+        "tests/test_control_lut_generator.py:48"
+      ],
+      "next_action": "Include output_path in the cache key or split pure computation from file writing in tests."
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-P0-DSL-SPLIT",
+      "severity": "P2",
+      "status": "open",
+      "remaining_gap": "P0 acceptance still carries a separate hardcoded _eval_check branch while P1/P2 use the suffix DSL harness.",
+      "evidence": [
+        "tests/test_scheme_p0_lut_acceptance.py:83",
+        "tests/test_scheme_p0_lut_acceptance.py:136",
+        "tests/test_scheme_experiment_acceptance.py:5",
+        "tests/test_scheme_experiment_acceptance.py:84"
+      ],
+      "next_action": "Move P0 derived values into the same suffix DSL used by P1/P2 bindings."
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-PROMPT-BLOCK-ANCHOR",
+      "severity": "P2",
+      "status": "open",
+      "remaining_gap": "Prompt SIM ANCHOR tests still assert file-level anchor presence and engineering_validated=false, not a per-Prompt block anchor contract.",
+      "evidence": [
+        "tests/test_r03_prompt_simulation_anchor.py:46",
+        "tests/test_r03_prompt_simulation_anchor.py:56",
+        "tests/test_r03_prompt_maturity.py:28"
+      ],
+      "next_action": "Require each Prompt block to carry a compact anchor/maturity/evidence line."
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-UNTRACKED-DEMAG-REF",
+      "severity": "P1",
+      "status": "open",
+      "remaining_gap": "P0 bindings reference models/demag_limit_estimate.json; the file exists locally but remains an untracked repository item until committed.",
+      "evidence": [
+        "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json:15",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json:20",
+        "engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json:15",
+        "git status --short"
+      ],
+      "next_action": "Add models/demag_limit_estimate.json to the committed change set or remove the binding reference."
+    }
+  ]
+}

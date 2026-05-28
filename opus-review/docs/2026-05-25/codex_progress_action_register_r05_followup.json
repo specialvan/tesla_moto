@@ -1,0 +1,105 @@
+{
+  "version": "2026-05-29-opus-r05-followup",
+  "review_head": {
+    "claude-mainline": "b22d46e",
+    "working_tree": "dirty"
+  },
+  "purpose": "Second follow-up register for continuing the Opus R03/R04 cleanup. This appends closure evidence for items that remained open in codex_progress_action_register_r04_followup.json, without rewriting prior registers.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_frontend_dashboard.py tests/test_dashboard_api.py tests/test_control_lut_generator.py tests/test_r03_prompt_simulation_anchor.py tests/test_r03_prompt_maturity.py -q",
+      "result": "131 passed in 210.28s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_scheme_p0_lut_acceptance.py tests/test_scheme_experiment_acceptance.py -q",
+      "result": "39 passed in 201.85s",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-28-R03-DASHBOARD-COMMERCIAL-WORDING",
+    "OPUS-2026-05-28-R03-CONTROL-LUT-CACHE-PATH",
+    "OPUS-2026-05-28-R03-PROMPT-BLOCK-ANCHOR",
+    "OPUS-2026-05-28-R03-P0-DSL-SPLIT"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-28-R03-DASHBOARD-COMMERCIAL-WORDING",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "Visible dashboard, backend fallback copy, and handoff wording now use candidate/validation-preparation wording instead of strong customer-delivery or software-release wording.",
+      "evidence": [
+        "controllable_flux_motor_kb.html:2391",
+        "controllable_flux_motor_kb.html:2392",
+        "controllable_flux_motor_kb.html:2819",
+        "controllable_flux_motor_kb.html:3002",
+        "controllable_flux_motor_kb.html:3007",
+        "controllable_flux_motor_kb.html:3107",
+        "controllable_flux_motor_kb.html:4848",
+        "controllable_flux_motor_kb.html:4967",
+        "sim/dashboard_api.py:98",
+        "sim/dashboard_api.py:100",
+        "reports/dashboard_black_gold_handoff.md:40",
+        "tests/test_frontend_dashboard.py:97",
+        "tests/test_frontend_dashboard.py:110"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-CONTROL-LUT-CACHE-PATH",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "Control LUT test cache key now includes output_path, and the regression test proves two output paths invoke two writes even with identical generation kwargs.",
+      "evidence": [
+        "tests/test_control_lut_generator.py:42",
+        "tests/test_control_lut_generator.py:46",
+        "tests/test_control_lut_generator.py:73",
+        "tests/test_control_lut_generator.py:89"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-PROMPT-BLOCK-ANCHOR",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "Each r03 Prompt block now carries a compact Anchor line with scheme short, model maturity, simulation status, engineering_validated=false, evidence_gap, and pytest gate; tests enforce this per prompt block.",
+      "evidence": [
+        "tests/test_r03_prompt_simulation_anchor.py:59",
+        "tests/test_r03_prompt_simulation_anchor.py:69",
+        "engineering/v2/scheme-01/prompts/V2-S01-PROMPT-r03-production_drawing_pack.md:29",
+        "engineering/v2/scheme-04/prompts/V2-S04-PROMPT-r03-production_drawing_pack.md:29",
+        "engineering/v2/scheme-12/prompts/V2-S12-PROMPT-r03-production_drawing_pack.md:30"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-P0-DSL-SPLIT",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "P0 acceptance now uses the same shared suffix DSL evaluator as P1/P2; P0-specific ratio/jump checks are exposed as derived p0_acceptance fields and binding expect keys use .min/.max/.present suffixes.",
+      "evidence": [
+        "tests/scheme_expect_dsl.py:45",
+        "tests/test_scheme_p0_lut_acceptance.py:27",
+        "tests/test_scheme_p0_lut_acceptance.py:86",
+        "tests/test_scheme_p0_lut_acceptance.py:94",
+        "tests/test_scheme_p0_lut_acceptance.py:130",
+        "tests/test_scheme_experiment_acceptance.py:34",
+        "tests/test_scheme_experiment_acceptance.py:113",
+        "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json:30",
+        "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json:23"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-UNTRACKED-DEMAG-REF",
+      "severity": "P1",
+      "status": "open",
+      "remaining_gap": "models/demag_limit_estimate.json exists and is referenced by S01/S02/S11 bindings, but it remains untracked in the current worktree and therefore is not proven present in a clean checkout until committed.",
+      "evidence": [
+        "models/demag_limit_estimate.json",
+        "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json:15",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json:20",
+        "engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json:15",
+        "git status --short -- models/demag_limit_estimate.json"
+      ],
+      "next_action": "Commit models/demag_limit_estimate.json with the binding changes or remove the binding references before integration."
+    }
+  ]
+}

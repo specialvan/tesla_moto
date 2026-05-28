@@ -1,0 +1,242 @@
+{
+  "version": "2026-05-29-opus-r06-followup",
+  "review_head": {
+    "claude-mainline": "b22d46e",
+    "working_tree": "dirty"
+  },
+  "purpose": "Third follow-up register after continuing the Opus R01/R02/R03 cleanup. This appends closure evidence for control-LUT mutation, sim_binding schema/gate class, prompt figure ordering, and local artifact hygiene without rewriting prior registers.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_repository_hygiene.py -q",
+      "result": "1 passed in 0.01s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_scheme_simulation_coverage.py -q",
+      "result": "5 passed in 0.88s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_r03_prompt_maturity.py -q",
+      "result": "4 passed in 0.02s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_scheme_02_lut_acceptance.py tests/test_scheme_p0_lut_acceptance.py -q",
+      "result": "18 passed in 82.76s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_control_lut_generator.py -q",
+      "result": "41 passed in 191.58s",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-25-AMR-001",
+    "OPUS-2026-05-25-006",
+    "OPUS-2026-05-25-005",
+    "OPUS-2026-05-25-007",
+    "OPUS-2026-05-25-009",
+    "OPUS-2026-05-25-AGENT-WORKTREE-ISOLATION",
+    "OPUS-2026-05-25-COMBINED-LOSSES",
+    "OPUS-2026-05-25-BERTOTTI-FREQ",
+    "OPUS-2026-05-25-EXP011-RATIO",
+    "OPUS-2026-05-25-FLUX-LUT-COHERENCE",
+    "OPUS-2026-05-28-R03-UNTRACKED-DEMAG-REF"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-25-AMR-001",
+      "severity": "P0",
+      "status": "closed",
+      "closure_summary": "Control LUT generation no longer silently writes models/control_lut.json through library calls; run() requires an explicit output_path, generated_at is injectable, and the CLI requires --output-path before writing any artifact.",
+      "evidence": [
+        "sim/run_control_lut_generator.py:52",
+        "sim/run_control_lut_generator.py:226",
+        "sim/run_control_lut_generator.py:239",
+        "sim/run_control_lut_generator.py:619",
+        "sim/run_control_lut_generator.py:624",
+        "tests/test_control_lut_generator.py:113",
+        "tests/test_control_lut_generator.py:124",
+        "tests/test_control_lut_generator.py:135",
+        "tests/test_control_lut_generator.py:426"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-006",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "All 12 r02 sim_binding files now carry simulation_status, model_maturity, and gate_class and are validated by models/sim_binding_schema.json plus coverage cross-check tests.",
+      "evidence": [
+        "models/sim_binding_schema.json:12",
+        "models/sim_binding_schema.json:31",
+        "models/sim_binding_schema.json:35",
+        "models/sim_binding_schema.json:45",
+        "tests/test_scheme_simulation_coverage.py:96",
+        "tests/test_scheme_simulation_coverage.py:106",
+        "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json:7",
+        "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json:7",
+        "engineering/v2/scheme-12/parameters/V2-S12-PARAM-sim_binding-r02.json:7"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-005",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "Coverage and sim_binding records now distinguish smoke and proxy gate classes, with tests preventing binding_smoke_passed records from being treated as proxy or production targets.",
+      "evidence": [
+        "models/scheme_simulation_coverage.json:32",
+        "models/scheme_simulation_coverage.json:129",
+        "models/scheme_simulation_coverage.json:210",
+        "tests/test_scheme_simulation_coverage.py:59",
+        "tests/test_scheme_simulation_coverage.py:117",
+        "tests/test_scheme_simulation_coverage.py:118",
+        "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json:9",
+        "engineering/v2/scheme-07/parameters/V2-S07-PARAM-sim_binding-r02.json:9"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-007",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "r03 prompt maturity tests now enforce figure heading order as 图 1, 图 2, 图 3, 图 4 for every production drawing prompt pack.",
+      "evidence": [
+        "tests/test_r03_prompt_maturity.py:31",
+        "tests/test_r03_prompt_maturity.py:78",
+        "tests/test_r03_prompt_maturity.py:81"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-009",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "review-pr/ is now ignored and guarded by a repository hygiene test, reducing the risk that external HTML references are accidentally staged by broad add commands.",
+      "evidence": [
+        ".gitignore:18",
+        "tests/test_repository_hygiene.py:6",
+        "tests/test_repository_hygiene.py:13"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-AGENT-WORKTREE-ISOLATION",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": ".claude/worktrees/, .claude/cache/, and .claude/sessions/ are now ignored and covered by a repository hygiene test. This closes the repository-hygiene side of the item; stale local branches still require manual owner cleanup outside this patch.",
+      "evidence": [
+        ".gitignore:19",
+        ".gitignore:20",
+        ".gitignore:21",
+        "tests/test_repository_hygiene.py:14",
+        "tests/test_repository_hygiene.py:15",
+        "tests/test_repository_hygiene.py:16"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-COMBINED-LOSSES",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "combined_losses now returns total_loss and iron_loss_fraction with tests documenting that the second value is not efficiency_percent.",
+      "evidence": [
+        "sim/iron_loss.py:286",
+        "sim/iron_loss.py:297",
+        "sim/iron_loss.py:306",
+        "tests/test_iron_loss.py:187",
+        "tests/test_iron_loss.py:199"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-BERTOTTI-FREQ",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "EXP-011 now reports scan and target-torque frequency out-of-range counts/max values for the Bertotti coefficient freq_max_hz scope.",
+      "evidence": [
+        "sim/run_iron_loss_experiment.py:182",
+        "sim/run_iron_loss_experiment.py:252",
+        "sim/run_iron_loss_experiment.py:259",
+        "experiments/exp_011_iron_loss/summary.json:26",
+        "experiments/exp_011_iron_loss/summary.json:30",
+        "tests/test_iron_loss.py:230"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-EXP011-RATIO",
+      "severity": "P2",
+      "status": "closed",
+      "closure_summary": "EXP-011 iron-loss ratios now use matching average numerator/denominator populations, with separate valid-frequency KPIs for non-extrapolated target points.",
+      "evidence": [
+        "sim/run_iron_loss_experiment.py:208",
+        "sim/run_iron_loss_experiment.py:214",
+        "sim/run_iron_loss_experiment.py:268",
+        "sim/run_iron_loss_experiment.py:273",
+        "tests/test_iron_loss.py:250",
+        "tests/test_iron_loss.py:270",
+        "experiments/exp_011_iron_loss/summary.json:38",
+        "experiments/exp_011_iron_loss/summary.json:39"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-FLUX-LUT-COHERENCE",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "Flux LUTs now carry motor_id and pole_pairs in schema/sample data, and control LUT generation rejects pole-pair or motor-id mismatches before using nonlinear LUT data.",
+      "evidence": [
+        "models/flux_lut_schema.json:8",
+        "models/flux_lut_sample.json:4",
+        "sim/run_control_lut_generator.py:251",
+        "sim/run_control_lut_generator.py:256",
+        "tests/test_control_lut_generator.py:595",
+        "tests/test_control_lut_generator.py:610"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-001",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "codex-review-line and claude-mainline integration is still a branch-management task, not closed by local code/test changes in the dirty claude-mainline worktree.",
+      "evidence": [
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md",
+        "git status --short --branch"
+      ],
+      "next_action": "Run the branch_integration_strategy.md migration/cherry-pick workflow from a clean integration branch."
+    },
+    {
+      "id": "OPUS-2026-05-25-PYFLUENT-001",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "sim/pyfluent_workflow.py, sim/run_pyfluent_workflow.py, and tests/test_pyfluent_workflow.py are still absent in the current claude-mainline checkout.",
+      "evidence": [
+        "Test-Path sim/pyfluent_workflow.py",
+        "Test-Path sim/run_pyfluent_workflow.py",
+        "Test-Path tests/test_pyfluent_workflow.py"
+      ],
+      "next_action": "Cherry-pick or reimplement the PyFluent workflow with dry-run and manifest tests before marking PyFluent items closed."
+    },
+    {
+      "id": "OPUS-2026-05-28-R03-UNTRACKED-DEMAG-REF",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "models/demag_limit_estimate.json is now part of the V2 binding deliverable set and S01/S02/S11 resolve their shared demag_limit $ref through the acceptance harness.",
+      "evidence": [
+        "models/demag_limit_estimate.json",
+        "engineering/v2/scheme-01/parameters/V2-S01-PARAM-sim_binding-r02.json:24",
+        "engineering/v2/scheme-02/parameters/V2-S02-PARAM-sim_binding-r02.json:27",
+        "engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json:24",
+        "tests/test_scheme_p0_lut_acceptance.py:48",
+        "tests/test_scheme_p0_lut_acceptance.py:173"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-002",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "The worktree is still dirty with multiple modified and untracked files. The new .gitignore prevents two high-risk local directories, but this does not close full worktree hygiene until an intentional integration/staging plan is executed.",
+      "evidence": [
+        ".gitignore:18",
+        ".gitignore:19",
+        "git status --short --branch"
+      ],
+      "next_action": "Stage/commit the intended deliverable set explicitly and resolve or ignore remaining unrelated local artifacts."
+    }
+  ]
+}
