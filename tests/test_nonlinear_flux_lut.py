@@ -18,6 +18,7 @@ CSV_PATH = Path("experiments/exp_006_nonlinear_flux_lut/nonlinear_flux_lut_resul
 REQUIRED_LUT_FIELDS = {
     "version",
     "purpose",
+    "motor_id",
     "pole_pairs",
     "unit_convention",
     "id_axis_a",
@@ -30,6 +31,12 @@ REQUIRED_LUT_FIELDS = {
 
 def load_lut() -> FluxLut:
     return FluxLut.from_file(LUT_SAMPLE_PATH)
+
+
+def sample_lut_dict(**overrides):
+    sample = json.loads(LUT_SAMPLE_PATH.read_text(encoding="utf-8"))
+    sample.update(overrides)
+    return sample
 
 
 def test_flux_lut_schema_matches_sample_and_runtime_contract() -> None:
@@ -55,6 +62,7 @@ def test_flux_lut_schema_matches_sample_and_runtime_contract() -> None:
     )
 
     lut = FluxLut.from_dict(sample)
+    assert lut.motor_id == sample["motor_id"]
     assert lut.pole_pairs == sample["pole_pairs"]
     assert lut.id_axis_a == sample["id_axis_a"]
     assert lut.iq_axis_a == sample["iq_axis_a"]
@@ -63,51 +71,52 @@ def test_flux_lut_schema_matches_sample_and_runtime_contract() -> None:
 def test_flux_lut_from_dict_rejects_unsorted_axes_and_shape_mismatch() -> None:
     with pytest.raises(ValueError, match="strictly increasing"):
         FluxLut.from_dict(
-            {
-                "pole_pairs": 4,
-                "unit_convention": {
-                    "dq_transform": "amplitude_invariant",
-                    "current": "phase_peak_ampere",
-                    "flux_linkage": "weber",
-                },
-                "id_axis_a": [-100.0, -200.0],
-                "iq_axis_a": [0.0, 100.0],
-                "lambda_d_wb": [[0.02, 0.03], [0.04, 0.05]],
-                "lambda_q_wb": [[0.00, 0.01], [0.00, 0.02]],
-            }
+            sample_lut_dict(
+                id_axis_a=[-100.0, -200.0],
+                iq_axis_a=[0.0, 100.0],
+                lambda_d_wb=[[0.02, 0.03], [0.04, 0.05]],
+                lambda_q_wb=[[0.00, 0.01], [0.00, 0.02]],
+            )
         )
 
     with pytest.raises(ValueError, match="row count"):
         FluxLut.from_dict(
-            {
-                "pole_pairs": 4,
-                "unit_convention": {
-                    "dq_transform": "amplitude_invariant",
-                    "current": "phase_peak_ampere",
-                    "flux_linkage": "weber",
-                },
-                "id_axis_a": [-200.0, -100.0],
-                "iq_axis_a": [0.0, 100.0],
-                "lambda_d_wb": [[0.02, 0.03]],
-                "lambda_q_wb": [[0.00, 0.01], [0.00, 0.02]],
-            }
+            sample_lut_dict(
+                id_axis_a=[-200.0, -100.0],
+                iq_axis_a=[0.0, 100.0],
+                lambda_d_wb=[[0.02, 0.03]],
+                lambda_q_wb=[[0.00, 0.01], [0.00, 0.02]],
+            )
         )
 
     with pytest.raises(ValueError, match="column count"):
         FluxLut.from_dict(
-            {
-                "pole_pairs": 4,
-                "unit_convention": {
-                    "dq_transform": "amplitude_invariant",
-                    "current": "phase_peak_ampere",
-                    "flux_linkage": "weber",
-                },
-                "id_axis_a": [-200.0, -100.0],
-                "iq_axis_a": [0.0, 100.0],
-                "lambda_d_wb": [[0.02], [0.04]],
-                "lambda_q_wb": [[0.00, 0.01], [0.00, 0.02]],
-            }
+            sample_lut_dict(
+                id_axis_a=[-200.0, -100.0],
+                iq_axis_a=[0.0, 100.0],
+                lambda_d_wb=[[0.02], [0.04]],
+                lambda_q_wb=[[0.00, 0.01], [0.00, 0.02]],
+            )
         )
+
+
+def test_flux_lut_from_dict_rejects_missing_or_overstated_maturity() -> None:
+    missing_maturity = sample_lut_dict()
+    missing_maturity.pop("maturity")
+    with pytest.raises(ValueError, match="Missing flux LUT fields: maturity"):
+        FluxLut.from_dict(missing_maturity)
+
+    overstated = sample_lut_dict(
+        maturity={
+            "model_maturity": "synthetic_fixture",
+            "physics_model_validated": False,
+            "engineering_validated": False,
+            "production_release_allowed": True,
+            "required_replacement": "none",
+        }
+    )
+    with pytest.raises(ValueError, match="production_release_allowed must be false"):
+        FluxLut.from_dict(overstated)
 
 
 def test_flux_lut_interpolates_bilinearly_inside_cell() -> None:
@@ -127,9 +136,13 @@ def test_flux_lut_accepts_boundary_points_and_rejects_out_of_bounds() -> None:
         lut.interpolate(-260.0, 200.0)
 
 
-def test_nonlinear_torque_uses_cross_flux_difference_and_rejects_invalid_pole_pairs() -> None:
+def test_nonlinear_torque_uses_cross_flux_difference_and_rejects_invalid_pole_pairs() -> (
+    None
+):
     lut = load_lut()
-    torque = nonlinear_torque_nm(lut, pole_pairs=lut.pole_pairs, id_a=-100.0, iq_a=100.0)
+    torque = nonlinear_torque_nm(
+        lut, pole_pairs=lut.pole_pairs, id_a=-100.0, iq_a=100.0
+    )
 
     assert isclose(torque, 42.3, rel_tol=1e-12)
 
@@ -145,7 +158,10 @@ def test_exp_006_runner_writes_summary_and_csv_outputs() -> None:
     assert summary["experiment"] == "exp_006_nonlinear_flux_lut"
     assert summary["pole_pairs"] == 4
     assert summary["lut_path"] == "models\\flux_lut_sample.json"
-    assert summary["csv_path"] == "experiments\\exp_006_nonlinear_flux_lut\\nonlinear_flux_lut_results.csv"
+    assert (
+        summary["csv_path"]
+        == "experiments\\exp_006_nonlinear_flux_lut\\nonlinear_flux_lut_results.csv"
+    )
     assert summary["grid_points"] == 9
     assert summary["best_torque_point"]["torque_nm"] > 0.0
 
@@ -158,7 +174,10 @@ def test_exp_006_runner_writes_summary_and_csv_outputs() -> None:
     assert data["model_scope"] == "synthetic_lambda_d_lambda_q_lut_interpolation"
     assert data["pole_pairs"] == 4
     assert data["lut_path"] == "models\\flux_lut_sample.json"
-    assert data["csv_path"] == "experiments\\exp_006_nonlinear_flux_lut\\nonlinear_flux_lut_results.csv"
+    assert (
+        data["csv_path"]
+        == "experiments\\exp_006_nonlinear_flux_lut\\nonlinear_flux_lut_results.csv"
+    )
 
 
 def test_exp_006_json_outputs_do_not_contain_nonstandard_numbers() -> None:

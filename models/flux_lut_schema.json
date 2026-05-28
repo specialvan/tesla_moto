@@ -5,6 +5,7 @@
   "required": [
     "version",
     "purpose",
+    "motor_id",
     "pole_pairs",
     "unit_convention",
     "id_axis_a",
@@ -19,6 +20,10 @@
     },
     "purpose": {
       "type": "string"
+    },
+    "motor_id": {
+      "type": "string",
+      "minLength": 1
     },
     "pole_pairs": {
       "type": "integer",

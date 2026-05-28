@@ -35,6 +35,7 @@ class TestBertottiCoeffs:
 
     def test_negative_coefficient_raises(self) -> None:
         import pytest
+
         with pytest.raises(ValueError, match="must be positive"):
             BertottiCoeffs(k_hyst=-0.01, k_eddy=0.004, k_excess=0.003)
         with pytest.raises(ValueError, match="must be positive"):
@@ -44,6 +45,7 @@ class TestBertottiCoeffs:
 
     def test_inf_coefficient_raises_at_construction(self) -> None:
         import pytest
+
         with pytest.raises(ValueError, match="must be finite"):
             BertottiCoeffs(k_hyst=float("inf"), k_eddy=0.004, k_excess=0.003)
 
@@ -58,6 +60,7 @@ class TestSteinmetzCoeffs:
 
     def test_invalid_alpha_raises(self) -> None:
         import pytest
+
         with pytest.raises(ValueError, match="alpha must be in"):
             SteinmetzCoeffs(k_st=0.03, alpha=0.1, beta=2.0)
         with pytest.raises(ValueError, match="alpha must be in"):
@@ -80,6 +83,7 @@ class TestFluxDensityFromLambda:
 
     def test_zero_radius_raises(self) -> None:
         import pytest
+
         with pytest.raises(ValueError, match="core_radius_m must be positive"):
             flux_density_from_lambda(0.055, 0.0)
 
@@ -130,7 +134,7 @@ class TestSteinmetzIronLoss:
         iron = steinmetz_iron_loss_per_phase(0.055, 0.0, 100.0, coeffs, 0.05)
 
         b_peak = flux_density_from_lambda(0.055, 0.05)
-        expected = coeffs.k_st * (100.0 ** coeffs.alpha) * (b_peak ** coeffs.beta)
+        expected = coeffs.k_st * (100.0**coeffs.alpha) * (b_peak**coeffs.beta)
         assert isclose(iron.hysteresis_w, expected, rel_tol=1e-9)
         assert iron.eddy_current_w == 0.0
         assert iron.excess_w == 0.0
@@ -142,7 +146,7 @@ class TestSteinmetzIronLoss:
         iron_100 = steinmetz_iron_loss_per_phase(0.055, 0.0, 100.0, coeffs, 0.05)
         # At 100Hz, loss should be 2^1.4 = 2.64x higher than 50Hz
         ratio = iron_100.total_per_phase_w / iron_50.total_per_phase_w
-        expected_ratio = 2.0 ** 1.4
+        expected_ratio = 2.0**1.4
         assert isclose(ratio, expected_ratio, rel_tol=1e-6)
 
 
@@ -150,8 +154,11 @@ class TestIronLossFromIdIq:
     def test_linear_flux_from_id_iq(self) -> None:
         # lambda_d = ld * id + psi_f, lambda_q = lq * iq
         iron = iron_loss_from_id_iq(
-            id_a=0.0, iq_a=100.0,
-            ld_h=0.00018, lq_h=0.00042, psi_f_wb=0.055,
+            id_a=0.0,
+            iq_a=100.0,
+            ld_h=0.00018,
+            lq_h=0.00042,
+            psi_f_wb=0.055,
             freq_hz=100.0,
             coeffs=DEFAULT_BERTOTTI,
         )
@@ -159,8 +166,11 @@ class TestIronLossFromIdIq:
 
     def test_zero_current_gives_zero_flux_contribution(self) -> None:
         iron = iron_loss_from_id_iq(
-            id_a=0.0, iq_a=0.0,
-            ld_h=0.00018, lq_h=0.00042, psi_f_wb=0.055,
+            id_a=0.0,
+            iq_a=0.0,
+            ld_h=0.00018,
+            lq_h=0.00042,
+            psi_f_wb=0.055,
             freq_hz=100.0,
             coeffs=DEFAULT_BERTOTTI,
         )
@@ -174,57 +184,146 @@ class TestCombinedLosses:
         iron = bertotti_iron_loss_per_phase(0.055, 0.0, 100.0, coeffs, 0.05)
         copper_w = 1000.0
 
-        total, eff = combined_losses(iron, copper_w)
+        total, iron_loss_fraction = combined_losses(iron, copper_w)
         assert total == iron.total_three_phase_w + copper_w
-        assert 0.0 <= eff <= 1.0
+        assert 0.0 <= iron_loss_fraction <= 1.0
+        assert iron_loss_fraction == iron.total_three_phase_w / total
 
     def test_zero_copper_loss(self) -> None:
         coeffs = DEFAULT_BERTOTTI
         iron = bertotti_iron_loss_per_phase(0.055, 0.0, 100.0, coeffs, 0.05)
-        total, eff = combined_losses(iron, 0.0)
+        total, iron_loss_fraction = combined_losses(iron, 0.0)
         assert total == iron.total_three_phase_w
-        assert eff == 1.0
+        assert iron_loss_fraction == 1.0
+
+    def test_combined_losses_documents_iron_loss_fraction_not_efficiency(self) -> None:
+        assert "iron_loss_fraction" in combined_losses.__doc__
+        assert "efficiency_percent" not in combined_losses.__doc__
 
 
 class TestIronLossExperiment:
-    def test_iron_loss_experiment_writes_summary_and_csv(self) -> None:
-        summary = run()
+    def test_iron_loss_experiment_writes_summary_and_csv(self, tmp_path: Path) -> None:
+        summary = run(output_dir=tmp_path)
 
-        assert SUMMARY_PATH.exists()
-        assert CSV_PATH.exists()
+        assert (tmp_path / "summary.json").exists()
+        assert (tmp_path / "iron_loss_sweep_results.csv").exists()
         assert summary["experiment"] == "exp_011_iron_loss"
         assert summary["model_scope"] == "linear_dq_with_iron_loss_estimation"
         assert summary["iron_loss_model"]["type"] == "bertotti_three_term"
 
-    def test_iron_loss_experiment_summary_contains_key_metrics(self) -> None:
-        summary = run()
+    def test_iron_loss_experiment_summary_contains_key_metrics(
+        self, tmp_path: Path
+    ) -> None:
+        summary = run(output_dir=tmp_path)
 
         assert "avg_iron_loss_at_target_torque_w" in summary
         assert "avg_efficiency_at_target_torque_pct" in summary
         assert "target_torque_feasible_count" in summary
         assert "iron_loss_vs_copper_loss_ratio" in summary
+        assert "freq_max_hz" in summary["iron_loss_model"]
+        assert "freq_out_of_range_points" in summary
         assert summary["target_torque_nm"] == 100.0
 
-    def test_iron_loss_experiment_csv_has_iron_loss_columns(self) -> None:
-        run()
-        with CSV_PATH.open("r", encoding="utf-8") as f:
+    def test_iron_loss_experiment_flags_bertotti_frequency_extrapolation(
+        self, tmp_path: Path
+    ) -> None:
+        summary = run(output_dir=tmp_path)
+        freq_max_hz = summary["iron_loss_model"]["freq_max_hz"]
+
+        with (tmp_path / "iron_loss_sweep_results.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
+            import csv
+
+            rows = list(csv.DictReader(f))
+
+        expected_count = sum(float(row["freq_hz"]) > freq_max_hz for row in rows)
+        assert summary["freq_out_of_range_points"] == expected_count
+        assert summary["freq_out_of_range_points"] > 0
+        assert summary["freq_out_of_range_max_hz"] == max(
+            float(row["freq_hz"]) for row in rows
+        )
+
+    def test_iron_loss_experiment_ratio_uses_matching_average_copper_denominator(
+        self, tmp_path: Path
+    ) -> None:
+        summary = run(output_dir=tmp_path)
+        with (tmp_path / "iron_loss_sweep_results.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
+            import csv
+
+            rows = list(csv.DictReader(f))
+
+        target_rows = [
+            row for row in rows if row["min_current_target_feasible"] == "True"
+        ]
+        avg_copper_loss = sum(
+            float(row["min_current_target_copper_loss_w"]) for row in target_rows
+        ) / len(target_rows)
+        expected_ratio = summary["avg_iron_loss_at_target_torque_w"] / avg_copper_loss
+
+        assert isclose(
+            summary["iron_loss_vs_copper_loss_ratio"], expected_ratio, rel_tol=1e-9
+        )
+
+    def test_iron_loss_experiment_reports_valid_frequency_target_kpis(
+        self, tmp_path: Path
+    ) -> None:
+        summary = run(output_dir=tmp_path)
+        freq_max_hz = summary["iron_loss_model"]["freq_max_hz"]
+        with (tmp_path / "iron_loss_sweep_results.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
+            import csv
+
+            rows = list(csv.DictReader(f))
+
+        target_rows = [
+            row for row in rows if row["min_current_target_feasible"] == "True"
+        ]
+        valid_rows = [row for row in target_rows if float(row["freq_hz"]) <= freq_max_hz]
+        out_of_range_rows = [
+            row for row in target_rows if float(row["freq_hz"]) > freq_max_hz
+        ]
+        avg_iron = sum(float(row["min_current_target_iron_loss_w"]) for row in valid_rows) / len(valid_rows)
+        avg_copper = sum(float(row["min_current_target_copper_loss_w"]) for row in valid_rows) / len(valid_rows)
+        avg_eff = sum(float(row["min_current_target_efficiency_pct"]) for row in valid_rows) / len(valid_rows)
+
+        assert summary["target_torque_valid_freq_count"] == len(valid_rows)
+        assert summary["target_torque_freq_out_of_range_count"] == len(out_of_range_rows)
+        assert summary["target_torque_freq_out_of_range_count"] > 0
+        assert isclose(summary["avg_iron_loss_at_target_torque_valid_freq_w"], avg_iron, rel_tol=1e-9)
+        assert isclose(summary["avg_efficiency_at_target_torque_valid_freq_pct"], avg_eff, rel_tol=1e-9)
+        assert isclose(summary["iron_loss_vs_copper_loss_ratio_valid_freq"], avg_iron / avg_copper, rel_tol=1e-9)
+
+    def test_iron_loss_experiment_csv_has_iron_loss_columns(
+        self, tmp_path: Path
+    ) -> None:
+        run(output_dir=tmp_path)
+        with (tmp_path / "iron_loss_sweep_results.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
             header = f.readline().strip()
         assert "baseline_iron_loss_w" in header
         assert "min_current_target_iron_loss_w" in header
         assert "min_current_target_efficiency_pct" in header
         assert "min_current_target_b_peak_t" in header
 
-    def test_iron_loss_experiment_csv_row_count(self) -> None:
-        summary = run()
-        with CSV_PATH.open("r", encoding="utf-8") as f:
+    def test_iron_loss_experiment_csv_row_count(self, tmp_path: Path) -> None:
+        summary = run(output_dir=tmp_path)
+        with (tmp_path / "iron_loss_sweep_results.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
             row_count = sum(1 for _ in f) - 1  # subtract header
         max_speed = summary["max_speed_scanned_rpm"]
         step = summary["scan_step_rpm"]
         expected_rows = int(max_speed / step) + 1
         assert row_count == expected_rows
 
-    def test_iron_loss_experiment_persists_to_disk(self) -> None:
-        summary = run()
-        saved = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+    def test_iron_loss_experiment_persists_to_disk(self, tmp_path: Path) -> None:
+        summary = run(output_dir=tmp_path)
+        saved = json.loads((tmp_path / "summary.json").read_text(encoding="utf-8"))
         assert saved["experiment"] == "exp_011_iron_loss"
         assert saved["target_torque_nm"] == 100.0
+        assert summary["csv_path"].endswith("iron_loss_sweep_results.csv")

@@ -66,7 +66,7 @@ def candidate_to_row(
 
     lambda_d = params.ld_h * candidate.id_a + params.psi_f_wb
     lambda_q = params.lq_h * candidate.iq_a
-    lambda_mag = (lambda_d ** 2 + lambda_q ** 2) ** 0.5
+    lambda_mag = (lambda_d**2 + lambda_q**2) ** 0.5
 
     copper_loss = candidate.copper_loss_w
 
@@ -91,7 +91,9 @@ def candidate_to_row(
     omega_e = freq_hz * 2.0 * 3.14159265359
     mechanical_power_w = candidate.torque_nm * omega_e / params.pole_pairs
     input_power_w = mechanical_power_w + total_loss
-    efficiency_pct = (mechanical_power_w / input_power_w * 100.0) if input_power_w > 0 else 0.0
+    efficiency_pct = (
+        (mechanical_power_w / input_power_w * 100.0) if input_power_w > 0 else 0.0
+    )
 
     return {
         f"{prefix}_feasible": candidate.feasible,
@@ -110,7 +112,7 @@ def candidate_to_row(
     }
 
 
-def run() -> dict[str, Any]:
+def run(output_dir: Path | None = None) -> dict[str, Any]:
     """Run the iron loss experiment."""
     params, raw_params, grid = load_params()
 
@@ -122,7 +124,9 @@ def run() -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
 
     for speed_rpm in speed_grid(params.speed_max_rpm, step_rpm):
-        omega_e = mechanical_rpm_to_electrical_rad_per_second(speed_rpm, params.pole_pairs)
+        omega_e = mechanical_rpm_to_electrical_rad_per_second(
+            speed_rpm, params.pole_pairs
+        )
         freq_hz = omega_e / (2.0 * 3.14159265359)
 
         # Get candidates
@@ -135,9 +139,7 @@ def run() -> dict[str, Any]:
         # Iron loss is zero at 0 Hz (standstill)
         if freq_hz > 0:
             iron_base = iron_loss_from_id_iq(
-                0.0, 0.0,
-                params.ld_h, params.lq_h, params.psi_f_wb,
-                freq_hz, coeffs
+                0.0, 0.0, params.ld_h, params.lq_h, params.psi_f_wb, freq_hz, coeffs
             )
             baseline_iron_loss_w = iron_base.total_three_phase_w
         else:
@@ -150,15 +152,21 @@ def run() -> dict[str, Any]:
             "target_torque_nm": params.torque_target_nm,
             "baseline_iron_loss_w": baseline_iron_loss_w,
         }
-        row.update(candidate_to_row("min_current_target", min_current, params, coeffs, freq_hz))
-        row.update(candidate_to_row("max_feasible_torque", max_torque, params, coeffs, freq_hz))
+        row.update(
+            candidate_to_row("min_current_target", min_current, params, coeffs, freq_hz)
+        )
+        row.update(
+            candidate_to_row("max_feasible_torque", max_torque, params, coeffs, freq_hz)
+        )
         rows.append(row)
 
     if not rows:
         raise ValueError("Iron loss scan produced no rows")
 
     # Write CSV
-    output_dir = ROOT / "experiments" / "exp_011_iron_loss"
+    if output_dir is None:
+        output_dir = ROOT / "experiments" / "exp_011_iron_loss"
+    output_dir = output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / "iron_loss_sweep_results.csv"
 
@@ -171,14 +179,49 @@ def run() -> dict[str, Any]:
     # Compute summary statistics
     target_points = [r for r in rows if r["min_current_target_feasible"]]
     max_torque_points = [r for r in rows if r["max_feasible_torque_feasible"]]
+    freq_out_of_range_rows = [r for r in rows if r["freq_hz"] > coeffs.freq_max_hz]
+    target_points_valid_freq = [
+        r for r in target_points if r["freq_hz"] <= coeffs.freq_max_hz
+    ]
+    target_points_freq_out_of_range = [
+        r for r in target_points if r["freq_hz"] > coeffs.freq_max_hz
+    ]
 
     avg_iron_loss_target = (
         sum(r["min_current_target_iron_loss_w"] for r in target_points)
-        / len(target_points) if target_points else 0.0
+        / len(target_points)
+        if target_points
+        else 0.0
+    )
+    avg_copper_loss_target = (
+        sum(r["min_current_target_copper_loss_w"] for r in target_points)
+        / len(target_points)
+        if target_points
+        else 0.0
     )
     avg_efficiency_target = (
         sum(r["min_current_target_efficiency_pct"] for r in target_points)
-        / len(target_points) if target_points else 0.0
+        / len(target_points)
+        if target_points
+        else 0.0
+    )
+    avg_iron_loss_target_valid_freq = (
+        sum(r["min_current_target_iron_loss_w"] for r in target_points_valid_freq)
+        / len(target_points_valid_freq)
+        if target_points_valid_freq
+        else 0.0
+    )
+    avg_copper_loss_target_valid_freq = (
+        sum(r["min_current_target_copper_loss_w"] for r in target_points_valid_freq)
+        / len(target_points_valid_freq)
+        if target_points_valid_freq
+        else 0.0
+    )
+    avg_efficiency_target_valid_freq = (
+        sum(r["min_current_target_efficiency_pct"] for r in target_points_valid_freq)
+        / len(target_points_valid_freq)
+        if target_points_valid_freq
+        else 0.0
     )
 
     summary = {
@@ -188,6 +231,7 @@ def run() -> dict[str, Any]:
         "model_scope": "linear_dq_with_iron_loss_estimation",
         "model_limitations": [
             "iron loss uses simplified Bertotti model with fixed coefficients",
+            "scan points above freq_max_hz are extrapolations, not coefficient validation",
             "no FEA-derived B mapping, lamination stack, or frequency-dependent material data",
             "no thermal coupling to iron loss coefficients",
             "no PWM harmonics or skin effect in copper",
@@ -198,32 +242,58 @@ def run() -> dict[str, Any]:
             "k_hyst": coeffs.k_hyst,
             "k_eddy": coeffs.k_eddy,
             "k_excess": coeffs.k_excess,
+            "freq_max_hz": coeffs.freq_max_hz,
             "core_radius_m": 0.05,
         },
         "target_torque_nm": params.torque_target_nm,
         "scan_step_rpm": step_rpm,
         "max_speed_configured_rpm": params.speed_max_rpm,
         "max_speed_scanned_rpm": max(row["speed_rpm"] for row in rows),
-        "target_torque_feasible_count": len(target_points),
-        "max_torque_feasible_count": len(max_torque_points),
-        "avg_iron_loss_at_target_torque_w": avg_iron_loss_target,
-        "avg_efficiency_at_target_torque_pct": avg_efficiency_target,
-        "iron_loss_vs_copper_loss_ratio": (
-            avg_iron_loss_target / target_points[0]["min_current_target_copper_loss_w"]
-            if target_points and target_points[0]["min_current_target_copper_loss_w"] > 0
+        "freq_out_of_range_points": len(freq_out_of_range_rows),
+        "freq_out_of_range_max_hz": (
+            max(row["freq_hz"] for row in freq_out_of_range_rows)
+            if freq_out_of_range_rows
             else None
         ),
-        "csv_path": str(csv_path.relative_to(ROOT)),
+        "target_torque_feasible_count": len(target_points),
+        "target_torque_valid_freq_count": len(target_points_valid_freq),
+        "target_torque_freq_out_of_range_count": len(target_points_freq_out_of_range),
+        "max_torque_feasible_count": len(max_torque_points),
+        "avg_iron_loss_at_target_torque_w": avg_iron_loss_target,
+        "avg_copper_loss_at_target_torque_w": avg_copper_loss_target,
+        "avg_efficiency_at_target_torque_pct": avg_efficiency_target,
+        "avg_iron_loss_at_target_torque_valid_freq_w": avg_iron_loss_target_valid_freq,
+        "avg_copper_loss_at_target_torque_valid_freq_w": avg_copper_loss_target_valid_freq,
+        "avg_efficiency_at_target_torque_valid_freq_pct": avg_efficiency_target_valid_freq,
+        "iron_loss_vs_copper_loss_ratio": (
+            avg_iron_loss_target / avg_copper_loss_target
+            if target_points and avg_copper_loss_target > 0
+            else None
+        ),
+        "iron_loss_vs_copper_loss_ratio_valid_freq": (
+            avg_iron_loss_target_valid_freq / avg_copper_loss_target_valid_freq
+            if target_points_valid_freq and avg_copper_loss_target_valid_freq > 0
+            else None
+        ),
+        "csv_path": _display_path(csv_path),
     }
 
     summary_path = output_dir / "summary.json"
     summary_path.write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(summary, ensure_ascii=False, indent=2, allow_nan=False),
+        encoding="utf-8",
     )
 
     return summary
 
 
+def _display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 if __name__ == "__main__":
     result = run()
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))

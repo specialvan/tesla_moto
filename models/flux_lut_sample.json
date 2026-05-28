@@ -1,6 +1,7 @@
 {
   "version": "2026-05-14-v1",
   "purpose": "Synthetic nonlinear lambda_d/lambda_q sample for interpolation and workflow validation. Replace with FEA or test-bench maps before engineering release.",
+  "motor_id": "baseline_ipmsm_v1",
   "pole_pairs": 4,
   "unit_convention": {
     "dq_transform": "amplitude_invariant",

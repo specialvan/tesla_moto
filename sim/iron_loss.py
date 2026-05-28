@@ -222,7 +222,7 @@ def steinmetz_iron_loss_per_phase(
     b_peak = flux_density_from_lambda(lambda_mag, core_radius_m)
 
     # Steinmetz equation: P = k * f^alpha * B^beta
-    p_st = coeffs.k_st * (freq_hz ** coeffs.alpha) * (b_peak ** coeffs.beta)
+    p_st = coeffs.k_st * (freq_hz**coeffs.alpha) * (b_peak**coeffs.beta)
 
     # Map to Bertotti-style structure
     return IronLossComponents(
@@ -287,18 +287,21 @@ def combined_losses(
     iron_loss: IronLossComponents,
     copper_loss_w: float,
 ) -> tuple[float, float]:
-    """Combine iron and copper losses and compute efficiency.
+    """Combine iron and copper losses and compute the iron loss fraction.
 
     Args:
         iron_loss: Iron loss components from bertotti_iron_loss_per_phase.
         copper_loss_w: Total three-phase copper loss (W).
 
     Returns:
-        (total_loss_w, efficiency_percent)
+        (total_loss_w, iron_loss_fraction). The fraction is 0..1 and represents
+        the share of total electrical loss attributable to iron loss. It is not
+        motor efficiency and does not include mechanical output power.
     """
     if not isfinite(copper_loss_w) or copper_loss_w < 0:
         raise ValueError("copper_loss_w must be non-negative and finite")
 
     total_iron = iron_loss.total_three_phase_w
     total_loss = total_iron + copper_loss_w
-    return total_loss, total_iron / total_loss if total_loss > 0 else 0.0
+    iron_loss_fraction = total_iron / total_loss if total_loss > 0 else 0.0
+    return total_loss, iron_loss_fraction

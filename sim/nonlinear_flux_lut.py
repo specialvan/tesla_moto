@@ -23,12 +23,14 @@ class FluxPoint:
 
 @dataclass(frozen=True)
 class FluxLut:
+    motor_id: str
     pole_pairs: int
     unit_convention: dict[str, str]
     id_axis_a: list[float]
     iq_axis_a: list[float]
     lambda_d_wb: list[list[float]]
     lambda_q_wb: list[list[float]]
+    maturity: dict[str, Any]
 
     @staticmethod
     def from_file(path: Path | str) -> "FluxLut":
@@ -38,18 +40,21 @@ class FluxLut:
     @staticmethod
     def from_dict(data: dict[str, Any]) -> "FluxLut":
         required = [
+            "motor_id",
             "pole_pairs",
             "unit_convention",
             "id_axis_a",
             "iq_axis_a",
             "lambda_d_wb",
             "lambda_q_wb",
+            "maturity",
         ]
         missing = [field for field in required if field not in data]
         if missing:
             raise ValueError(f"Missing flux LUT fields: {', '.join(missing)}")
 
         lut = FluxLut(
+            motor_id=str(data["motor_id"]),
             pole_pairs=int(data["pole_pairs"]),
             unit_convention={
                 str(key): str(value) for key, value in data["unit_convention"].items()
@@ -62,17 +67,21 @@ class FluxLut:
             lambda_q_wb=[
                 [float(value) for value in row] for row in data["lambda_q_wb"]
             ],
+            maturity=dict(data["maturity"]),
         )
         lut.validate()
         return lut
 
     def validate(self) -> None:
+        if not self.motor_id:
+            raise ValueError("motor_id must not be empty")
         if self.pole_pairs <= 0:
             raise ValueError("pole_pairs must be positive")
         if self.unit_convention != EXPECTED_FLUX_LUT_UNIT_CONVENTION:
             raise ValueError(
                 "unit_convention must match the amplitude-invariant phase-peak flux LUT schema"
             )
+        _validate_maturity(self.maturity)
         if len(self.id_axis_a) < 2 or len(self.iq_axis_a) < 2:
             raise ValueError("flux LUT axes must each contain at least two points")
         if not _is_strictly_increasing(self.id_axis_a):
@@ -129,7 +138,6 @@ class FluxLut:
         return FluxPoint(lambda_d_wb=lambda_d, lambda_q_wb=lambda_q)
 
 
-
 def nonlinear_torque_nm(
     lut: FluxLut, pole_pairs: int, id_a: float, iq_a: float
 ) -> float:
@@ -139,10 +147,33 @@ def nonlinear_torque_nm(
     return 1.5 * pole_pairs * (lambdas.lambda_d_wb * iq_a - lambdas.lambda_q_wb * id_a)
 
 
-
 def _is_strictly_increasing(axis: list[float]) -> bool:
     return all(axis[index] < axis[index + 1] for index in range(len(axis) - 1))
 
+
+def _validate_maturity(maturity: dict[str, Any]) -> None:
+    required = {
+        "model_maturity",
+        "physics_model_validated",
+        "engineering_validated",
+        "production_release_allowed",
+        "required_replacement",
+    }
+    missing = sorted(required - set(maturity))
+    if missing:
+        raise ValueError(f"Missing flux LUT maturity fields: {', '.join(missing)}")
+    if maturity["model_maturity"] != "synthetic_fixture":
+        raise ValueError("model_maturity must be synthetic_fixture")
+    for field in (
+        "physics_model_validated",
+        "engineering_validated",
+        "production_release_allowed",
+    ):
+        if maturity[field] is not False:
+            raise ValueError(f"{field} must be false")
+    replacement = maturity["required_replacement"]
+    if not isinstance(replacement, str) or not replacement:
+        raise ValueError("required_replacement must be a non-empty string")
 
 
 def _lower_index(axis: list[float], value: float) -> int:
@@ -152,7 +183,6 @@ def _lower_index(axis: list[float], value: float) -> int:
         if axis[index] <= value <= axis[index + 1]:
             return index
     raise ValueError("value outside axis")
-
 
 
 def _bilinear(
