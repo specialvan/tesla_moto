@@ -1,7 +1,7 @@
 {
   "version": "2026-05-29-opus-r12-followup",
   "review_head": {
-    "claude-mainline": "6eaee5b",
+    "claude-mainline": "1ddf7da",
     "working_tree": "dirty"
   },
   "purpose": "Ninth follow-up register after publishing claude-mainline to origin and recording the branch integration result. This closes the remaining CDR-001 publish/integration gap without rewriting prior registers.",
@@ -30,6 +30,16 @@
       "command": "git -c http.proxy= -c https.proxy= push origin claude-mainline",
       "result": "391ce20..6eaee5b claude-mainline -> claude-mainline",
       "run_at": "2026-05-29"
+    },
+    {
+      "command": "git -c http.proxy= -c https.proxy= push origin claude-mainline",
+      "result": "6eaee5b..1ddf7da claude-mainline -> claude-mainline",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "git -c http.proxy= -c https.proxy= ls-remote origin refs/heads/claude-mainline",
+      "result": "1ddf7da1a24a1fda0797a8610c5dc633384fe90e refs/heads/claude-mainline",
+      "run_at": "2026-05-29"
     }
   ],
   "supersedes": [
@@ -40,7 +50,7 @@
       "id": "OPUS-2026-05-25-CDR-001",
       "severity": "P0",
       "status": "closed",
-      "closure_summary": "claude-mainline was confirmed 0 behind / 49 ahead of origin, verified with the branch integration test set, then fast-forward pushed to origin/claude-mainline. The integration result is recorded in branch_integration_result_2026-05-29.md for Opus re-review.",
+      "closure_summary": "claude-mainline was confirmed 0 behind / 49 ahead of origin, verified with the branch integration test set, fast-forward pushed to origin/claude-mainline, then followed by the r12 closure-record commit. Remote claude-mainline now resolves to 1ddf7da and local origin/claude-mainline is 0 behind / 0 ahead. The integration result is recorded in branch_integration_result_2026-05-29.md for Opus re-review.",
       "evidence": [
         "opus-review/docs/2026-05-25/branch_integration_result_2026-05-29.md",
         "opus-review/docs/2026-05-25/branch_integration_strategy.md",

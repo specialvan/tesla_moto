@@ -6,7 +6,7 @@
 
 ## 1. 执行摘要
 
-本次执行 `branch_integration_strategy.md` 中针对 `OPUS-2026-05-25-CDR-001` 的发布/集成步骤。发布前确认 `claude-mainline` 相对 `origin/claude-mainline` 为 `0 behind / 49 ahead`，没有远端分叉提交；随后将本地内容分组提交 fast-forward 推送到远端。
+本次执行 `branch_integration_strategy.md` 中针对 `OPUS-2026-05-25-CDR-001` 的发布/集成步骤。发布前确认 `claude-mainline` 相对 `origin/claude-mainline` 为 `0 behind / 49 ahead`，没有远端分叉提交；随后将本地内容分组提交 fast-forward 推送到远端。r12 闭环记录本身随后以第二次 fast-forward 推送到远端，最终远端 `claude-mainline` 指向 `1ddf7da`。
 
 发布命令：
 
@@ -21,6 +21,25 @@ To https://github.com/specialvan/tesla_moto.git
    391ce20..6eaee5b  claude-mainline -> claude-mainline
 ```
 
+r12 闭环记录发布命令：
+
+```powershell
+git -c http.proxy= -c https.proxy= push origin claude-mainline
+```
+
+结果：
+
+```text
+To https://github.com/specialvan/tesla_moto.git
+   6eaee5b..1ddf7da  claude-mainline -> claude-mainline
+```
+
+远端 HEAD 复核：
+
+```text
+1ddf7da1a24a1fda0797a8610c5dc633384fe90e refs/heads/claude-mainline
+```
+
 说明：本机全局 Git 代理配置指向 `127.0.0.1:7890`，该端口不可用；本次仅对 fetch/push 命令使用 `-c http.proxy= -c https.proxy=` 直连，不修改用户全局配置。
 
 ## 2. 发布前校验
@@ -31,7 +50,7 @@ To https://github.com/specialvan/tesla_moto.git
 | P0/P1/P2 acceptance | `python -m pytest tests/test_scheme_p0_lut_acceptance.py tests/test_scheme_experiment_acceptance.py tests/test_scheme_simulation_coverage.py -q` | `45 passed in 204.86s` |
 | PyFluent dry-run | `python -m pytest tests/test_pyfluent_workflow.py tests/test_run_pyfluent_workflow.py -q` | `7 passed in 0.04s` |
 | 文档链接与同步护栏 | `python -m pytest tests/test_docs_links.py tests/test_claude_docs_sync.py -q` | `6 passed in 0.06s` |
-| 工作树清洁度 | `git status --short --branch; git diff --exit-code; git diff --cached --exit-code` | 仅显示 `## claude-mainline...origin/claude-mainline [ahead 49]`，无 unstaged/staged diff |
+| 工作树清洁度 | `git status --short --branch; git diff --exit-code; git diff --cached --exit-code` | 发布前仅显示 `## claude-mainline...origin/claude-mainline [ahead 49]`，无 unstaged/staged diff；r12 发布后为 `## claude-mainline...origin/claude-mainline` |
 
 ## 3. 保留边界
 
@@ -42,4 +61,4 @@ To https://github.com/specialvan/tesla_moto.git
 
 ## 4. 当前结论
 
-`OPUS-2026-05-25-CDR-001` 的本地发布/集成缺口已执行到远端 fast-forward。后续只需 Opus 按远端 `origin/claude-mainline` 重新拉取复核，无需再保留该项为本地 open gap。
+`OPUS-2026-05-25-CDR-001` 的本地发布/集成缺口已执行到远端 fast-forward，最终闭环 HEAD 为 `1ddf7da`。后续只需 Opus 按远端 `origin/claude-mainline` 重新拉取复核，无需再保留该项为本地 open gap。
