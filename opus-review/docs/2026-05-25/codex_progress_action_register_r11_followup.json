@@ -1,0 +1,48 @@
+{
+  "version": "2026-05-29-opus-r11-followup",
+  "review_head": {
+    "claude-mainline": "3e9208e",
+    "working_tree": "dirty"
+  },
+  "purpose": "Eighth follow-up register after synchronizing claude-docs, wiki, HTML, and snapshots to EXP-011 and the current r02/r03 maturity contract. This closes DOCS-SYNC without rewriting the r10 register or the historical handoff.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_claude_docs_sync.py tests/test_docs_links.py tests/test_r02_sim_batch_archival.py tests/test_r03_prompt_simulation_anchor.py tests/test_r03_prompt_maturity.py tests/test_scheme_simulation_coverage.py -q",
+      "result": "21 passed in 1.01s",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-25-DOCS-SYNC"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-25-DOCS-SYNC",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "claude-docs, the active research wiki, the active HTML knowledge base, and their frozen snapshots now expose EXP-011, the Bertotti proxy iron-loss risk, freq_out_of_range_points, the r02 sim_binding boundary, the r03 production drawing pack boundary, and engineering_validated=false. A new pytest guard requires those markers and requires the active wiki/HTML sources to match the frozen snapshots.",
+      "evidence": [
+        "tests/test_claude_docs_sync.py",
+        "claude-docs/evidence_manifest.md",
+        "claude-docs/wiki_html_evidence.md",
+        "wiki/controllable_flux_motor_research_plan.md",
+        "controllable_flux_motor_kb.html",
+        "claude-docs/snapshots/wiki/controllable_flux_motor_research_plan.md",
+        "claude-docs/snapshots/html/controllable_flux_motor_kb.html",
+        "experiments/exp_011_iron_loss/summary.json",
+        "experiments/exp_011_iron_loss/iron_loss_sweep_results.csv"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-001",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "Local evidence, prompt-package, and docs-sync gaps are closed, but claude-mainline remains ahead of origin and final publish/integration still needs the branch_integration_strategy.md workflow.",
+      "evidence": [
+        "git status --short --branch",
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md"
+      ],
+      "next_action": "Publish or integrate the content-scoped commits through the branch_integration_strategy.md workflow."
+    }
+  ]
+}
