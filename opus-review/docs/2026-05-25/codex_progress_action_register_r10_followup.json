@@ -1,0 +1,58 @@
+{
+  "version": "2026-05-29-opus-r10-followup",
+  "review_head": {
+    "claude-mainline": "85437c8",
+    "working_tree": "dirty"
+  },
+  "purpose": "Seventh follow-up register after making the r02-sim prompt batch archival decision explicit and test-backed. This closes the S01/S03/S05-S12 r02-sim gap by documenting r03 as the full replacement path instead of silently expanding an obsolete intermediate batch.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_r02_sim_batch_archival.py tests/test_r03_prompt_simulation_anchor.py tests/test_r03_prompt_maturity.py tests/test_docs_links.py -q",
+      "result": "10 passed in 0.07s",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-25-008"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-25-008",
+      "severity": "P1",
+      "status": "closed",
+      "closure_summary": "The r02-sim prompt batch is now explicitly archived as S02/S04 historical evidence and is superseded by the complete r03 production drawing prompt packs for all 12 schemes. A pytest guard requires the archived_by_r03 contract and all 12 r03 prompt pack paths to remain visible in the r02-sim README.",
+      "evidence": [
+        "codex-review/docs/scheme_drawing_prompts_r02_simulation_batch/README.md",
+        "tests/test_r02_sim_batch_archival.py",
+        "tests/test_r03_prompt_simulation_anchor.py",
+        "tests/test_r03_prompt_maturity.py",
+        "engineering/v2/scheme-01/prompts/V2-S01-PROMPT-r03-production_drawing_pack.md",
+        "engineering/v2/scheme-12/prompts/V2-S12-PROMPT-r03-production_drawing_pack.md"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-001",
+      "severity": "P0",
+      "status": "open",
+      "remaining_gap": "The local evidence and prompt-package gaps are closed, but claude-mainline remains ahead of origin and final publish/integration still needs the branch_integration_strategy.md workflow.",
+      "evidence": [
+        "git status --short --branch",
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md"
+      ],
+      "next_action": "Publish or integrate the content-scoped commits through the branch_integration_strategy.md workflow."
+    },
+    {
+      "id": "OPUS-2026-05-25-DOCS-SYNC",
+      "severity": "P1",
+      "status": "open",
+      "remaining_gap": "The r02/r03 prompt-package boundary is now explicit, but claude-docs, wiki, HTML, and snapshot content still need a content sync to EXP-011 and the current maturity contract.",
+      "evidence": [
+        "claude-docs/README.md",
+        "claude-docs/handoff_context.md",
+        "wiki/controllable_flux_motor_research_plan.md",
+        "controllable_flux_motor_kb.html"
+      ],
+      "next_action": "Synchronize stale docs and snapshots while preserving engineering_validated=false and proxy/synthetic boundaries."
+    }
+  ]
+}

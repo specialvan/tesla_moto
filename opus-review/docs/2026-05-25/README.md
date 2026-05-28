@@ -16,6 +16,7 @@
 | `codex_progress_action_register_r07_followup.json` | 内容分组提交后的追加 closure/open register；关闭工作树卫生项并保留分支集成/PyFluent open 项 |
 | `codex_progress_action_register_r08_followup.json` | PyFluent 主线迁移后的追加 closure/open register；关闭 dry-run、manifest、validation_chain 与 boundary allow-list 项 |
 | `codex_progress_action_register_r09_followup.json` | 跨包 Markdown 链接体检后的追加 closure/open register；关闭链接校验项并迁入缺失的 2026-05-15 Codex 评审证据包 |
+| `codex_progress_action_register_r10_followup.json` | r02-sim 批包归档后的追加 closure/open register；关闭 S01/S03/S05-S12 缺失或隐式替代项 |
 | `evidence_index.md` | 本轮评审读取或引用的证据路径索引 |
 | `branch_integration_strategy.md` | `codex-review-line` 与 `claude-mainline` 集成、cherry-pick、回归策略 |
 
