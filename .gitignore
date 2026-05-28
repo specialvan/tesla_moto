@@ -15,3 +15,7 @@ venv/
 gpt-image-2/config/model.local.json
 gpt-image-2/outputs/**
 !gpt-image-2/outputs/.gitkeep
+review-pr/
+.claude/worktrees/
+.claude/cache/
+.claude/sessions/
