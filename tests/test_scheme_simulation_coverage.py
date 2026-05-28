@@ -93,6 +93,21 @@ def test_mainline_and_research_schemes_use_non_overstated_maturity() -> None:
     assert records["nonlinear_flux_lut"]["simulation_status"] == "binding_smoke_passed"
 
 
+def test_high_fidelity_next_steps_reference_pyfluent_cfd_path() -> None:
+    data = _load_json(COVERAGE_PATH)
+    records = {record["id"]: record for record in data["schemes"]}
+
+    for scheme_id in {
+        "nonlinear_flux_lut",
+        "magnetic_saturation_codesign",
+        "pmasynrm_high_saliency_low_pm",
+        "thermal_demag_safety_protection",
+    }:
+        next_step = records[scheme_id]["next_simulation_step"]
+        assert "sim.run_pyfluent_workflow" in next_step, scheme_id
+        assert "cooling CFD" in next_step, scheme_id
+
+
 def test_all_sim_bindings_match_schema() -> None:
     schema = _load_json(SIM_BINDING_SCHEMA_PATH)
     validator = Draft202012Validator(schema)

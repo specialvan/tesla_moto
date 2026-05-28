@@ -114,7 +114,7 @@
         "engineering/v2/scheme-04/parameters/V2-S04-PARAM-sim_binding-r02.json"
       ],
       "coverage_note": "EXP-006 covers synthetic lambda_d/lambda_q LUT smoke validation only. r02 sim_binding routes run_control_lut_generator with model_type=nonlinear_flux_lut against flux_lut_sample.json and asserts flux_lut_ref present + bounds behaviour via tests/test_scheme_p0_lut_acceptance.py.",
-      "next_simulation_step": "Replace synthetic 3x3 LUT with FEA-derived 30x30 (with temperature slices); wire EXP-006 phase-3 into control LUT generator.",
+      "next_simulation_step": "Replace synthetic 3x3 LUT with FEA-derived 30x30 (with temperature slices); wire EXP-006 phase-3 into control LUT generator; use sim.run_pyfluent_workflow only for cooling CFD follow-up after electromagnetic loss maps exist.",
       "engineering_validated": false,
       "production_drawing_ready": false,
       "manufacturing_release_ready": false,
@@ -141,7 +141,7 @@
         "engineering/v2/scheme-05/parameters/V2-S05-PARAM-sim_binding-r02.json"
       ],
       "coverage_note": "EXP-003 scales Ld/Lq/saliency. r02 sim_binding asserts variant_count and top_candidates via tests/test_scheme_experiment_acceptance.py.",
-      "next_simulation_step": "Replace scaled Ld/Lq proxy with FEA-derived lambda_d/lambda_q candidate maps.",
+      "next_simulation_step": "Replace scaled Ld/Lq proxy with FEA-derived lambda_d/lambda_q candidate maps; use sim.run_pyfluent_workflow for cooling CFD follow-up after electromagnetic loss and rotor-stress evidence exists.",
       "engineering_validated": false,
       "production_drawing_ready": false,
       "manufacturing_release_ready": false,
@@ -168,7 +168,7 @@
         "engineering/v2/scheme-06/parameters/V2-S06-PARAM-sim_binding-r02.json"
       ],
       "coverage_note": "EXP-003 covers lower psi_f and higher saliency variants approximating PMaSynRM. r02 sim_binding shares the param_sweep runner with S05 and validates variant_count + top_candidates.",
-      "next_simulation_step": "Add PM fraction and torque ripple screening fields instead of only psi/Ld/Lq scaling.",
+      "next_simulation_step": "Add PM fraction and torque ripple screening fields instead of only psi/Ld/Lq scaling; use sim.run_pyfluent_workflow for cooling CFD follow-up after electromagnetic loss and rotor-stress evidence exists.",
       "engineering_validated": false,
       "production_drawing_ready": false,
       "manufacturing_release_ready": false,
@@ -308,7 +308,7 @@
         "engineering/v2/scheme-11/parameters/V2-S11-PARAM-sim_binding-r02.json"
       ],
       "coverage_note": "EXP-004 applies Rs(T), psi_f(T), Vdc derating, and simplified id_min(T) demag limits. r02 sim_binding exercises 120 °C scenario via run_control_lut_generator with shared piecewise demag, asserts operating_limits.temperature_c=120 and demag metadata.",
-      "next_simulation_step": "Replace simplified demag line with FEA / magnet vendor curve; lock pm/winding/oil thresholds with bench; start FMEDA + ASIL allocation.",
+      "next_simulation_step": "Replace simplified demag line with FEA / magnet vendor curve; lock pm/winding/oil thresholds with bench; use sim.run_pyfluent_workflow for cooling CFD follow-up; start FMEDA + ASIL allocation.",
       "engineering_validated": false,
       "production_drawing_ready": false,
       "manufacturing_release_ready": false,
