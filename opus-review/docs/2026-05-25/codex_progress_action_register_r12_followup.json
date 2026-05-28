@@ -1,0 +1,52 @@
+{
+  "version": "2026-05-29-opus-r12-followup",
+  "review_head": {
+    "claude-mainline": "6eaee5b",
+    "working_tree": "dirty"
+  },
+  "purpose": "Ninth follow-up register after publishing claude-mainline to origin and recording the branch integration result. This closes the remaining CDR-001 publish/integration gap without rewriting prior registers.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_r03_prompt_maturity.py -q",
+      "result": "4 passed in 0.02s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_scheme_p0_lut_acceptance.py tests/test_scheme_experiment_acceptance.py tests/test_scheme_simulation_coverage.py -q",
+      "result": "45 passed in 204.86s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_pyfluent_workflow.py tests/test_run_pyfluent_workflow.py -q",
+      "result": "7 passed in 0.04s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_docs_links.py tests/test_claude_docs_sync.py -q",
+      "result": "6 passed in 0.06s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "git -c http.proxy= -c https.proxy= push origin claude-mainline",
+      "result": "391ce20..6eaee5b claude-mainline -> claude-mainline",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [
+    "OPUS-2026-05-25-CDR-001"
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-25-CDR-001",
+      "severity": "P0",
+      "status": "closed",
+      "closure_summary": "claude-mainline was confirmed 0 behind / 49 ahead of origin, verified with the branch integration test set, then fast-forward pushed to origin/claude-mainline. The integration result is recorded in branch_integration_result_2026-05-29.md for Opus re-review.",
+      "evidence": [
+        "opus-review/docs/2026-05-25/branch_integration_result_2026-05-29.md",
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md",
+        "git status --short --branch",
+        "git rev-list --left-right --count origin/claude-mainline...HEAD"
+      ]
+    }
+  ]
+}

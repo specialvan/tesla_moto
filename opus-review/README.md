@@ -38,10 +38,12 @@
 | `docs/2026-05-25/codex_progress_action_register_r09_followup.json` | 跨包 Markdown 链接体检后的追加 closure/open register；关闭链接校验项并迁入缺失的 2026-05-15 Codex 评审证据包 |
 | `docs/2026-05-25/codex_progress_action_register_r10_followup.json` | r02-sim 批包归档后的追加 closure/open register；关闭 S01/S03/S05-S12 缺失或隐式替代项 |
 | `docs/2026-05-25/codex_progress_action_register_r11_followup.json` | claude-docs/wiki/HTML/snapshots 内容同步后的追加 closure/open register；关闭 EXP-011 与 r02/r03 成熟度口径同步项 |
+| `docs/2026-05-25/codex_progress_action_register_r12_followup.json` | claude-mainline 发布到 origin 后的追加 closure register；关闭 CDR-001 分支集成项 |
 | `docs/2026-05-25/opus_handoff_for_review_2026-05-29.md` | Opus 介入复评 handoff；汇总当前提交分组、验证证据、有效 open 项与剩余工作树状态 |
 | `docs/2026-05-25/codex_deliverable_inventory.md` | Codex 当前产物全量清单与跨分支映射 |
 | `docs/2026-05-25/evidence_index.md` | 本轮评审读取/引用的证据路径索引 |
 | `docs/2026-05-25/branch_integration_strategy.md` | `codex-review-line` 与 `claude-mainline` 集成策略 |
+| `docs/2026-05-25/branch_integration_result_2026-05-29.md` | CDR-001 发布/集成执行结果；记录校验、push 输出与保留边界 |
 
 ## 3. 维护规则
 
