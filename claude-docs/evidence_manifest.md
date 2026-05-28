@@ -69,6 +69,9 @@
 | S04 DVP&R 测试草案 | `engineering/v2/scheme-04/test_dvpr/V2-S04-TEST-flux_lut_correlation-r00.md` | LUT 边界、插值一致性、FEA 版本绑定、台架相关性和 fallback 计划草案 |
 | S11 DVP&R 测试草案 | `engineering/v2/scheme-11/test_dvpr/V2-S11-DVP-safety_fault_injection-r00.md` | 温度/退磁、传感器开短路、unknown fallback、gate-disable 和 fault latch 计划草案 |
 | Claude 文档迁移索引 | `claude-docs/migration_alignment_index.md` | 确认 Claude 知识库、wiki、HTML、handoff、证据和工具链文档已按 Codex 文档包对齐 |
+| r02-sim 批包归档说明 | `codex-review/docs/scheme_drawing_prompts_r02_simulation_batch/README.md` | S02/S04 r02-sim 历史图档批包归档口径；r02 sim_binding 仍作为机器可读仿真锚点，整体保持 `engineering_validated=false` |
+| r03 图档提示词包 | `engineering/v2/scheme-*/prompts/*r03-production_drawing_pack.md` | 12 个方案的 r03 production drawing pack；继承 SIM ANCHOR、pytest gate、model_maturity 与 evidence_gap，不代表工程释放 |
+| r02/r03 成熟度护栏测试 | `tests/test_r02_sim_batch_archival.py`, `tests/test_r03_prompt_simulation_anchor.py`, `tests/test_r03_prompt_maturity.py` | 固化 r02-sim 归档、r03 prompt 仿真锚点和 `engineering_validated=false` 成熟度边界 |
 
 ## 3. 仿真实验证据
 
@@ -85,6 +88,7 @@
 | EXP-008 | `experiments/exp_008_winding_reconfiguration/summary.json` | `experiments/exp_008_winding_reconfiguration/winding_reconfiguration_results.csv` | `-` |
 | EXP-009 | `experiments/exp_009_multiphase_phase_group/summary.json` | `experiments/exp_009_multiphase_phase_group/multiphase_phase_group_results.csv` | `-` |
 | EXP-010 | `experiments/exp_010_weighted_efficiency_pareto/summary.json` | `experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv` | `-` |
+| EXP-011 | `experiments/exp_011_iron_loss/summary.json` | `experiments/exp_011_iron_loss/iron_loss_sweep_results.csv` | `-` |
 
 ## 4. 当前关键证据结论
 
@@ -124,14 +128,22 @@
 - phase-2 模型范围：在现有 `search.py` 上接入 LUT，完成电压/电流约束下的 target torque 与 max feasible torque speed sweep。
 - 含义：主线已证明非线性磁链表不仅能独立成立，还能进入受约束搜索链路；但仍未形成 FEA/实测驱动的工程释放证据。
 
-### EXP-007 ~ EXP-010
+### EXP-007 ~ EXP-011
 
 - EXP-007：已可重跑混合励磁等效 `psi_eff` 代理实验，下一步是补励磁电感、漏磁和热耦合。
 - EXP-008：已可重跑绕组重构代理实验，下一步是补切换瞬态、环流和支路热分配。
 - EXP-009：已可重跑多相相组降额实验，下一步是补谐波子空间解耦和每相热 RC。
 - EXP-010：已可重跑加权效率路由筛选，下一步是用实测工况与更多损耗项替换示意代理。
+- EXP-011：已可重跑 Bertotti 三项简化铁耗 proxy 扫描，`freq_out_of_range_points=48` 用于暴露 400 Hz 系数有效域外的高速外推风险；下一步是用材料片参数、FEA 磁密分布、PWM 谐波和热耦合替换干净室假设。
 
-## 5. 当前缺口证据
+## 5. r02/r03 提示词成熟度口径
+
+- 12 份 r02 sim_binding 是当前机器可读仿真绑定和证据锚点，字段包括 `simulation_status`、`model_maturity`、`gate_class` 与 `engineering_validated=false`。
+- `codex-review/docs/scheme_drawing_prompts_r02_simulation_batch/README.md` 已声明 r02-sim 局部批包只保留 S02/S04 历史证据，并由 12 份 r03 production drawing pack 归档替代。
+- r03 production drawing pack 继承 SIM ANCHOR、pytest gate、`model_maturity`、`next_simulation_step` 和 evidence_gap 护栏；它是提示词/审计证据，不是 FEA、HIL、台架或量产释放结论。
+- 护栏测试：`tests/test_r02_sim_batch_archival.py`、`tests/test_r03_prompt_simulation_anchor.py`、`tests/test_r03_prompt_maturity.py`。
+
+## 6. 当前缺口证据
 
 下列方向仍不是 Claude 主线的完整数值仿真闭环：
 
@@ -141,10 +153,11 @@
 - `winding_reconfiguration`
 - `multiphase_phase_group_control`
 - `weighted_efficiency_pareto_selection`
+- `bertotti_iron_loss_proxy`
 
 这些项已有工程文档、可复现实验或架构验证证据，但不能写成当前主线已通过完整数值仿真。
 
-## 6. 更新规则
+## 7. 更新规则
 
 证据文件发生变化时：
 

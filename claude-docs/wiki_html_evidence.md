@@ -30,7 +30,7 @@
 - 电压、电流、速度、铜耗、退磁裕度指标；
 - 技术假设树：控制路线、非线性磁路路线、真实可变磁链路线；
 - Phase 0 到 Phase 5 的研发路径；
-- EXP-001 到 EXP-009 的实验矩阵；
+- EXP-001 到 EXP-011 的实验矩阵；
 - Agent / Codex 并行任务拆分；
 - 当前推荐结论和工具链。
 
@@ -40,6 +40,9 @@
 - 只有可变磁化、混合励磁或绕组重构等路线才可能改变真实等效 `Ke/psi_f`。
 - EXP-002 显示单纯降低 `psi_f` 会损失目标转矩能力。
 - EXP-003 显示低磁链候选必须结合高凸极比和更高 `Vdc/Imax`。
+- EXP-010 只支持示意工况下的加权效率 Pareto 路由筛选，评分仍是 proxy。
+- EXP-011 是 Bertotti 三项简化铁耗 proxy 扫描，`freq_out_of_range_points` 暴露高速频率点外推风险，不能替代材料、FEA、HIL 或台架验证。
+- r02 sim_binding 与 r03 production drawing pack 当前只作为机器可读仿真锚点和图档提示词证据，全部保持 `engineering_validated=false`。
 
 ## 3. HTML 当前承载的信息
 
@@ -54,11 +57,13 @@
 - Agent/Codex 分工；
 - 风险边界与判断指标。
 
-当前 HTML 已同步 EXP-003 结论：
+当前 HTML 已同步 EXP-010 / EXP-011 与成熟度边界：
 
 - 已完成 `psi_f/Ld/Lq/Vdc/Imax` 共 108 个组合；
 - 最高分组合为 `psi_f100% + Ld80% + Lq160% + Vdc115% + Imax115%`；
 - 低 `psi_f70%` 只有配合高凸极比、较高 `Vdc/Imax` 才进入候选。
+- 页面证据入口挂载 `experiments/exp_010_weighted_efficiency_pareto/weighted_efficiency_pareto_results.csv` 与 `experiments/exp_011_iron_loss/iron_loss_sweep_results.csv`。
+- HTML 运行时 maturity contract 显示 `engineering_validated=false`、required FEA/HIL/bench/material/thermal evidence，并补充 r02 sim_binding / r03 production drawing pack 边界。
 
 ## 4. V2 review-pr 知识库补充
 
