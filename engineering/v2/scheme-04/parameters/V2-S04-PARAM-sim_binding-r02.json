@@ -4,6 +4,9 @@
   "scheme_short": "S04",
   "binding_purpose": "r02 smoke binding for S04 nonlinear flux LUT. Drives sim.run_control_lut_generator.run with model_type=nonlinear_flux_lut against the synthetic sample LUT; proves code-path and schema compatibility only, not LUT physics validation.",
   "engineering_validated": false,
+  "simulation_status": "binding_smoke_passed",
+  "model_maturity": "synthetic_fixture",
+  "gate_class": "smoke",
   "entry": "sim.run_control_lut_generator",
   "function": "run",
   "kwargs": {
@@ -20,26 +23,26 @@
     "model_source.model_type.enum": [
       "nonlinear_flux_lut"
     ],
-    "model_source.flux_lut_ref_present": true,
+    "model_source.flux_lut_ref.present": true,
     "grid_definition.speed_axis_rpm.count_min": 60,
     "grid_definition.torque_axis_nm.count_min": 2,
-    "feasibility_map.feasible_points_min": 1,
-    "feasibility_map.infeasible_reasons.search_not_converged_max": 200,
-    "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds_max": 200,
-    "validation.torque_discontinuity_at_transitions_nm_max": 5.0
+    "feasibility_map.feasible_points.min": 1,
+    "feasibility_map.infeasible_reasons.search_not_converged.max": 200,
+    "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds.max": 200,
+    "validation.torque_discontinuity_at_transitions_nm.max": 5.0
   },
   "soft_checks": [
-    "feasibility_map.infeasible_reasons.search_not_converged_max",
-    "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds_max"
+    "feasibility_map.infeasible_reasons.search_not_converged.max",
+    "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds.max"
   ],
   "strong_checks": [
     "metadata.generator_version.regex",
     "model_source.model_type.enum",
-    "model_source.flux_lut_ref_present",
+    "model_source.flux_lut_ref.present",
     "grid_definition.speed_axis_rpm.count_min",
     "grid_definition.torque_axis_nm.count_min",
-    "feasibility_map.feasible_points_min",
-    "validation.torque_discontinuity_at_transitions_nm_max"
+    "feasibility_map.feasible_points.min",
+    "validation.torque_discontinuity_at_transitions_nm.max"
   ],
   "dvp_mapping": {
     "S04-DV-001": "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds",
@@ -65,7 +68,6 @@
     "flux_lut": "models/flux_lut_sample.json",
     "pytest_entry": "tests/test_scheme_p0_lut_acceptance.py"
   },
-  "model_maturity": "synthetic_fixture",
   "physics_model_validated": false,
   "fixture_limits": {
     "flux_lut_sample": "synthetic 3x3 smoke fixture",

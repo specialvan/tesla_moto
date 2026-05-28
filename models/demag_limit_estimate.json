@@ -1,0 +1,12 @@
+{
+  "schema_version": "2026-05-28-r01",
+  "type": "DemagLimit",
+  "source": "estimate",
+  "points_c_to_id_min_a": [
+    [25.0, -240.0],
+    [100.0, -210.0],
+    [140.0, -180.0]
+  ],
+  "note": "Shared r02 piecewise demagnetization boundary for S01/S02/S11. Estimate from sim/run_safety_boundary_experiment.py; replace with S11 thermal + magnet vendor curve before r03 sign-off.",
+  "engineering_validated": false
+}

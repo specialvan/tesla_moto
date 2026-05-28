@@ -3,10 +3,24 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
+
 from tests.test_scheme_catalog import EXPECTED_SCHEME_IDS
 
 
 COVERAGE_PATH = Path("models/scheme_simulation_coverage.json")
+SIM_BINDING_SCHEMA_PATH = Path("models/sim_binding_schema.json")
+SIM_BINDING_GLOB = "engineering/v2/scheme-*/parameters/V2-S*-PARAM-sim_binding-r02.json"
+
+
+def _sim_binding_paths() -> list[Path]:
+    paths = sorted(Path(".").glob(SIM_BINDING_GLOB))
+    assert len(paths) == 12
+    return paths
+
+
+def _load_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def test_every_scheme_has_simulation_coverage_record() -> None:
@@ -42,6 +56,7 @@ def test_each_simulation_record_has_reproducible_artifacts() -> None:
         assert record["pytest_tests"], record["id"]
         assert record["result_artifacts"], record["id"]
         assert record["next_simulation_step"], record["id"]
+        assert record["gate_class"] in {"smoke", "proxy", "production_target"}
         for pytest_test in record["pytest_tests"]:
             assert Path(
                 pytest_test
@@ -76,3 +91,31 @@ def test_mainline_and_research_schemes_use_non_overstated_maturity() -> None:
 
     assert records["nonlinear_flux_lut"]["model_maturity"] == "synthetic_fixture"
     assert records["nonlinear_flux_lut"]["simulation_status"] == "binding_smoke_passed"
+
+
+def test_all_sim_bindings_match_schema() -> None:
+    schema = _load_json(SIM_BINDING_SCHEMA_PATH)
+    validator = Draft202012Validator(schema)
+
+    for path in _sim_binding_paths():
+        binding = _load_json(path)
+        errors = sorted(validator.iter_errors(binding), key=lambda error: error.path)
+        assert errors == [], f"{path}: {errors}"
+
+
+def test_sim_binding_maturity_and_gate_class_match_coverage() -> None:
+    coverage = _load_json(COVERAGE_PATH)
+    records = {record["id"]: record for record in coverage["schemes"]}
+
+    for path in _sim_binding_paths():
+        binding = _load_json(path)
+        record = records[binding["scheme_id"]]
+
+        assert binding["engineering_validated"] is False, path
+        assert binding["simulation_status"] == record["simulation_status"], path
+        assert binding["model_maturity"] == record["model_maturity"], path
+        assert binding["gate_class"] == record["gate_class"], path
+        if binding["simulation_status"] == "binding_smoke_passed":
+            assert binding["gate_class"] == "smoke", path
+        else:
+            assert binding["gate_class"] in {"proxy", "production_target"}, path

@@ -4,6 +4,9 @@
   "scheme_short": "S08",
   "binding_purpose": "r02 binding for S08 hybrid excitation (research pool). Drives sim.run_hybrid_excitation_experiment.run.",
   "engineering_validated": false,
+  "simulation_status": "binding_smoke_passed",
+  "model_maturity": "research_pool_proxy",
+  "gate_class": "smoke",
   "entry": "sim.run_hybrid_excitation_experiment",
   "function": "run",
   "kwargs": {},
@@ -24,7 +27,8 @@
     "S08-DV-001": "field thermal stress",
     "S08-DV-002": "loss-of-field detection",
     "S08-DV-003": "three-variable optimization",
-    "S08-DV-004": "bench correlation"
+    "S08-DV-004": "bench correlation",
+    "S08-DV-005": "exciter loss and rotor leakage correlation"
   },
   "open_items": [
     "Replace psi_eff = psi_pm + kf * if proxy with field winding inductance + exciter loss model.",

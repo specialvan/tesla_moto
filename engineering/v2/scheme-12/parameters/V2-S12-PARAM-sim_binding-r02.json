@@ -4,6 +4,9 @@
   "scheme_short": "S12",
   "binding_purpose": "r02 binding for S12 weighted efficiency pareto. Drives sim.run_weighted_efficiency_pareto_experiment.run.",
   "engineering_validated": false,
+  "simulation_status": "numeric_proxy_passed",
+  "model_maturity": "proxy_model",
+  "gate_class": "proxy",
   "entry": "sim.run_weighted_efficiency_pareto_experiment",
   "function": "run",
   "kwargs": {},
@@ -32,7 +35,8 @@
     "S12-DV-001": "drive cycle audit (cycle versioned)",
     "S12-DV-002": "system loss audit (per-candidate)",
     "S12-DV-003": "sensitivity sweep ±20 %",
-    "S12-DV-004": "evidence-path audit"
+    "S12-DV-004": "evidence-path audit",
+    "S12-DV-005": "regen and transient acceleration energy weighting"
   },
   "open_items": [
     "Replace copper-loss-only scoring with combined copper + iron + mechanical + inverter loss.",

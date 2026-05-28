@@ -31,7 +31,10 @@ from typing import Any
 
 import pytest
 
+from tests.scheme_expect_dsl import eval_expect_check
+
 ROOT = Path(__file__).resolve().parents[1]
+_RUN_CACHE: dict[tuple[str, str, str], dict[str, Any]] = {}
 
 SCHEME_BINDINGS = [
     ("S03", "scheme-03", "V2-S03-PARAM-sim_binding-r02.json"),
@@ -49,73 +52,44 @@ def _binding_path(scheme_dir: str, file_name: str) -> Path:
     return ROOT / "engineering" / "v2" / scheme_dir / "parameters" / file_name
 
 
-def _walk(output: Any, dotted: str) -> Any:
-    cursor: Any = output
-    for part in dotted.split("."):
-        if isinstance(cursor, dict):
-            if part not in cursor:
-                raise KeyError(f"missing key {part!r} in path {dotted!r}")
-            cursor = cursor[part]
-        else:
-            raise TypeError(
-                f"cannot descend into non-dict {type(cursor).__name__} at {dotted!r}"
-            )
-    return cursor
+def _run_binding(binding: dict[str, Any]) -> dict[str, Any]:
+    kwargs = binding["kwargs"]
+    cache_key = (
+        binding["entry"],
+        binding["function"],
+        json.dumps(kwargs, sort_keys=True, separators=(",", ":")),
+    )
+    if cache_key not in _RUN_CACHE:
+        module = importlib.import_module(binding["entry"])
+        function = getattr(module, binding["function"])
+        _RUN_CACHE[cache_key] = function(**kwargs)
+    return _RUN_CACHE[cache_key]
 
 
-SUFFIXES = (
-    ".equals",
-    ".regex",
-    ".enum",
-    ".count_min",
-    ".count_max",
-    ".min",
-    ".max",
-    ".present",
-    ".absent",
-)
+def test_run_binding_caches_identical_runner_invocations(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
 
+    class FakeModule:
+        @staticmethod
+        def run(**kwargs: Any) -> dict[str, Any]:
+            nonlocal calls
+            calls += 1
+            return {"kwargs": kwargs}
 
-def _split_key(key: str) -> tuple[str, str]:
-    for suffix in SUFFIXES:
-        if key.endswith(suffix):
-            return key[: -len(suffix)], suffix[1:]
-    raise ValueError(f"expect key {key!r} missing recognised suffix {SUFFIXES}")
+    def fake_import_module(name: str) -> FakeModule:
+        assert name == "fake.runner"
+        return FakeModule()
 
+    monkeypatch.setattr(importlib, "import_module", fake_import_module)
+    binding = {"entry": "fake.runner", "function": "run", "kwargs": {"scale": 1}}
 
-def _eval_check(key: str, expected: Any, output: dict[str, Any]) -> tuple[bool, str]:
-    path, op = _split_key(key)
-    try:
-        value = _walk(output, path)
-    except (KeyError, TypeError) as exc:
-        if op == "present":
-            return False, f"{path}: {exc}"
-        if op == "absent":
-            return True, f"{path}: absent"
-        return False, f"{path}: {exc}"
-    if op == "equals":
-        return value == expected, f"{path}={value!r} == {expected!r}"
-    if op == "regex":
-        if not isinstance(value, str):
-            return False, f"{path}={value!r} not a string"
-        return bool(re.match(expected, value)), f"{path}={value!r} regex={expected}"
-    if op == "enum":
-        return value in expected, f"{path}={value!r} in {expected}"
-    if op == "count_min":
-        length = len(value) if hasattr(value, "__len__") else 0
-        return length >= expected, f"len({path})={length} >= {expected}"
-    if op == "count_max":
-        length = len(value) if hasattr(value, "__len__") else 0
-        return length <= expected, f"len({path})={length} <= {expected}"
-    if op == "min":
-        return value >= expected, f"{path}={value} >= {expected}"
-    if op == "max":
-        return value <= expected, f"{path}={value} <= {expected}"
-    if op == "present":
-        return value is not None, f"{path} present={value is not None}"
-    if op == "absent":
-        return value is None, f"{path} absent={value is None}"
-    raise ValueError(f"unhandled op {op!r}")
+    first = _run_binding(binding)
+    second = _run_binding(dict(binding))
+
+    assert first == second == {"kwargs": {"scale": 1}}
+    assert calls == 1
 
 
 @pytest.mark.integration
@@ -126,9 +100,7 @@ def test_scheme_experiment_sim_binding_drives_run(
     binding = json.loads(
         _binding_path(scheme_dir, binding_file).read_text(encoding="utf-8")
     )
-    module = importlib.import_module(binding["entry"])
-    function = getattr(module, binding["function"])
-    output = function(**binding["kwargs"])
+    output = _run_binding(binding)
 
     expect = binding["expect"]
     strong_keys = set(binding["strong_checks"])
@@ -138,7 +110,7 @@ def test_scheme_experiment_sim_binding_drives_run(
     soft_warnings: list[str] = []
 
     for key, expected_value in expect.items():
-        passed, message = _eval_check(key, expected_value, output)
+        passed, message = eval_expect_check(key, expected_value, output)
         if passed:
             continue
         if key in strong_keys:
@@ -167,9 +139,9 @@ def test_scheme_experiment_engineering_validated_is_false(
     binding = json.loads(
         _binding_path(scheme_dir, binding_file).read_text(encoding="utf-8")
     )
-    assert binding["engineering_validated"] is False, (
-        f"{scheme_id} r02 sim binding must keep engineering_validated=false"
-    )
+    assert (
+        binding["engineering_validated"] is False
+    ), f"{scheme_id} r02 sim binding must keep engineering_validated=false"
 
 
 @pytest.mark.integration
@@ -182,7 +154,10 @@ def test_scheme_experiment_dvp_mapping_present(
     )
     mapping = binding["dvp_mapping"]
     assert mapping, f"{scheme_id} dvp_mapping must not be empty"
+    assert (
+        len(mapping) >= 5
+    ), f"{scheme_id} dvp_mapping must include at least 5 DVP items"
     for dvp_id in mapping:
-        assert re.match(rf"^{scheme_id}-DV-\d{{3}}$", dvp_id), (
-            f"{scheme_id} dvp id {dvp_id!r} does not match S<id>-DV-NNN"
-        )
+        assert re.match(
+            rf"^{scheme_id}-DV-\d{{3}}$", dvp_id
+        ), f"{scheme_id} dvp id {dvp_id!r} does not match S<id>-DV-NNN"

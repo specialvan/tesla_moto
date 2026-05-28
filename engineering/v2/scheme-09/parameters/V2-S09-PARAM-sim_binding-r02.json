@@ -4,6 +4,9 @@
   "scheme_short": "S09",
   "binding_purpose": "r02 binding for S09 winding reconfiguration (research pool). Drives sim.run_winding_reconfiguration_experiment.run.",
   "engineering_validated": false,
+  "simulation_status": "binding_smoke_passed",
+  "model_maturity": "research_pool_proxy",
+  "gate_class": "smoke",
   "entry": "sim.run_winding_reconfiguration_experiment",
   "function": "run",
   "kwargs": {},
@@ -30,7 +33,8 @@
     "S09-DV-001": "switching transient (zero-torque window 50-200 ms)",
     "S09-DV-002": "circulating current < 5 A",
     "S09-DV-003": "arc / insulation at 800 V",
-    "S09-DV-004": "illegal-state fallback < 1 ms"
+    "S09-DV-004": "illegal-state fallback < 1 ms",
+    "S09-DV-005": "parallel-path thermal sharing and contactor derating"
   },
   "open_items": [
     "Replace Ke/Kt static scaling with contactor switching transient model.",

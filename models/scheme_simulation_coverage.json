@@ -28,7 +28,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "parameterized_linear_model"
+      "model_maturity": "parameterized_linear_model",
+      "gate_class": "proxy"
     },
     {
       "id": "mtpa_fw_mtpv_control",
@@ -61,7 +62,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "parameterized_linear_model"
+      "model_maturity": "parameterized_linear_model",
+      "gate_class": "proxy"
     },
     {
       "id": "svpwm_overmodulation_voltage_utilization",
@@ -88,7 +90,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "proxy_model"
+      "model_maturity": "proxy_model",
+      "gate_class": "proxy"
     },
     {
       "id": "nonlinear_flux_lut",
@@ -122,7 +125,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "synthetic_fixture"
+      "model_maturity": "synthetic_fixture",
+      "gate_class": "smoke"
     },
     {
       "id": "magnetic_saturation_codesign",
@@ -148,7 +152,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "proxy_model"
+      "model_maturity": "proxy_model",
+      "gate_class": "proxy"
     },
     {
       "id": "pmasynrm_high_saliency_low_pm",
@@ -174,7 +179,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "proxy_model"
+      "model_maturity": "proxy_model",
+      "gate_class": "proxy"
     },
     {
       "id": "variable_magnetization_memory_motor",
@@ -200,7 +206,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "research_pool_proxy"
+      "model_maturity": "research_pool_proxy",
+      "gate_class": "smoke"
     },
     {
       "id": "hybrid_excitation",
@@ -227,7 +234,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "research_pool_proxy"
+      "model_maturity": "research_pool_proxy",
+      "gate_class": "smoke"
     },
     {
       "id": "winding_reconfiguration",
@@ -254,7 +262,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "research_pool_proxy"
+      "model_maturity": "research_pool_proxy",
+      "gate_class": "smoke"
     },
     {
       "id": "multiphase_phase_group_control",
@@ -281,7 +290,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "research_pool_proxy"
+      "model_maturity": "research_pool_proxy",
+      "gate_class": "smoke"
     },
     {
       "id": "thermal_demag_safety_protection",
@@ -309,7 +319,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "parameterized_linear_model"
+      "model_maturity": "parameterized_linear_model",
+      "gate_class": "proxy"
     },
     {
       "id": "weighted_efficiency_pareto_selection",
@@ -340,7 +351,8 @@
         "physics_model_validated": false,
         "engineering_validated": false
       },
-      "model_maturity": "proxy_model"
+      "model_maturity": "proxy_model",
+      "gate_class": "proxy"
     }
   ]
 }

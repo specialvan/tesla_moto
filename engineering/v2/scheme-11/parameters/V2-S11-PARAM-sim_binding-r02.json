@@ -4,48 +4,50 @@
   "scheme_short": "S11",
   "binding_purpose": "r02 binding for S11 thermal/demag/safety protection. Exercises demag limit at elevated temperature via sim.run_control_lut_generator.run.",
   "engineering_validated": false,
+  "simulation_status": "numeric_proxy_passed",
+  "model_maturity": "parameterized_linear_model",
+  "gate_class": "proxy",
   "entry": "sim.run_control_lut_generator",
   "function": "run",
   "kwargs": {
     "model_type": "linear_dq",
-    "torque_axis_nm": [80.0, 120.0],
+    "torque_axis_nm": [
+      80.0,
+      120.0
+    ],
     "torque_step_nm": 40.0,
     "temperature_c": 120.0,
     "demag_limit": {
-      "type": "DemagLimit",
-      "points_c_to_id_min_a": [
-        [25.0, -240.0],
-        [100.0, -210.0],
-        [140.0, -180.0]
-      ],
-      "source": "estimate",
-      "note": "Piecewise demag boundary shared with S01/S02; estimate from sim/run_safety_boundary_experiment.py."
+      "$ref": "models/demag_limit_estimate.json"
     }
   },
   "expect": {
     "metadata.generator_version.regex": "^\\d{4}-\\d{2}-\\d{2}-\\w+$",
-    "model_source.model_type.enum": ["linear_dq", "nonlinear_flux_lut"],
+    "model_source.model_type.enum": [
+      "linear_dq",
+      "nonlinear_flux_lut"
+    ],
     "grid_definition.speed_axis_rpm.count_min": 60,
     "grid_definition.torque_axis_nm.count_min": 2,
-    "feasibility_map.feasible_points_min": 30,
-    "feasibility_map.infeasible_reasons.search_not_converged_max": 150,
-    "feasibility_map.infeasible_reasons.demagnetization_risk_max": 200,
-    "validation.torque_discontinuity_at_transitions_nm_max": 5.0,
-    "metadata.demag_limit_present": true,
+    "feasibility_map.feasible_points.min": 30,
+    "feasibility_map.infeasible_reasons.search_not_converged.max": 150,
+    "feasibility_map.infeasible_reasons.demagnetization_risk.max": 200,
+    "validation.torque_discontinuity_at_transitions_nm.max": 5.0,
+    "metadata.demag_limit.present": true,
     "operating_limits.temperature_c.equals": 120.0
   },
   "soft_checks": [
-    "feasibility_map.infeasible_reasons.search_not_converged_max",
-    "feasibility_map.infeasible_reasons.demagnetization_risk_max"
+    "feasibility_map.infeasible_reasons.search_not_converged.max",
+    "feasibility_map.infeasible_reasons.demagnetization_risk.max"
   ],
   "strong_checks": [
     "metadata.generator_version.regex",
     "model_source.model_type.enum",
     "grid_definition.speed_axis_rpm.count_min",
     "grid_definition.torque_axis_nm.count_min",
-    "feasibility_map.feasible_points_min",
-    "validation.torque_discontinuity_at_transitions_nm_max",
-    "metadata.demag_limit_present",
+    "feasibility_map.feasible_points.min",
+    "validation.torque_discontinuity_at_transitions_nm.max",
+    "metadata.demag_limit.present",
     "operating_limits.temperature_c.equals"
   ],
   "dvp_mapping": {

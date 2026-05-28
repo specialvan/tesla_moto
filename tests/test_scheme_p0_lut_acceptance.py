@@ -24,8 +24,10 @@ import pytest
 
 from sim.run_control_lut_generator import run
 from sim.safety_limits import DemagLimit
+from tests.scheme_expect_dsl import eval_expect_check, expect_key_has_suffix
 
 ROOT = Path(__file__).resolve().parents[1]
+FIXED_GENERATED_AT = "2026-05-28T00:00:00+00:00"
 
 P0_SCHEMES = [
     ("S01", "scheme-01", "V2-S01-PARAM-sim_binding-r02.json"),
@@ -44,9 +46,21 @@ def _materialize_demag_limit(spec: dict[str, Any]) -> DemagLimit:
     return DemagLimit(points_c_to_id_min_a=points)
 
 
+def _load_ref(spec: dict[str, Any]) -> dict[str, Any]:
+    ref = spec["$ref"]
+    ref_path = (ROOT / ref).resolve()
+    try:
+        ref_path.relative_to(ROOT)
+    except ValueError as exc:
+        raise ValueError(f"ref must resolve inside project root: {ref}") from exc
+    return json.loads(ref_path.read_text(encoding="utf-8"))
+
+
 def _resolve_kwargs(binding: dict[str, Any]) -> dict[str, Any]:
     kwargs = dict(binding["kwargs"])
     demag_spec = kwargs.get("demag_limit")
+    if isinstance(demag_spec, dict) and "$ref" in demag_spec:
+        demag_spec = _load_ref(demag_spec)
     if isinstance(demag_spec, dict) and demag_spec.get("type") == "DemagLimit":
         kwargs["demag_limit"] = _materialize_demag_limit(demag_spec)
     lut_path = kwargs.get("lut_path")
@@ -67,57 +81,25 @@ def _all_transition_jumps(output: dict[str, Any], field: str) -> float:
     return max((abs(t.get(field, 0.0)) for t in transitions), default=0.0)
 
 
-def _eval_check(key: str, expected: Any, output: dict[str, Any]) -> tuple[bool, str]:
-    if key == "metadata.generator_version.regex":
-        value = output["metadata"]["generator_version"]
-        return bool(re.match(expected, value)), f"generator_version={value!r}"
-    if key == "model_source.model_type.enum":
-        value = output["model_source"]["model_type"]
-        return value in expected, f"model_type={value!r} enum={expected}"
-    if key == "model_source.flux_lut_ref_present":
-        value = output["model_source"].get("flux_lut_ref")
-        ok = (value is not None) == bool(expected)
-        return ok, f"flux_lut_ref present={value is not None}"
-    if key == "grid_definition.speed_axis_rpm.count_min":
-        value = len(output["grid_definition"]["speed_axis_rpm"])
-        return value >= expected, f"speed_axis count={value} >= {expected}"
-    if key == "grid_definition.torque_axis_nm.count_min":
-        value = len(output["grid_definition"]["torque_axis_nm"])
-        return value >= expected, f"torque_axis count={value} >= {expected}"
-    if key == "feasibility_map.feasible_points_min":
-        value = output["feasibility_map"]["feasible_points"]
-        return value >= expected, f"feasible_points={value} >= {expected}"
-    if key == "feasibility_map.infeasible_reasons.search_not_converged_max":
-        value = output["feasibility_map"]["infeasible_reasons"]["search_not_converged"]
-        return value <= expected, f"search_not_converged={value} <= {expected}"
-    if key == "feasibility_map.infeasible_reasons.demagnetization_risk_max":
-        value = output["feasibility_map"]["infeasible_reasons"]["demagnetization_risk"]
-        return value <= expected, f"demagnetization_risk={value} <= {expected}"
-    if key == "feasibility_map.infeasible_reasons.out_of_flux_lut_bounds_max":
-        value = output["feasibility_map"]["infeasible_reasons"][
-            "out_of_flux_lut_bounds"
+def _with_p0_derived_metrics(output: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(output)
+    enriched["p0_acceptance"] = {
+        "voltage_exceeded_ratio": _voltage_exceeded_ratio(output),
+        "max_id_jump_a": _all_transition_jumps(output, "id_jump_a"),
+        "max_iq_jump_a": _all_transition_jumps(output, "iq_jump_a"),
+    }
+    return enriched
+
+
+def test_scheme_p0_expect_keys_use_suffix_dsl() -> None:
+    for scheme_id, scheme_dir, binding_file in P0_SCHEMES:
+        binding = json.loads(
+            _binding_path(scheme_dir, binding_file).read_text(encoding="utf-8")
+        )
+        legacy_keys = [
+            key for key in binding["expect"] if not expect_key_has_suffix(key)
         ]
-        return value <= expected, f"out_of_flux_lut_bounds={value} <= {expected}"
-    if key == "feasibility_map.infeasible_reasons.voltage_exceeded_ratio_max":
-        ratio = _voltage_exceeded_ratio(output)
-        return ratio <= expected, f"voltage_exceeded_ratio={ratio:.3f} <= {expected}"
-    if key == "validation.torque_discontinuity_at_transitions_nm_max":
-        value = output["validation"]["torque_discontinuity_at_transitions_nm"]
-        return value <= expected, f"torque_discontinuity={value} <= {expected}"
-    if key == "mode_transitions.id_jump_a_max":
-        worst = _all_transition_jumps(output, "id_jump_a")
-        return worst <= expected, f"max id_jump={worst} <= {expected}"
-    if key == "mode_transitions.iq_jump_a_max":
-        worst = _all_transition_jumps(output, "iq_jump_a")
-        return worst <= expected, f"max iq_jump={worst} <= {expected}"
-    if key == "metadata.demag_limit_present":
-        value = output["metadata"].get("demag_limit")
-        ok = (value is not None) == bool(expected)
-        return ok, f"metadata.demag_limit present={value is not None}"
-    if key == "operating_limits.temperature_c.equals":
-        value = output["operating_limits"]["temperature_c"]
-        return value == expected, f"operating_limits.temperature_c={value} == {expected}"
-    raise KeyError(f"unhandled expect key: {key}")
+        assert legacy_keys == [], f"{scheme_id} still uses non-DSL expect keys"
 
 
 @pytest.mark.integration
@@ -133,6 +115,7 @@ def test_scheme_p0_sim_binding_drives_run(
     )
     kwargs = _resolve_kwargs(binding)
     kwargs["output_path"] = tmp_path / f"control_lut_{scheme_id.lower()}.json"
+    kwargs["generated_at"] = FIXED_GENERATED_AT
 
     output = run(**kwargs)
 
@@ -144,7 +127,9 @@ def test_scheme_p0_sim_binding_drives_run(
     soft_warnings: list[str] = []
 
     for key, expected_value in expect.items():
-        passed, message = _eval_check(key, expected_value, output)
+        passed, message = eval_expect_check(
+            key, expected_value, _with_p0_derived_metrics(output)
+        )
         if passed:
             continue
         if key in strong_keys:
@@ -165,6 +150,25 @@ def test_scheme_p0_sim_binding_drives_run(
     )
 
 
+def test_resolve_kwargs_materializes_demag_limit_ref() -> None:
+    binding = {
+        "kwargs": {
+            "demag_limit": {
+                "$ref": "models/demag_limit_estimate.json",
+            }
+        }
+    }
+
+    kwargs = _resolve_kwargs(binding)
+
+    assert isinstance(kwargs["demag_limit"], DemagLimit)
+    assert kwargs["demag_limit"].points_c_to_id_min_a == [
+        (25.0, -240.0),
+        (100.0, -210.0),
+        (140.0, -180.0),
+    ]
+
+
 @pytest.mark.integration
 @pytest.mark.parametrize("scheme_id, scheme_dir, binding_file", P0_SCHEMES)
 def test_scheme_p0_engineering_validated_is_false(
@@ -173,9 +177,9 @@ def test_scheme_p0_engineering_validated_is_false(
     binding = json.loads(
         _binding_path(scheme_dir, binding_file).read_text(encoding="utf-8")
     )
-    assert binding["engineering_validated"] is False, (
-        f"{scheme_id} r02 sim binding must keep engineering_validated=false"
-    )
+    assert (
+        binding["engineering_validated"] is False
+    ), f"{scheme_id} r02 sim binding must keep engineering_validated=false"
 
 
 @pytest.mark.integration
@@ -188,7 +192,10 @@ def test_scheme_p0_dvp_mapping_present(
     )
     mapping = binding["dvp_mapping"]
     assert mapping, f"{scheme_id} dvp_mapping must not be empty"
+    assert (
+        len(mapping) >= 5
+    ), f"{scheme_id} dvp_mapping must include at least 5 DVP items"
     for dvp_id in mapping:
-        assert re.match(rf"^{scheme_id}-DV-\d{{3}}$", dvp_id), (
-            f"{scheme_id} dvp id {dvp_id!r} does not match S<id>-DV-NNN"
-        )
+        assert re.match(
+            rf"^{scheme_id}-DV-\d{{3}}$", dvp_id
+        ), f"{scheme_id} dvp id {dvp_id!r} does not match S<id>-DV-NNN"

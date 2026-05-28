@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "models/sim_binding_schema.json",
+  "title": "V2 r02 simulation binding",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scheme_id",
+    "scheme_short",
+    "binding_purpose",
+    "engineering_validated",
+    "simulation_status",
+    "model_maturity",
+    "gate_class",
+    "entry",
+    "function",
+    "kwargs",
+    "expect",
+    "soft_checks",
+    "strong_checks",
+    "dvp_mapping",
+    "open_items",
+    "related_artifacts"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}-r\\d+$"},
+    "scheme_id": {"type": "string", "minLength": 1},
+    "scheme_short": {"type": "string", "pattern": "^S\\d{2}$"},
+    "binding_purpose": {"type": "string", "minLength": 1},
+    "engineering_validated": {"const": false},
+    "simulation_status": {
+      "type": "string",
+      "enum": ["binding_smoke_passed", "numeric_proxy_passed", "needs_next_numeric_model"]
+    },
+    "model_maturity": {
+      "type": "string",
+      "enum": [
+        "synthetic_fixture",
+        "proxy_model",
+        "research_pool_proxy",
+        "parameterized_linear_model",
+        "physics_model"
+      ]
+    },
+    "gate_class": {
+      "type": "string",
+      "enum": ["smoke", "proxy", "production_target"]
+    },
+    "entry": {"type": "string", "minLength": 1},
+    "function": {"type": "string", "minLength": 1},
+    "kwargs": {"type": "object"},
+    "expect": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": true
+    },
+    "soft_checks": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "strong_checks": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "dvp_mapping": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string"}
+    },
+    "open_items": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "related_artifacts": {"type": "object"}
+  },
+  "additionalProperties": true
+}
