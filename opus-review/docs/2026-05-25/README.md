@@ -8,6 +8,7 @@
 | `codex_progress_deep_review_r02.md` | R02 逐行 / 逐字段补遗，复核 CDR/AMR 与 r02/r03 边界 |
 | `codex_progress_deep_review_r03.md` | R03 逐字段深挖补遗，核验运行时合同、API/展示层成熟度与测试护栏 |
 | `codex_progress_deep_review_r04.md` | R04 前后端/客户出口逐句深挖补遗，定位 ROI 公式漂移与复制出口成熟度缺口 |
+| `codex_progress_deep_review_r13.md` | R13 对 PyFluent/2026-05-15评审包/codex-docs 的逐行落地复核，并定位 origin/HEAD 默认分支滞后的 P1 open 项 |
 | `codex_deliverable_inventory.md` | Codex 在 `codex-review-line` 与 `claude-mainline` 上的产物清单（含跨分支映射） |
 | `codex_progress_action_register.json` | 评审发现 / 风险 / 行动项的机器可读登记 |
 | `codex_progress_action_register_r04_followup.json` | R03/R04 整改后的追加 closure/open register；显式 supersedes，不改写旧结论 |
@@ -19,7 +20,8 @@
 | `codex_progress_action_register_r10_followup.json` | r02-sim 批包归档后的追加 closure/open register；关闭 S01/S03/S05-S12 缺失或隐式替代项 |
 | `codex_progress_action_register_r11_followup.json` | claude-docs/wiki/HTML/snapshots 内容同步后的追加 closure/open register；关闭 EXP-011 与 r02/r03 成熟度口径同步项 |
 | `codex_progress_action_register_r12_followup.json` | claude-mainline 发布到 origin 后的追加 closure register；关闭 CDR-001 分支集成项 |
-| `opus_handoff_for_review_current_2026-05-29.md` | Opus 当前复评 handoff；以 HEAD `5a80370`、r12、有效 open=0 和远端对齐状态为准 |
+| `codex_progress_action_register_r13_followup.json` | R13 逐行复核 register；复确认 PyFluent 与 CDR-003~006 关闭，新增 `OPUS-2026-05-29-R13-DEFAULT-BRANCH-STALE` P1 open 项 |
+| `opus_handoff_for_review_current_2026-05-29.md` | Opus 当前复评 handoff；以 `origin/claude-mainline @ 298dfed` 为 R13 输入锚点，并补充默认分支滞后 open 项 |
 | `opus_handoff_for_review_2026-05-29.md` | Opus 介入复评 handoff；汇总当前提交分组、验证证据、有效 open 项与剩余工作树状态 |
 | `evidence_index.md` | 本轮评审读取或引用的证据路径索引 |
 | `branch_integration_strategy.md` | `codex-review-line` 与 `claude-mainline` 集成、cherry-pick、回归策略 |

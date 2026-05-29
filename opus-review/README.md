@@ -39,7 +39,9 @@
 | `docs/2026-05-25/codex_progress_action_register_r10_followup.json` | r02-sim 批包归档后的追加 closure/open register；关闭 S01/S03/S05-S12 缺失或隐式替代项 |
 | `docs/2026-05-25/codex_progress_action_register_r11_followup.json` | claude-docs/wiki/HTML/snapshots 内容同步后的追加 closure/open register；关闭 EXP-011 与 r02/r03 成熟度口径同步项 |
 | `docs/2026-05-25/codex_progress_action_register_r12_followup.json` | claude-mainline 发布到 origin 后的追加 closure register；关闭 CDR-001 分支集成项 |
-| `docs/2026-05-25/opus_handoff_for_review_current_2026-05-29.md` | Opus 当前复评 handoff；以 HEAD `5a80370`、r12、有效 open=0 和远端对齐状态为准 |
+| `docs/2026-05-25/codex_progress_deep_review_r13.md` | R13 对 PyFluent/2026-05-15评审包/codex-docs 的逐行落地复核；并定位 origin/HEAD 默认分支滞后的 P1 open 项 |
+| `docs/2026-05-25/codex_progress_action_register_r13_followup.json` | R13 逐行复核 register；复确认 PyFluent 与 CDR-003~006 关闭，新增 `OPUS-2026-05-29-R13-DEFAULT-BRANCH-STALE` P1 open 项 |
+| `docs/2026-05-25/opus_handoff_for_review_current_2026-05-29.md` | Opus 当前复评 handoff；以 `origin/claude-mainline @ 298dfed` 为 R13 输入锚点，并补充默认分支滞后 open 项 |
 | `docs/2026-05-25/opus_handoff_for_review_2026-05-29.md` | Opus 介入复评 handoff；汇总当前提交分组、验证证据、有效 open 项与剩余工作树状态 |
 | `docs/2026-05-25/codex_deliverable_inventory.md` | Codex 当前产物全量清单与跨分支映射 |
 | `docs/2026-05-25/evidence_index.md` | 本轮评审读取/引用的证据路径索引 |

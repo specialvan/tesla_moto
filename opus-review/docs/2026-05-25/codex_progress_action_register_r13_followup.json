@@ -1,0 +1,91 @@
+{
+  "version": "2026-05-29-opus-r13-followup",
+  "review_head": {
+    "claude-mainline": "298dfed",
+    "working_tree": "clean"
+  },
+  "purpose": "Tenth follow-up register. After CDR-001 publish closure, this round performs a line-level re-verification of Codex's key deliverables (PyFluent workflow, 2026-05-15 review package, codex-docs knowledge base) directly against current mainline source rather than trusting prior-round summaries. It re-confirms earlier closures with fresh evidence and records one newly surfaced open item: the local codex-review-line is ahead of its own origin. This register only appends and does not rewrite the r04-r12 registers.",
+  "verification": [
+    {
+      "command": "python -m pytest tests/test_pyfluent_workflow.py tests/test_run_pyfluent_workflow.py tests/test_docs_links.py tests/test_opus_register_consistency.py -q",
+      "result": "10 passed in 0.11s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_r03_prompt_maturity.py tests/test_r03_prompt_simulation_anchor.py tests/test_r02_sim_batch_archival.py tests/test_repository_hygiene.py -q",
+      "result": "10 passed in 0.07s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "git diff codex-review-line:sim/pyfluent_workflow.py HEAD:sim/pyfluent_workflow.py",
+      "result": "mainline version (176 lines) adds REQUIRED_VALIDATION_CHAIN_FIELDS enforcement, allowed_boundary_variables allow-list, and engineering_validated=false manifest note absent from the codex original (159 lines)",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "git log --oneline origin/codex-review-line..codex-review-line",
+      "result": "6b137bf dd47e70 69b40b4 4e0c489 (local codex-review-line is 4 commits ahead of origin @ cfda256)",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_opus_r13_default_branch_gap.py -q",
+      "result": "4 passed in 0.10s",
+      "run_at": "2026-05-29"
+    },
+    {
+      "command": "python -m pytest tests/test_opus_r13_default_branch_gap.py tests/test_docs_links.py tests/test_opus_register_consistency.py -q",
+      "result": "7 passed in 0.20s",
+      "run_at": "2026-05-29"
+    }
+  ],
+  "supersedes": [],
+  "reconfirmed_closures": [
+    {
+      "id": "OPUS-2026-05-25-PYFLUENT-001",
+      "severity": "P1",
+      "status": "closed",
+      "reconfirm_summary": "Line-level read of HEAD:sim/pyfluent_workflow.py confirms the dry-run, manifest, validation_chain, and boundary allow-list guardrails are real code, not documentation claims. The mainline integration is a substantive hardening of the Codex draft, not a plain cherry-pick.",
+      "evidence": [
+        "sim/pyfluent_workflow.py:16-21",
+        "sim/pyfluent_workflow.py:46-65",
+        "sim/pyfluent_workflow.py:158-168",
+        "sim/run_pyfluent_workflow.py:47-79",
+        "tests/test_pyfluent_workflow.py",
+        "tests/test_run_pyfluent_workflow.py"
+      ]
+    },
+    {
+      "id": "OPUS-2026-05-25-CDR-003-006",
+      "severity": "P1",
+      "status": "closed",
+      "reconfirm_summary": "The four code-level findings Codex raised on 2026-05-15 (combined_losses return semantics, freq_max_hz enforcement, iron/copper ratio statistics, flux LUT pole_pairs validation) are all resolved on current mainline, confirming Codex's review drove real fixes.",
+      "evidence": [
+        "sim/iron_loss.py:297",
+        "sim/iron_loss.py:306-307",
+        "sim/run_iron_loss_experiment.py:182-187",
+        "sim/run_iron_loss_experiment.py:234",
+        "sim/run_iron_loss_experiment.py:268-275",
+        "sim/nonlinear_flux_lut.py:26-79",
+        "sim/search.py:197-203",
+        "codex-review/docs/review_action_register_2026-05-15.json"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "OPUS-2026-05-29-R13-DEFAULT-BRANCH-STALE",
+      "severity": "P1",
+      "status": "open",
+      "title": "origin/HEAD default branch (codex-review-line) is stale at 2026-05-13 and lacks PyFluent + the 2026-05-15 review package",
+      "finding": "origin/HEAD resolves to origin/codex-review-line, i.e. it is the repository default branch a fresh clone checks out. That remote branch is frozen at cfda256 (2026-05-13) and does NOT contain sim/pyfluent_workflow.py or codex-review/docs/claude_development_review_2026-05-15.md (verified with git cat-file -e). The local codex-review-line is 4 commits ahead (4e0c489 PyFluent, 69b40b4 + dd47e70 + 6b137bf the 2026-05-15 review package). The content-equivalent of these commits already reached origin through claude-mainline (hardened PyFluent + migrated review package), so this is NOT data-loss risk. But because the stale branch is origin/HEAD, every fresh clone presents a 16-day-old Codex view that omits Codex's own headline deliverables. The current-version handoff reports effective_open_count=0 and remote-aligned, which is true only for claude-mainline and is silent on the default-branch staleness; this is a scope-of-claim gap, not a falsehood.",
+      "evidence": [
+        "git symbolic-ref refs/remotes/origin/HEAD",
+        "git log --oneline origin/codex-review-line..codex-review-line",
+        "git cat-file -e origin/codex-review-line:sim/pyfluent_workflow.py",
+        "git cat-file -e origin/codex-review-line:codex-review/docs/claude_development_review_2026-05-15.md",
+        "opus-review/docs/2026-05-25/opus_handoff_for_review_current_2026-05-29.md",
+        "opus-review/docs/2026-05-25/branch_integration_strategy.md"
+      ],
+      "next_action": "Per branch_integration_strategy.md, either publish codex-review-line to origin (preferred, since it is origin/HEAD), or repoint origin/HEAD to claude-mainline and explicitly document that origin/codex-review-line is superseded. Until then, the current handoff should scope its 'remote-aligned / effective_open=0' claim to claude-mainline rather than implying the whole remote is current. Do not reuse OPUS-2026-05-25-CDR-002 for this item because that older worktree-hygiene item was closed by r07."
+    }
+  ]
+}
