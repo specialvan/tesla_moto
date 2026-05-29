@@ -19,6 +19,7 @@
 | `codex_progress_action_register_r10_followup.json` | r02-sim 批包归档后的追加 closure/open register；关闭 S01/S03/S05-S12 缺失或隐式替代项 |
 | `codex_progress_action_register_r11_followup.json` | claude-docs/wiki/HTML/snapshots 内容同步后的追加 closure/open register；关闭 EXP-011 与 r02/r03 成熟度口径同步项 |
 | `codex_progress_action_register_r12_followup.json` | claude-mainline 发布到 origin 后的追加 closure register；关闭 CDR-001 分支集成项 |
+| `opus_handoff_for_review_current_2026-05-29.md` | Opus 当前复评 handoff；以 HEAD `5a80370`、r12、有效 open=0 和远端对齐状态为准 |
 | `opus_handoff_for_review_2026-05-29.md` | Opus 介入复评 handoff；汇总当前提交分组、验证证据、有效 open 项与剩余工作树状态 |
 | `evidence_index.md` | 本轮评审读取或引用的证据路径索引 |
 | `branch_integration_strategy.md` | `codex-review-line` 与 `claude-mainline` 集成、cherry-pick、回归策略 |
